@@ -29,18 +29,62 @@
             android:id="@+id/barDate"
             android:layout_width="0dp"
             android:layout_height="match_parent"
+            android:layout_weight="1.5"
             android:gravity="center_horizontal"
-            android:layout_weight="1.5">
+            android:orientation="horizontal">
 
             <TextView
                 android:id="@+id/barDateYear"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="0dp"
+                android:layout_weight="1.7"
+                android:layout_height="30dp"
+                android:layout_marginTop="15dp"
+                android:layout_marginBottom="15dp"
+                android:gravity="center_vertical"
                 android:text="2024"
                 android:textColor="@android:color/black"
-                android:textSize="20sp"
-                android:layout_gravity="center_vertical"
-                android:layout_marginRight="30dp"/>
+                android:textSize="20dp"
+                android:fontFamily="@font/simple"/>
+
+            <TextView
+                android:id="@+id/barDateYKo"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="30dp"
+                android:layout_marginTop="15dp"
+                android:layout_marginBottom="15dp"
+                android:gravity="center_vertical"
+                android:text="년"
+                android:textColor="@android:color/black"
+                android:textSize="20dp"
+                android:fontFamily="@font/simple"/>
+
+            <TextView
+                android:id="@+id/barDateMon"
+                android:layout_width="0dp"
+                android:layout_weight="0.9"
+                android:layout_height="30dp"
+                android:layout_marginTop="15dp"
+                android:layout_marginBottom="15dp"
+                android:gravity="center_vertical"
+                android:text="07"
+                android:textColor="@android:color/black"
+                android:textSize="20dp"
+                android:fontFamily="@font/simple"/>
+
+            <TextView
+                android:id="@+id/barDateMKo"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="30dp"
+                android:layout_marginTop="15dp"
+                android:layout_marginBottom="15dp"
+                android:layout_marginRight="10dp"
+                android:gravity="center_vertical"
+                android:text="월"
+                android:textColor="@android:color/black"
+                android:textSize="20dp"
+                android:fontFamily="@font/simple"/>
         </LinearLayout>
 
         <!-- SMD 영역 -->
@@ -63,9 +107,10 @@
                 android:textOn="@string/smdSText"
                 android:textOff="@string/smdSText"
                 android:textColor="@color/darkGray"
-                android:textSize="13dp"
+                android:textSize="16dp"
                 android:textAlignment="center"
-                android:background="@drawable/smd_left" />
+                android:background="@drawable/smd_left"
+                android:fontFamily="@font/simple"/>
 
             <ToggleButton
                 android:id="@+id/smdM"
@@ -75,9 +120,10 @@
                 android:textOn="@string/smdMText"
                 android:textOff="@string/smdMText"
                 android:textColor="@color/darkGray"
-                android:textSize="13dp"
+                android:textSize="16dp"
                 android:textAlignment="center"
-                android:background="@drawable/smd_background"/>
+                android:background="@drawable/smd_background"
+                android:fontFamily="@font/simple"/>
 
             <ToggleButton
                 android:id="@+id/smdD"
@@ -87,10 +133,69 @@
                 android:textOn="@string/smdDText"
                 android:textOff="@string/smdDText"
                 android:textColor="@color/darkGray"
-                android:textSize="13dp"
+                android:textSize="16dp"
                 android:textAlignment="center"
-                android:background="@drawable/smd_right"/>
+                android:background="@drawable/smd_right"
+                android:fontFamily="@font/simple"/>
         </LinearLayout>
+    </LinearLayout>
+
+    <!-- 달력 부분 레이아웃 -->
+    <TableLayout
+        android:layout_width="match_parent"
+        android:layout_height="605dp">
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+    </TableLayout>
+
+    <!-- 하단 바 레이아웃 -->
+    <LinearLayout
+        android:id="@+id/bottomBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:background="@color/lightGray">
+
+        <ImageButton
+            android:id="@+id/barHome"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            app:srcCompat="@drawable/home" />
+        <ImageButton
+            android:id="@+id/barMoney"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            app:srcCompat="@drawable/money"/>
+        <ImageButton
+            android:id="@+id/barMemo"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            app:srcCompat="@drawable/memo"/>
+        <ImageButton
+            android:id="@+id/barMenu"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            app:srcCompat="@drawable/menu"/>
+
+
     </LinearLayout>
 
 </LinearLayout>

@@ -19,7 +19,7 @@
         <ImageView
             android:id="@+id/logoB"
             android:layout_width="0dp"
-            android:layout_height="60dp"
+            android:layout_height="70dp"
             android:layout_weight="0.8"
             android:background="@android:color/transparent"
             android:src="@drawable/d_n" />
@@ -37,7 +37,7 @@
                 android:id="@+id/barDateYear"
                 android:layout_width="0dp"
                 android:layout_weight="1.7"
-                android:layout_height="30dp"
+                android:layout_height="40dp"
                 android:layout_marginTop="15dp"
                 android:layout_marginBottom="15dp"
                 android:gravity="center_vertical"
@@ -50,7 +50,7 @@
                 android:id="@+id/barDateYKo"
                 android:layout_width="0dp"
                 android:layout_weight="1"
-                android:layout_height="30dp"
+                android:layout_height="40dp"
                 android:layout_marginTop="15dp"
                 android:layout_marginBottom="15dp"
                 android:gravity="center_vertical"
@@ -63,7 +63,7 @@
                 android:id="@+id/barDateMon"
                 android:layout_width="0dp"
                 android:layout_weight="0.9"
-                android:layout_height="30dp"
+                android:layout_height="40dp"
                 android:layout_marginTop="15dp"
                 android:layout_marginBottom="15dp"
                 android:gravity="center_vertical"
@@ -76,7 +76,7 @@
                 android:id="@+id/barDateMKo"
                 android:layout_width="0dp"
                 android:layout_weight="1"
-                android:layout_height="30dp"
+                android:layout_height="40dp"
                 android:layout_marginTop="15dp"
                 android:layout_marginBottom="15dp"
                 android:layout_marginRight="10dp"
@@ -107,10 +107,10 @@
                 android:textOn="@string/smdSText"
                 android:textOff="@string/smdSText"
                 android:textColor="@color/darkGray"
-                android:textSize="16dp"
+                android:textSize="12dp"
                 android:textAlignment="center"
                 android:background="@drawable/smd_left"
-                android:fontFamily="@font/simple"/>
+                android:fontFamily="@font/alice"/>
 
             <ToggleButton
                 android:id="@+id/smdM"
@@ -120,10 +120,10 @@
                 android:textOn="@string/smdMText"
                 android:textOff="@string/smdMText"
                 android:textColor="@color/darkGray"
-                android:textSize="16dp"
+                android:textSize="12dp"
                 android:textAlignment="center"
                 android:background="@drawable/smd_background"
-                android:fontFamily="@font/simple"/>
+                android:fontFamily="@font/alice"/>
 
             <ToggleButton
                 android:id="@+id/smdD"
@@ -133,34 +133,90 @@
                 android:textOn="@string/smdDText"
                 android:textOff="@string/smdDText"
                 android:textColor="@color/darkGray"
-                android:textSize="16dp"
+                android:textSize="12dp"
                 android:textAlignment="center"
                 android:background="@drawable/smd_right"
-                android:fontFamily="@font/simple"/>
+                android:fontFamily="@font/alice"/>
         </LinearLayout>
     </LinearLayout>
 
     <!-- 달력 부분 레이아웃 -->
-    <TableLayout
+    <!-- 요일 표시 -->
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="605dp">
+        android:layout_height="40dp"
+        android:orientation="horizontal">
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="40dp"
+            android:layout_weight="1"
+            android:text="SUN"
+            android:textColor="@color/gray"
+            android:gravity="center"
+            android:textSize="16dp"
+            android:fontFamily="@font/alice"/>
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="40dp"
+            android:layout_weight="1"
+            android:text="MON"
+            android:textColor="@color/gray"
+            android:gravity="center"
+            android:textSize="16dp"
+            android:fontFamily="@font/alice"/>
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="40dp"
+            android:layout_weight="1"
+            android:text="TUE"
+            android:textColor="@color/gray"
+            android:gravity="center"
+            android:textSize="16dp"
+            android:fontFamily="@font/alice"/>
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="40dp"
+            android:layout_weight="1"
+            android:text="WED"
+            android:textColor="@color/gray"
+            android:gravity="center"
+            android:textSize="16dp"
+            android:fontFamily="@font/alice"/>
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="40dp"
+            android:layout_weight="1"
+            android:text="THU"
+            android:textColor="@color/gray"
+            android:gravity="center"
+            android:textSize="16dp"
+            android:fontFamily="@font/alice"/>
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="40dp"
+            android:layout_weight="1"
+            android:text="FRI"
+            android:textColor="@color/gray"
+            android:gravity="center"
+            android:textSize="16dp"
+            android:fontFamily="@font/alice"/>
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="40dp"
+            android:layout_weight="1"
+            android:text="SAT"
+            android:textColor="@color/gray"
+            android:gravity="center"
+            android:textSize="16dp"
+            android:fontFamily="@font/alice"/>
+    </LinearLayout>
+    <!-- 일 표시 -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recycleDay"
+        android:layout_width="match_parent"
+        android:layout_height="560dp">
 
-        <TableRow
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
-
-        <TableRow
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
-
-        <TableRow
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
-
-        <TableRow
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
-    </TableLayout>
+    </androidx.recyclerview.widget.RecyclerView>
 
     <!-- 하단 바 레이아웃 -->
     <LinearLayout

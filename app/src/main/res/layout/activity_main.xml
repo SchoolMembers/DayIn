@@ -178,7 +178,9 @@
         android:id="@+id/viewPagerDay"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/weekDay" />
+        android:layout_below="@id/weekDay"/>
+
+
 
     <!-- 하단 바 레이아웃 -->
     <LinearLayout

@@ -23,7 +23,6 @@ class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
 
     lateinit var today: LocalDate
-    private lateinit var adapter: CalendarPagerAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -38,31 +37,76 @@ class MainActivity : AppCompatActivity() {
             insets
         }
 
-        // 현재 날짜
+        //현재 날짜
         today = LocalDate.now()
 
-        // 어댑터 초기화
-        adapter = CalendarPagerAdapter(this, today)
+        //화면 설정
+        setMonthView()
 
-        // ViewPager2 설정
-        binding.viewPagerDay.adapter = adapter
-        binding.viewPagerDay.setCurrentItem(adapter.startingPosition, false)
+        //이전달 버튼
+        binding.preBtn.setonClickListener {
+            today = today.minusMonths(1)
+            setMonthView()
+        }
 
-        // ViewPager2 페이지 변경 리스너
-        binding.viewPagerDay.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
-            override fun onPageSelected(position: Int) {
-                super.onPageSelected(position)
-                val offset = position - adapter.startingPosition
-                today = today.plusMonths(offset.toLong())
-                binding.barDateYear.text = monthYearFromDate(today)
-            }
-        })
+        //다음달 버튼
+        binding.nextBtn.setOnClickListener {
+            today = today.plusMonths(1)
+            setMonthView()
+        }
 
     }
 
-    // 날짜 포매팅 설정
+    //날짜 화면에 보여주기
+    private fun setMonthView() {
+        //연월 텍스트뷰 세팅
+        binding.barDateYear.text = monthYearFromDate(today)
+
+        //날짜 생성해서 리스트에 담기
+        val dayList = dayInMonthArray(today)
+
+        //어댑터 초기화
+        val adapter = CalendarAdapter(dayList)
+
+        //layout setting(열 7개)
+        var manager: RecyclerView.LayoutManager = GridLayoutManager(applicationContext, 7)
+
+        //layout 적용
+        binding.viewPagerDay.layoutManager = manager
+
+        //어댑터 적용
+        binding.viewPagerDay.adapter = adapter
+    }
+
+    //날짜 포매팅 설정
     private fun monthYearFromDate(date: LocalDate): String {
-        val formatter = DateTimeFormatter.ofPattern("yyyy년 MM월")
+        var formatter = DateTimeFormatter.ofPattern("yyyy년 MM월")
+
         return date.format(formatter)
+    }
+
+    //날짜 생성
+    private fun dayInMonthArray(date: LocalDate): ArrayList<String>{
+        var dayList = ArrayList<String>()
+
+        var yearMonth = YearMonth.from(date)
+
+        //해당 월 마지막 날짜 가져오기
+        var lastDay = yearMonth.lengthOfMonth()
+
+        //해당 월 첫 번째 날짜
+        var firstDay = today.withDayOfMonth(1)
+
+        //첫 번째 날 요일
+        var dayOfWeek = firstDay.dayOfWeek.value
+
+        for(i in 1..41){
+            if(i <= dayOfWeek || i > (lastDay + dayOfWeek)){
+                dayList.add("")
+            } else{
+                dayList.add((i - dayOfWeek).toString())
+            }
+        }
+        return dayList
     }
 }

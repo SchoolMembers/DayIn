@@ -42,47 +42,7 @@
                 android:layout_marginTop="15dp"
                 android:layout_marginBottom="15dp"
                 android:gravity="center_vertical"
-                android:text="2024"
-                android:textColor="@android:color/black"
-                android:textSize="20dp"
-                android:fontFamily="@font/simple"/>
-
-            <TextView
-                android:id="@+id/barDateYKo"
-                android:layout_width="0dp"
-                android:layout_weight="1"
-                android:layout_height="40dp"
-                android:layout_marginTop="15dp"
-                android:layout_marginBottom="15dp"
-                android:gravity="center_vertical"
-                android:text="년"
-                android:textColor="@android:color/black"
-                android:textSize="20dp"
-                android:fontFamily="@font/simple"/>
-
-            <TextView
-                android:id="@+id/barDateMon"
-                android:layout_width="0dp"
-                android:layout_weight="0.9"
-                android:layout_height="40dp"
-                android:layout_marginTop="15dp"
-                android:layout_marginBottom="15dp"
-                android:gravity="center_vertical"
-                android:text="07"
-                android:textColor="@android:color/black"
-                android:textSize="20dp"
-                android:fontFamily="@font/simple"/>
-
-            <TextView
-                android:id="@+id/barDateMKo"
-                android:layout_width="0dp"
-                android:layout_weight="1"
-                android:layout_height="40dp"
-                android:layout_marginTop="15dp"
-                android:layout_marginBottom="15dp"
-                android:layout_marginRight="10dp"
-                android:gravity="center_vertical"
-                android:text="월"
+                android:text="2024년 07월"
                 android:textColor="@android:color/black"
                 android:textSize="20dp"
                 android:fontFamily="@font/simple"/>
@@ -215,12 +175,10 @@
     </LinearLayout>
     <!-- 일 표시 -->
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recycleDay"
+        android:id="@+id/viewPagerDay"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/weekDay">
-
-    </androidx.recyclerview.widget.RecyclerView>
+        android:layout_below="@id/weekDay" />
 
     <!-- 하단 바 레이아웃 -->
     <LinearLayout

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main"
@@ -13,7 +13,8 @@
         android:id="@+id/mainTopBar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:layout_alignParentTop="true">
 
         <!-- 로고 영역 -->
         <ImageView
@@ -143,9 +144,11 @@
     <!-- 달력 부분 레이아웃 -->
     <!-- 요일 표시 -->
     <LinearLayout
+        android:id="@+id/weekDay"
         android:layout_width="match_parent"
         android:layout_height="40dp"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:layout_below="@id/mainTopBar">
         <TextView
             android:layout_width="0dp"
             android:layout_height="40dp"
@@ -214,7 +217,8 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recycleDay"
         android:layout_width="match_parent"
-        android:layout_height="560dp">
+        android:layout_height="wrap_content"
+        android:layout_below="@id/weekDay">
 
     </androidx.recyclerview.widget.RecyclerView>
 
@@ -224,7 +228,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:background="@color/lightGray">
+        android:background="@color/lightGray"
+        android:layout_alignParentBottom="true">
 
         <ImageButton
             android:id="@+id/barHome"
@@ -254,4 +259,4 @@
 
     </LinearLayout>
 
-</LinearLayout>
+</RelativeLayout>

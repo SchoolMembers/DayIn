@@ -37,13 +37,13 @@ class CalendarFragment : Fragment() {
         val yearMonth = YearMonth.from(date)
         val lastDay = yearMonth.lengthOfMonth()
         val firstDay = date.withDayOfMonth(1)
-        val dayOfWeek = firstDay.dayOfWeek.value
+        val dayOfWeek = firstDay.dayOfWeek.value % 7
 
-        for (i in 1..42) {
-            if (i <= dayOfWeek || i > (lastDay + dayOfWeek)) {
+        for (i in 0 until  42) {
+            if (i < dayOfWeek || i >= (lastDay + dayOfWeek)) {
                 dayList.add("")
             } else {
-                dayList.add((i - dayOfWeek).toString())
+                dayList.add((i - dayOfWeek + 1).toString())
             }
         }
         return dayList

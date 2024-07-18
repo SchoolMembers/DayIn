@@ -3,7 +3,6 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:minHeight="90dp"
     android:padding="8dp"
     android:gravity="center|top">
 
@@ -23,7 +22,7 @@
         android:id="@+id/scheduleRecyclerView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"/>
+        android:orientation="vertical" />
 
     <!-- 추가 버튼 -->
     <ImageView

@@ -60,44 +60,42 @@
             android:layout_marginLeft="1dp"
             android:layout_marginRight="3dp">
 
-            <ToggleButton
+            <android.widget.Button
                 android:id="@+id/smdS"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:textOn="@string/smdSText"
-                android:textOff="@string/smdSText"
-                android:textColor="@color/darkGray"
-                android:textSize="12dp"
+                android:background="@drawable/touch_smd_left"
+                android:fontFamily="@font/alice"
+                android:text="@string/smdSText"
                 android:textAlignment="center"
-                android:background="@drawable/smd_left"
-                android:fontFamily="@font/alice"/>
+                android:textColor="@color/lightGray"
+                android:textSize="12dp" />
 
-            <ToggleButton
+            <android.widget.Button
                 android:id="@+id/smdM"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:textOn="@string/smdMText"
-                android:textOff="@string/smdMText"
-                android:textColor="@color/darkGray"
-                android:textSize="12dp"
-                android:textAlignment="center"
                 android:background="@drawable/smd_background"
-                android:fontFamily="@font/alice"/>
+                android:fontFamily="@font/alice"
+                android:text="@string/smdMText"
+                android:textAlignment="center"
+                android:textColor="@color/darkGray"
+                android:textSize="12dp" />
 
-            <ToggleButton
+            <android.widget.Button
                 android:id="@+id/smdD"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:textOn="@string/smdDText"
-                android:textOff="@string/smdDText"
-                android:textColor="@color/darkGray"
-                android:textSize="12dp"
-                android:textAlignment="center"
                 android:background="@drawable/smd_right"
-                android:fontFamily="@font/alice"/>
+                android:fontFamily="@font/alice"
+                android:text="@string/smdDText"
+                android:textAlignment="center"
+                android:textColor="@color/darkGray"
+                android:textSize="12dp" />
+
         </LinearLayout>
     </LinearLayout>
 
@@ -178,7 +176,7 @@
         android:id="@+id/viewPagerDay"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/weekDay"/>
+        android:layout_below="@id/weekDay" />
 
 
 

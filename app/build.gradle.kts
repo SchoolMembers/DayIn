@@ -50,4 +50,7 @@ dependencies {
     implementation("androidx.recyclerview:recyclerview:1.2.1")
     implementation("androidx.databinding:viewbinding:7.0.2")
     implementation("androidx.viewpager2:viewpager2:1.1.0")
+
+    // material design 의존성 주입
+    implementation("com.google.android.material:material:1.12.0")
 }

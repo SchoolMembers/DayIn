@@ -171,6 +171,13 @@
             android:textSize="16dp"
             android:fontFamily="@font/alice"/>
     </LinearLayout>
+
+    <view class="android.view.View"
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:background="@color/gray"
+        android:layout_above="@id/viewPagerDay"/>
+
     <!-- 일 표시 -->
     <androidx.viewpager2.widget.ViewPager2
         android:id="@+id/viewPagerDay"
@@ -180,13 +187,19 @@
 
 
 
+    <view class="android.view.View"
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:background="@color/gray"
+        android:layout_above="@id/bottomBar"/>
+
     <!-- 하단 바 레이아웃 -->
     <LinearLayout
         android:id="@+id/bottomBar"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="60dp"
         android:orientation="horizontal"
-        android:background="@color/lightGray"
+        android:background="@color/white"
         android:layout_alignParentBottom="true">
 
         <ImageButton
@@ -194,25 +207,29 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            app:srcCompat="@drawable/home" />
+            app:srcCompat="@drawable/home"
+            android:background="@color/lightGray"/>
         <ImageButton
             android:id="@+id/barMoney"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            app:srcCompat="@drawable/money"/>
+            app:srcCompat="@drawable/money"
+            android:background="@color/white"/>
         <ImageButton
             android:id="@+id/barMemo"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            app:srcCompat="@drawable/memo"/>
+            app:srcCompat="@drawable/memo"
+            android:background="@color/white"/>
         <ImageButton
             android:id="@+id/barMenu"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            app:srcCompat="@drawable/menu"/>
+            app:srcCompat="@drawable/menu"
+            android:background="@color/white"/>
 
 
     </LinearLayout>

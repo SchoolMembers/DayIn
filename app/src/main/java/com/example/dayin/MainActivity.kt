@@ -1,6 +1,7 @@
 package com.example.dayin
 
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import android.widget.GridLayout
@@ -47,10 +48,46 @@ class MainActivity : AppCompatActivity() {
 
         // ViewPager2 설정
         binding.viewPagerDay.adapter = adapter
-        binding.viewPagerDay.setCurrentItem(adapter.startingPosition, false)
+        binding.viewPagerDay.setCurrentItem(adapter.startingPosition, true)
 
         // 초기 날짜 설정
         binding.barDateYear.text = monthYearFromDate(today)
+
+        //SMD 바 버튼 설정
+        binding.smdS.setOnClickListener {
+            binding.smdS.setBackgroundResource(R.drawable.touch_smd_left)
+            binding.smdM.setBackgroundResource(R.drawable.smd_background)
+            binding.smdD.setBackgroundResource(R.drawable.smd_right)
+
+            binding.smdS.setTextColor(resources.getColor(R.color.lightGray))
+            binding.smdM.setTextColor(resources.getColor(R.color.darkGray))
+            binding.smdD.setTextColor(resources.getColor(R.color.darkGray))
+
+            Log.d("MainActivity", "clicked smdS")
+
+        }
+        binding.smdM.setOnClickListener {
+            binding.smdS.setBackgroundResource(R.drawable.smd_left)
+            binding.smdM.setBackgroundResource(R.drawable.touch_smd_background)
+            binding.smdD.setBackgroundResource(R.drawable.smd_right)
+
+            binding.smdS.setTextColor(resources.getColor(R.color.darkGray))
+            binding.smdM.setTextColor(resources.getColor(R.color.lightGray))
+            binding.smdD.setTextColor(resources.getColor(R.color.darkGray))
+
+            Log.d("MainActivity", "clicked smdM")
+        }
+        binding.smdD.setOnClickListener {
+            binding.smdS.setBackgroundResource(R.drawable.smd_left)
+            binding.smdM.setBackgroundResource(R.drawable.smd_background)
+            binding.smdD.setBackgroundResource(R.drawable.touch_smd_right)
+
+            binding.smdS.setTextColor(resources.getColor(R.color.darkGray))
+            binding.smdM.setTextColor(resources.getColor(R.color.darkGray))
+            binding.smdD.setTextColor(resources.getColor(R.color.lightGray))
+
+            Log.d("MainActivity", "clicked smdD")
+        }
 
         // ViewPager2 페이지 변경 리스너
         binding.viewPagerDay.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
@@ -59,6 +96,8 @@ class MainActivity : AppCompatActivity() {
                 val offset = position - adapter.startingPosition
                 val selectedDate = today.plusMonths(offset.toLong())
                 binding.barDateYear.text = monthYearFromDate(selectedDate)
+
+                Log.d("MainActivity", "Calendar selected: $selectedDate")
             }
         })
     }

@@ -176,13 +176,14 @@
         android:layout_width="match_parent"
         android:layout_height="2dp"
         android:background="@color/gray"
-        android:layout_above="@id/viewPagerDay"/>
+        android:layout_above="@id/fragmentSMD"/>
 
     <!-- 일 표시 -->
-    <androidx.viewpager2.widget.ViewPager2
-        android:id="@+id/viewPagerDay"
+    <androidx.fragment.app.FragmentContainerView
+        android:id="@+id/fragmentSMD"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_above="@+id/bottomBar"
         android:layout_below="@id/weekDay" />
 
 

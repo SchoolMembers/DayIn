@@ -1,13 +1,16 @@
-package com.example.dayin
+package com.example.dayin.adapter
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.example.dayin.MainActivity
+import com.example.dayin.R
 
+class CalendarAdapter(private val dayList: ArrayList<String>, private val type: Int): RecyclerView.Adapter<CalendarAdapter.ItemViewHolder>() {
 
-class CalendarAdapter(private val dayList: ArrayList<String>): RecyclerView.Adapter<CalendarAdapter.ItemViewHolder>() {
 
     class ItemViewHolder(itemView: View): RecyclerView.ViewHolder(itemView){
         val dayText: TextView = itemView.findViewById(R.id.dayText)
@@ -15,7 +18,15 @@ class CalendarAdapter(private val dayList: ArrayList<String>): RecyclerView.Adap
 
     //화면 설정
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ItemViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.calendar_item, parent, false)
+
+        var layout = when(type) {
+            0 -> R.layout.calendar_item_s
+            1 -> R.layout.calendar_item_m
+            2 -> R.layout.calendar_item_d
+            else -> Log.d("CalendarAdapter","layout error")
+        }
+
+        val view = LayoutInflater.from(parent.context).inflate(layout, parent, false)
 
         //최소 높이 설정
         val minHeight: Int = calculateMinHeightForItem(parent)

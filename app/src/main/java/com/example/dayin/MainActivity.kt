@@ -1,6 +1,7 @@
 package com.example.dayin
 
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import android.widget.GridLayout
@@ -13,6 +14,9 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
 import com.example.dayin.databinding.ActivityMainBinding
+import com.example.dayin.fragment.DiaryFragment
+import com.example.dayin.fragment.MoneyFragment
+import com.example.dayin.fragment.ScheduleFragment
 import java.time.LocalDate
 import java.time.YearMonth
 import java.time.format.DateTimeFormatter
@@ -46,6 +50,7 @@ class MainActivity : AppCompatActivity() {
         adapter = CalendarPagerAdapter(this, today)
 
         // ViewPager2 설정
+        /*
         binding.viewPagerDay.adapter = adapter
         binding.viewPagerDay.setCurrentItem(adapter.startingPosition, false)
 
@@ -61,6 +66,27 @@ class MainActivity : AppCompatActivity() {
                 binding.barDateYear.text = monthYearFromDate(selectedDate)
             }
         })
+
+         */
+
+        // fragment 추가
+        binding.smdS.setOnClickListener {
+            supportFragmentManager.beginTransaction()
+                .replace(R.id.container, ScheduleFragment.newInstance())
+                .commit()
+        }
+
+        binding.smdM.setOnClickListener {
+            supportFragmentManager.beginTransaction()
+                .replace(R.id.container, MoneyFragment.newInstance())
+                .commit()
+        }
+
+        binding.smdD.setOnClickListener {
+            supportFragmentManager.beginTransaction()
+                .replace(R.id.container, DiaryFragment.newInstance())
+                .commit()
+        }
     }
 
     // 날짜 포매팅 설정

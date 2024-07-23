@@ -99,86 +99,16 @@
         </LinearLayout>
     </LinearLayout>
 
-    <!-- 달력 부분 레이아웃 -->
-    <!-- 요일 표시 -->
+    <!-- fragment -->
+
     <LinearLayout
-        android:id="@+id/weekDay"
+        android:id="@+id/container"
+        android:layout_below="@id/mainTopBar"
+        android:layout_above="@id/bottomBar"
         android:layout_width="match_parent"
-        android:layout_height="40dp"
-        android:orientation="horizontal"
-        android:layout_below="@id/mainTopBar">
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="40dp"
-            android:layout_weight="1"
-            android:text="SUN"
-            android:textColor="@color/gray"
-            android:gravity="center"
-            android:textSize="16dp"
-            android:fontFamily="@font/alice"/>
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="40dp"
-            android:layout_weight="1"
-            android:text="MON"
-            android:textColor="@color/gray"
-            android:gravity="center"
-            android:textSize="16dp"
-            android:fontFamily="@font/alice"/>
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="40dp"
-            android:layout_weight="1"
-            android:text="TUE"
-            android:textColor="@color/gray"
-            android:gravity="center"
-            android:textSize="16dp"
-            android:fontFamily="@font/alice"/>
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="40dp"
-            android:layout_weight="1"
-            android:text="WED"
-            android:textColor="@color/gray"
-            android:gravity="center"
-            android:textSize="16dp"
-            android:fontFamily="@font/alice"/>
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="40dp"
-            android:layout_weight="1"
-            android:text="THU"
-            android:textColor="@color/gray"
-            android:gravity="center"
-            android:textSize="16dp"
-            android:fontFamily="@font/alice"/>
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="40dp"
-            android:layout_weight="1"
-            android:text="FRI"
-            android:textColor="@color/gray"
-            android:gravity="center"
-            android:textSize="16dp"
-            android:fontFamily="@font/alice"/>
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="40dp"
-            android:layout_weight="1"
-            android:text="SAT"
-            android:textColor="@color/gray"
-            android:gravity="center"
-            android:textSize="16dp"
-            android:fontFamily="@font/alice"/>
+        android:layout_height="match_parent"
+        android:orientation="horizontal">
     </LinearLayout>
-    <!-- 일 표시 -->
-    <androidx.viewpager2.widget.ViewPager2
-        android:id="@+id/viewPagerDay"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/weekDay" />
-
-
 
     <!-- 하단 바 레이아웃 -->
     <LinearLayout

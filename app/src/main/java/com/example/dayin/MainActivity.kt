@@ -97,7 +97,7 @@ class MainActivity : AppCompatActivity() {
                 val selectedDate = today.plusMonths(offset.toLong())
                 binding.barDateYear.text = monthYearFromDate(selectedDate)
 
-                Log.d("MainActivity", "Calendar selected: $selectedDate")
+                Log.d("MainActivity", "Calendar selected: $selectedDate, position: $position")
             }
         })
     }

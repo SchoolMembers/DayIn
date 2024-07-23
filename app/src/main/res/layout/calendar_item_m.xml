@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="8dp"
+    android:gravity="center|top">
+
+    <!-- 상단에 날짜 표시 -->
+    <TextView
+        android:id="@+id/dayText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="1"
+        android:textSize="15dp"
+        android:textColor="@android:color/black"
+        android:textStyle="bold"
+        android:gravity="center|top"/>
+
+    <!-- 하단에 소비/지출 표시할 RecyclerView -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/moneyRecyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical" />
+
+    <!-- 추가 버튼 -->
+    <ImageView
+        android:id="@+id/addMoneyButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="end|center"
+        android:gravity="center"
+        android:src="@drawable/ic_add"
+        android:padding="8dp"
+        android:visibility="gone" /> <!-- 기본적으로는 숨겨둠 -->
+
+</LinearLayout>

@@ -1,9 +1,9 @@
-package com.example.dayin
+package com.example.dayin.adapter
 
 import androidx.fragment.app.FragmentActivity
 import androidx.viewpager2.adapter.FragmentStateAdapter
+import com.example.dayin.fragments.CalendarFragment
 import java.time.LocalDate
-import java.time.YearMonth
 
 class CalendarPagerAdapter(activity: FragmentActivity, private val startDate: LocalDate) : FragmentStateAdapter(activity) {
 

@@ -1,14 +1,18 @@
-package com.example.dayin
+package com.example.dayin.fragments
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.dayin.R
+import com.example.dayin.adapter.CalendarAdapter
 import java.time.LocalDate
 import java.time.YearMonth
+import androidx.fragment.app.Fragment
+import com.example.dayin.MainActivity
 
 class CalendarFragment : Fragment() {
 
@@ -25,10 +29,27 @@ class CalendarFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val view = inflater.inflate(R.layout.fragment_calendar, container, false)
+        var layoutType = 0
+        var fragment = when((activity as? MainActivity)?.smdButton) {
+            0 -> {
+                layoutType = 0
+                R.layout.fragment_calendar
+            }
+            1 -> {
+                layoutType = 1
+                R.layout.fragment_calendar
+            }
+            2 -> {
+                layoutType = 2
+                R.layout.fragment_calendar
+            }
+            else -> Log.d("CalendarFragment","fragment error")
+        }
+
+        val view = inflater.inflate(fragment, container, false)
         val recyclerView = view.findViewById<RecyclerView>(R.id.recyclerView)
         recyclerView.layoutManager = GridLayoutManager(context, 7)
-        recyclerView.adapter = CalendarAdapter(dayInMonthArray(date))
+        recyclerView.adapter = CalendarAdapter(dayInMonthArray(date), layoutType)
         return view
     }
 
@@ -61,4 +82,3 @@ class CalendarFragment : Fragment() {
             }
     }
 }
-

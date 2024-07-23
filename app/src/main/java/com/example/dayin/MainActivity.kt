@@ -1,6 +1,7 @@
 package com.example.dayin
 
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import android.widget.GridLayout
@@ -13,6 +14,9 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
 import com.example.dayin.databinding.ActivityMainBinding
+import com.example.dayin.fragments.DiaryFragment
+import com.example.dayin.fragments.MoneyFragment
+import com.example.dayin.fragments.ScheduleFragment
 import java.time.LocalDate
 import java.time.YearMonth
 import java.time.format.DateTimeFormatter
@@ -22,9 +26,13 @@ import java.util.Calendar
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
+    private lateinit var today: LocalDate
 
-    lateinit var today: LocalDate
-    private lateinit var adapter: CalendarPagerAdapter
+    var smdButton = 0
+
+    fun fetchToday(): LocalDate {
+        return today
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -39,33 +47,72 @@ class MainActivity : AppCompatActivity() {
             insets
         }
 
-        // 현재 날짜
         today = LocalDate.now()
 
-        // 어댑터 초기화
-        adapter = CalendarPagerAdapter(this, today)
+        Log.d("MainActivity", "today: $today")
 
-        // ViewPager2 설정
-        binding.viewPagerDay.adapter = adapter
-        binding.viewPagerDay.setCurrentItem(adapter.startingPosition, false)
+        if (savedInstanceState == null) {
+            val defaultFragment = ScheduleFragment.newInstance()
+            supportFragmentManager.beginTransaction()
+                .replace(R.id.fragmentSMD, defaultFragment)
+                .commitNow()
+        }
 
-        // 초기 날짜 설정
-        binding.barDateYear.text = monthYearFromDate(today)
+        Log.d("MainActivity", "defaultFragment setting")
 
-        // ViewPager2 페이지 변경 리스너
-        binding.viewPagerDay.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
-            override fun onPageSelected(position: Int) {
-                super.onPageSelected(position)
-                val offset = position - adapter.startingPosition
-                val selectedDate = today.plusMonths(offset.toLong())
-                binding.barDateYear.text = monthYearFromDate(selectedDate)
-            }
-        })
+        binding.smdS.setOnClickListener {
+            smdButton = 0
+            updateButtonStyles()
+            supportFragmentManager.beginTransaction()
+                .replace(R.id.fragmentSMD, ScheduleFragment.newInstance())
+                .commit()
+        }
+
+        binding.smdM.setOnClickListener {
+            smdButton = 1
+            updateButtonStyles()
+            supportFragmentManager.beginTransaction()
+                .replace(R.id.fragmentSMD, MoneyFragment.newInstance())
+                .commit()
+        }
+
+        binding.smdD.setOnClickListener {
+            smdButton = 2
+            updateButtonStyles()
+            supportFragmentManager.beginTransaction()
+                .replace(R.id.fragmentSMD, DiaryFragment.newInstance())
+                .commit()
+        }
     }
 
-    // 날짜 포매팅 설정
-    private fun monthYearFromDate(date: LocalDate): String {
-        val formatter = DateTimeFormatter.ofPattern("yyyy년 MM월")
-        return date.format(formatter)
+    private fun updateButtonStyles() {
+        when (smdButton) {
+            0 -> {
+                binding.smdS.setBackgroundResource(R.drawable.touch_smd_left)
+                binding.smdM.setBackgroundResource(R.drawable.smd_background)
+                binding.smdD.setBackgroundResource(R.drawable.smd_right)
+                binding.smdS.setTextColor(resources.getColor(R.color.lightGray))
+                binding.smdM.setTextColor(resources.getColor(R.color.darkGray))
+                binding.smdD.setTextColor(resources.getColor(R.color.darkGray))
+            }
+            1 -> {
+                binding.smdS.setBackgroundResource(R.drawable.smd_left)
+                binding.smdM.setBackgroundResource(R.drawable.touch_smd_background)
+                binding.smdD.setBackgroundResource(R.drawable.smd_right)
+                binding.smdS.setTextColor(resources.getColor(R.color.darkGray))
+                binding.smdM.setTextColor(resources.getColor(R.color.lightGray))
+                binding.smdD.setTextColor(resources.getColor(R.color.darkGray))
+            }
+            2 -> {
+                binding.smdS.setBackgroundResource(R.drawable.smd_left)
+                binding.smdM.setBackgroundResource(R.drawable.smd_background)
+                binding.smdD.setBackgroundResource(R.drawable.touch_smd_right)
+                binding.smdS.setTextColor(resources.getColor(R.color.darkGray))
+                binding.smdM.setTextColor(resources.getColor(R.color.darkGray))
+                binding.smdD.setTextColor(resources.getColor(R.color.lightGray))
+            }
+        }
     }
 }
+
+

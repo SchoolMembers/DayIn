@@ -30,23 +30,20 @@ class CalendarFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         var layoutType = 0
-        var fragment = when((activity as? MainActivity)?.smdButton) {
+        when((activity as? MainActivity)?.smdButton) {
             0 -> {
                 layoutType = 0
-                R.layout.fragment_calendar
             }
             1 -> {
                 layoutType = 1
-                R.layout.fragment_calendar
             }
             2 -> {
                 layoutType = 2
-                R.layout.fragment_calendar
             }
             else -> Log.d("CalendarFragment","fragment error")
         }
 
-        val view = inflater.inflate(fragment, container, false)
+        val view = inflater.inflate(R.layout.fragment_calendar, container, false)
         val recyclerView = view.findViewById<RecyclerView>(R.id.recyclerView)
         recyclerView.layoutManager = GridLayoutManager(context, 7)
         recyclerView.adapter = CalendarAdapter(dayInMonthArray(date), layoutType)

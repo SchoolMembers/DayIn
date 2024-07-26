@@ -12,7 +12,6 @@ import com.example.dayin.MainActivity
 import com.example.dayin.R
 import com.example.dayin.adapter.CalendarPagerAdapter
 import com.example.dayin.databinding.FragmentMBinding
-import com.example.dayin.databinding.FragmentSBinding
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 

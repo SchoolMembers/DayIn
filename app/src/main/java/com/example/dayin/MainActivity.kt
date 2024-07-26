@@ -2,26 +2,15 @@ package com.example.dayin
 
 import android.os.Bundle
 import android.util.Log
-import android.view.View
-import android.view.ViewGroup
-import android.widget.GridLayout
-import android.widget.TextView
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
-import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.RecyclerView
-import androidx.viewpager2.widget.ViewPager2
 import com.example.dayin.databinding.ActivityMainBinding
 import com.example.dayin.fragments.DiaryFragment
 import com.example.dayin.fragments.MoneyFragment
 import com.example.dayin.fragments.ScheduleFragment
 import java.time.LocalDate
-import java.time.YearMonth
-import java.time.format.DateTimeFormatter
-import java.util.Locale
-import java.util.Calendar
 
 class MainActivity : AppCompatActivity() {
 

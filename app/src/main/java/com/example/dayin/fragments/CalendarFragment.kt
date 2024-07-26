@@ -54,24 +54,49 @@ class CalendarFragment : Fragment() {
     }
 
     //날짜 배열 생성 함수
-    private fun dayInMonthArray(date: LocalDate): ArrayList<String> {
-        val dayList = ArrayList<String>()
-        val yearMonth = YearMonth.from(date) //연도, 월
-        val lastDay = yearMonth.lengthOfMonth() //달의 마지막 날짜
-        val firstDay = date.withDayOfMonth(1) //달의 첫 날짜
-        val dayOfWeek = firstDay.dayOfWeek.value % 7 //첫 날의 요일 (일요일이 0)
+    private fun dayInMonthArray(date: LocalDate): ArrayList<Pair<String, Boolean>> {
+        val dayList = ArrayList<Pair<String, Boolean>>()
+        val yearMonth = YearMonth.from(date) // 연도, 월
+        val lastDay = yearMonth.lengthOfMonth() // 달의 마지막 날짜
+        val firstDay = date.withDayOfMonth(1) // 달의 첫 날짜
+        val dayOfWeek = firstDay.dayOfWeek.value % 7 // 첫 날의 요일 (일요일이 0)
 
-        //날짜 배열 생성
-        for (i in 0 until  42) {
-            if (i < dayOfWeek || i >= (lastDay + dayOfWeek)) {
-                dayList.add("")
-            } else {
-                dayList.add((i - dayOfWeek + 1).toString())
+        val prevMonth = yearMonth.minusMonths(1) //이전달
+        val nextMonth = yearMonth.plusMonths(1) //다음달
+        val prevLastDay = prevMonth.lengthOfMonth() //이전 달의 마지막 날
+
+        var lastNum: Int
+
+        if ((dayOfWeek == 5 && lastDay >= 31) || (dayOfWeek == 6 && lastDay >= 30)) {
+            lastNum = 42
+        } else {
+            lastNum = 35
+        }
+
+        for (i in 0 until lastNum) {
+            when {
+                i < dayOfWeek -> {
+                    // 이전 달의 날짜
+                    val day = prevLastDay - (dayOfWeek - i - 1)
+                    dayList.add(Pair(day.toString(), true))
+                }
+                i >= (lastDay + dayOfWeek) -> {
+                    // 다음 달의 날짜 (범위를 제한)
+                    val day = i - (lastDay + dayOfWeek) + 1
+                    if (day <= nextMonth.lengthOfMonth()) {
+                        dayList.add(Pair(day.toString(), true))
+                    }
+                }
+                else -> {
+                    // 현재 달의 날짜
+                    dayList.add(Pair((i - dayOfWeek + 1).toString(), false))
+                }
             }
         }
-        return dayList
         Log.d("CalendarFragment", "dayList create complete")
+        return dayList
     }
+
 
     //정적 멤버
     companion object {

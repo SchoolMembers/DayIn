@@ -1,16 +1,16 @@
 package com.example.dayin.adapter
 
+import android.graphics.Color
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import com.example.dayin.MainActivity
 import com.example.dayin.R
 
 //CalendarFragment에서 사용
-class CalendarAdapter(private val dayList: ArrayList<String>, private val type: Int): RecyclerView.Adapter<CalendarAdapter.ItemViewHolder>() {
+class CalendarAdapter(private val dayList: ArrayList<Pair<String, Boolean>>, private val type: Int): RecyclerView.Adapter<CalendarAdapter.ItemViewHolder>() {
 
     class ItemViewHolder(itemView: View): RecyclerView.ViewHolder(itemView){
         val dayText: TextView = itemView.findViewById(R.id.dayText) //dayText id (calendar_item_s.xml, calendar_item_m.xml, calendar_item_d.xml choice one)
@@ -20,7 +20,7 @@ class CalendarAdapter(private val dayList: ArrayList<String>, private val type: 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ItemViewHolder {
 
         //CalendarFragment에서 전달 받은 layoutType 식별자 값에 따른 레이아웃 설정
-        var layout = when(type) {
+        val layout = when(type) {
             0 -> R.layout.calendar_item_s
             1 -> R.layout.calendar_item_m
             2 -> R.layout.calendar_item_d
@@ -42,14 +42,27 @@ class CalendarAdapter(private val dayList: ArrayList<String>, private val type: 
         val displayMetrics = parent.context.resources.displayMetrics
         val screenHeight = displayMetrics.heightPixels
 
+        var count = 7
+
+        if (itemCount / 7 == 6) {
+            count = 8
+        }
+
         Log.d("CalendarAdapter", "calculateMinHeightForItem complete")
         // 최소 높이 계산
-        return screenHeight / 8
+        return screenHeight / count
     }
 
     //데이터 설정 (리사이클러 뷰 아이템 날짜 text 설정)
     override fun onBindViewHolder(holder: ItemViewHolder, position: Int){
-        holder.dayText.text = dayList[holder.adapterPosition]
+        val (dayText, isOtherMonth) = dayList[holder.bindingAdapterPosition]
+        holder.dayText.text = dayText
+
+        if (isOtherMonth) {
+            holder.dayText.setTextColor(Color.parseColor("#80000000")) // 반투명
+        } else {
+            holder.dayText.setTextColor(Color.parseColor("#FF000000")) // 불투명
+        }
     }
 
     //데이터 리스트 사이즈 get 함수

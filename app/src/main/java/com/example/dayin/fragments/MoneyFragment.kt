@@ -16,6 +16,7 @@ import com.example.dayin.databinding.FragmentSBinding
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
+//MainActivity에서 사용
 class MoneyFragment: Fragment() {
 
     private var _binding: FragmentMBinding? = null
@@ -28,7 +29,7 @@ class MoneyFragment: Fragment() {
         super.onCreate(savedInstanceState)
         today = (activity as? MainActivity)?.fetchToday() ?: LocalDate.now()
         adapter = CalendarPagerAdapter(requireActivity(), today)
-        Log.d("MoneyFragment", "today: $today")
+        Log.d("MoneyFragment", "today: $today, adapter: $adapter")
     }
 
     override fun onCreateView(
@@ -36,6 +37,7 @@ class MoneyFragment: Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         _binding = FragmentMBinding.inflate(inflater, container, false)
+        Log.d("MoneyFragment", "onCreateView called")
         return binding.root
     }
 
@@ -52,7 +54,7 @@ class MoneyFragment: Fragment() {
                 val offset = position - adapter.startingPosition
                 val selectedDate = today.plusMonths(offset.toLong())
                 (activity as? MainActivity)?.findViewById<TextView>(R.id.barDateYear)?.text = monthYearFromDate(selectedDate)
-                Log.d("MoneyFragment", "Calendar selected: $selectedDate, position: $position")
+                Log.d("MoneyFragment", "activity_main.xml id: barDateYear text changed to $selectedDate")
             }
         })
     }
@@ -64,6 +66,7 @@ class MoneyFragment: Fragment() {
 
     private fun monthYearFromDate(date: LocalDate): String {
         val formatter = DateTimeFormatter.ofPattern("yyyy년 MM월")
+        Log.d("MoneyFragment", "monthYearFromDate called")
         return date.format(formatter)
     }
 

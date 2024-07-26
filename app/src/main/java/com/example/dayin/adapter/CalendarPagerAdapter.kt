@@ -1,6 +1,5 @@
 package com.example.dayin.adapter
 
-import android.util.Log
 import androidx.fragment.app.FragmentActivity
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.example.dayin.fragments.CalendarFragment
@@ -14,7 +13,6 @@ class CalendarPagerAdapter(activity: FragmentActivity, private val startDate: Lo
 
     //페이지 수 get 함수
     override fun getItemCount(): Int {
-        Log.d("CalendarPagerAdapter", "getItemCount called")
         return Int.MAX_VALUE
     }
 

@@ -1,12 +1,17 @@
 package com.example.dayin
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.recyclerview.widget.DividerItemDecoration
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.example.dayin.databinding.ActivityMainBinding
+import com.example.dayin.fragments.CalenderSampleFragment
 import com.example.dayin.fragments.DiaryFragment
 import com.example.dayin.fragments.MoneyFragment
 import com.example.dayin.fragments.ScheduleFragment
@@ -47,7 +52,7 @@ class MainActivity : AppCompatActivity() {
 
         Log.d("MainActivity", "today: $today")
 
-
+        /*
         //ScheduleFragment setting
         if (savedInstanceState == null) {
             val defaultFragment = ScheduleFragment.newInstance()
@@ -58,6 +63,7 @@ class MainActivity : AppCompatActivity() {
         Log.d("MainActivity", "defaultFragment setting (activity_main.xml -> fragmentSMD)")
 
         //smd button click event
+
         binding.smdS.setOnClickListener {
             smdButton = 0
             updateButtonStyles()
@@ -83,6 +89,17 @@ class MainActivity : AppCompatActivity() {
                 .replace(R.id.fragmentSMD, DiaryFragment.newInstance())
                 .commit()
             Log.d("MainActivity", "click smd button D (smdButton = 2) set fragment to ScheduleFragment")
+        }
+        */
+
+        binding.barMoney.setOnClickListener {
+
+            println("test")
+
+            supportFragmentManager.beginTransaction()
+                .replace(R.id.calender_container, CalenderSampleFragment())
+                .addToBackStack(null)
+                .commit()
         }
     }
 

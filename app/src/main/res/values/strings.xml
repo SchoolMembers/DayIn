@@ -3,4 +3,6 @@
     <string name="smdSText">일정</string>
     <string name="smdMText">가계부</string>
     <string name="smdDText">다이어리</string>
+
+    <!-- sample lib strings -->
 </resources>

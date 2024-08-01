@@ -51,4 +51,7 @@ dependencies {
     implementation("androidx.viewpager2:viewpager2:1.1.0")
     implementation("com.kizitonwose.calendar:view:2.5.2")
     implementation("com.kizitonwose.calendar:compose:2.5.2")
+    implementation("androidx.room:room-runtime:2.6.1")
+    implementation("androidx.room:room-ktx:2.6.1")
+    implementation("androidx.room:room-compiler:2.6.1")
 }

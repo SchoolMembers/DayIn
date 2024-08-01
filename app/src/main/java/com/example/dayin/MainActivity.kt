@@ -1,5 +1,6 @@
 package com.example.dayin
 
+import android.net.wifi.rtt.CivicLocationKeys.ROOM
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.enableEdgeToEdge
@@ -19,13 +20,13 @@ class MainActivity : AppCompatActivity() {
 
 
     //smd 버튼 식별자 CalendarFragment 전달
-    var smdButton = 0
+    private var smdButton = 0
 
 
     //오늘 날짜 전달 함수
-    fun fetchToday(): LocalDate {
+    /*fun fetchToday(): LocalDate {
         return today
-    }
+    }*/
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -45,7 +46,7 @@ class MainActivity : AppCompatActivity() {
 
         today = LocalDate.now()
 
-        Log.d("MainActivity", "today: $today")
+        Log.d("customTag", "MainActivity onCreate called; today: $today")
 
 
         //ScheduleFragment setting
@@ -55,7 +56,7 @@ class MainActivity : AppCompatActivity() {
                 .replace(R.id.fragmentSMD, defaultFragment)
                 .commitNow()
         }
-        Log.d("MainActivity", "defaultFragment setting (activity_main.xml -> fragmentSMD)")
+        Log.d("customTag", "MainActivity onCreate called; defaultFragment setting (activity_main.xml -> fragmentSMD)")
 
         //smd button click event
         binding.smdS.setOnClickListener {
@@ -64,7 +65,7 @@ class MainActivity : AppCompatActivity() {
             supportFragmentManager.beginTransaction()
                 .replace(R.id.fragmentSMD, ScheduleFragment.newInstance())
                 .commit()
-            Log.d("MainActivity", "click smd button S (smdButton = 0) set fragment to ScheduleFragment")
+            Log.d("customTag", "MainActivity onCreate called; click smd button S (smdButton = 0) set fragment to ScheduleFragment")
         }
 
         binding.smdM.setOnClickListener {
@@ -73,7 +74,7 @@ class MainActivity : AppCompatActivity() {
             supportFragmentManager.beginTransaction()
                 .replace(R.id.fragmentSMD, MoneyFragment.newInstance())
                 .commit()
-            Log.d("MainActivity", "click smd button M (smdButton = 1) set fragment to ScheduleFragment")
+            Log.d("customTag", "MainActivity onCreate called; click smd button M (smdButton = 1) set fragment to ScheduleFragment")
         }
 
         binding.smdD.setOnClickListener {
@@ -82,7 +83,7 @@ class MainActivity : AppCompatActivity() {
             supportFragmentManager.beginTransaction()
                 .replace(R.id.fragmentSMD, DiaryFragment.newInstance())
                 .commit()
-            Log.d("MainActivity", "click smd button D (smdButton = 2) set fragment to ScheduleFragment")
+            Log.d("customTag", "MainActivity onCreate called; click smd button D (smdButton = 2) set fragment to ScheduleFragment")
         }
     }
 

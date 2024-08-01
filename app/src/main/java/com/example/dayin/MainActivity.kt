@@ -1,6 +1,5 @@
 package com.example.dayin
 
-import android.net.wifi.rtt.CivicLocationKeys.ROOM
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.enableEdgeToEdge

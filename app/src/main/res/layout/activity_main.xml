@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main"
@@ -13,13 +13,14 @@
         android:id="@+id/mainTopBar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:layout_alignParentTop="true">
 
         <!-- 로고 영역 -->
         <ImageView
             android:id="@+id/logoB"
             android:layout_width="0dp"
-            android:layout_height="60dp"
+            android:layout_height="70dp"
             android:layout_weight="0.8"
             android:background="@android:color/transparent"
             android:src="@drawable/d_n" />
@@ -37,51 +38,11 @@
                 android:id="@+id/barDateYear"
                 android:layout_width="0dp"
                 android:layout_weight="1.7"
-                android:layout_height="30dp"
+                android:layout_height="40dp"
                 android:layout_marginTop="15dp"
                 android:layout_marginBottom="15dp"
                 android:gravity="center_vertical"
-                android:text="2024"
-                android:textColor="@android:color/black"
-                android:textSize="20dp"
-                android:fontFamily="@font/simple"/>
-
-            <TextView
-                android:id="@+id/barDateYKo"
-                android:layout_width="0dp"
-                android:layout_weight="1"
-                android:layout_height="30dp"
-                android:layout_marginTop="15dp"
-                android:layout_marginBottom="15dp"
-                android:gravity="center_vertical"
-                android:text="년"
-                android:textColor="@android:color/black"
-                android:textSize="20dp"
-                android:fontFamily="@font/simple"/>
-
-            <TextView
-                android:id="@+id/barDateMon"
-                android:layout_width="0dp"
-                android:layout_weight="0.9"
-                android:layout_height="30dp"
-                android:layout_marginTop="15dp"
-                android:layout_marginBottom="15dp"
-                android:gravity="center_vertical"
-                android:text="07"
-                android:textColor="@android:color/black"
-                android:textSize="20dp"
-                android:fontFamily="@font/simple"/>
-
-            <TextView
-                android:id="@+id/barDateMKo"
-                android:layout_width="0dp"
-                android:layout_weight="1"
-                android:layout_height="30dp"
-                android:layout_marginTop="15dp"
-                android:layout_marginBottom="15dp"
-                android:layout_marginRight="10dp"
-                android:gravity="center_vertical"
-                android:text="월"
+                android:text="0000년 00월"
                 android:textColor="@android:color/black"
                 android:textSize="20dp"
                 android:fontFamily="@font/simple"/>
@@ -99,103 +60,179 @@
             android:layout_marginLeft="1dp"
             android:layout_marginRight="3dp">
 
-            <ToggleButton
+            <android.widget.Button
                 android:id="@+id/smdS"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:textOn="@string/smdSText"
-                android:textOff="@string/smdSText"
-                android:textColor="@color/darkGray"
-                android:textSize="16dp"
+                android:background="@drawable/touch_smd_left"
+                android:fontFamily="@font/alice"
+                android:text="@string/smdSText"
                 android:textAlignment="center"
-                android:background="@drawable/smd_left"
-                android:fontFamily="@font/simple"/>
+                android:textColor="@color/lightGray"
+                android:textSize="12dp" />
 
-            <ToggleButton
+            <android.widget.Button
                 android:id="@+id/smdM"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:textOn="@string/smdMText"
-                android:textOff="@string/smdMText"
-                android:textColor="@color/darkGray"
-                android:textSize="16dp"
-                android:textAlignment="center"
                 android:background="@drawable/smd_background"
-                android:fontFamily="@font/simple"/>
+                android:fontFamily="@font/alice"
+                android:text="@string/smdMText"
+                android:textAlignment="center"
+                android:textColor="@color/darkGray"
+                android:textSize="12dp" />
 
-            <ToggleButton
+            <android.widget.Button
                 android:id="@+id/smdD"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:textOn="@string/smdDText"
-                android:textOff="@string/smdDText"
-                android:textColor="@color/darkGray"
-                android:textSize="16dp"
-                android:textAlignment="center"
                 android:background="@drawable/smd_right"
-                android:fontFamily="@font/simple"/>
+                android:fontFamily="@font/alice"
+                android:text="@string/smdDText"
+                android:textAlignment="center"
+                android:textColor="@color/darkGray"
+                android:textSize="12dp" />
+
         </LinearLayout>
     </LinearLayout>
 
     <!-- 달력 부분 레이아웃 -->
-    <TableLayout
+    <!-- 요일 표시 -->
+    <LinearLayout
+        android:id="@+id/weekDay"
         android:layout_width="match_parent"
-        android:layout_height="605dp">
+        android:layout_height="40dp"
+        android:orientation="horizontal"
+        android:layout_below="@id/mainTopBar">
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="40dp"
+            android:layout_weight="1"
+            android:text="SUN"
+            android:textColor="@color/gray"
+            android:gravity="center"
+            android:textSize="16dp"
+            android:fontFamily="@font/alice"/>
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="40dp"
+            android:layout_weight="1"
+            android:text="MON"
+            android:textColor="@color/gray"
+            android:gravity="center"
+            android:textSize="16dp"
+            android:fontFamily="@font/alice"/>
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="40dp"
+            android:layout_weight="1"
+            android:text="TUE"
+            android:textColor="@color/gray"
+            android:gravity="center"
+            android:textSize="16dp"
+            android:fontFamily="@font/alice"/>
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="40dp"
+            android:layout_weight="1"
+            android:text="WED"
+            android:textColor="@color/gray"
+            android:gravity="center"
+            android:textSize="16dp"
+            android:fontFamily="@font/alice"/>
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="40dp"
+            android:layout_weight="1"
+            android:text="THU"
+            android:textColor="@color/gray"
+            android:gravity="center"
+            android:textSize="16dp"
+            android:fontFamily="@font/alice"/>
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="40dp"
+            android:layout_weight="1"
+            android:text="FRI"
+            android:textColor="@color/gray"
+            android:gravity="center"
+            android:textSize="16dp"
+            android:fontFamily="@font/alice"/>
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="40dp"
+            android:layout_weight="1"
+            android:text="SAT"
+            android:textColor="@color/gray"
+            android:gravity="center"
+            android:textSize="16dp"
+            android:fontFamily="@font/alice"/>
+    </LinearLayout>
 
-        <TableRow
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+    <view class="android.view.View"
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:background="@color/gray"
+        android:layout_above="@id/fragmentSMD"/>
 
-        <TableRow
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+    <!-- 일 표시 -->
+    <androidx.fragment.app.FragmentContainerView
+        android:id="@+id/fragmentSMD"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/bottomBar"
+        android:layout_below="@id/weekDay" />
 
-        <TableRow
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
 
-        <TableRow
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
-    </TableLayout>
+
+    <view class="android.view.View"
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:background="@color/gray"
+        android:layout_above="@id/bottomBar"/>
 
     <!-- 하단 바 레이아웃 -->
     <LinearLayout
         android:id="@+id/bottomBar"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="60dp"
         android:orientation="horizontal"
-        android:background="@color/lightGray">
+        android:background="@color/white"
+        android:layout_alignParentBottom="true">
 
         <ImageButton
             android:id="@+id/barHome"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            app:srcCompat="@drawable/home" />
+            app:srcCompat="@drawable/home"
+            android:background="@color/lightGray"/>
         <ImageButton
             android:id="@+id/barMoney"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            app:srcCompat="@drawable/money"/>
+            app:srcCompat="@drawable/money"
+            android:background="@color/white"/>
         <ImageButton
             android:id="@+id/barMemo"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            app:srcCompat="@drawable/memo"/>
+            app:srcCompat="@drawable/memo"
+            android:background="@color/white"/>
         <ImageButton
             android:id="@+id/barMenu"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            app:srcCompat="@drawable/menu"/>
+            app:srcCompat="@drawable/menu"
+            android:background="@color/white"/>
 
 
     </LinearLayout>
 
-</LinearLayout>
+</RelativeLayout>

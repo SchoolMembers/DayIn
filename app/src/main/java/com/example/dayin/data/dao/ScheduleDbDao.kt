@@ -21,7 +21,7 @@ interface ScheduleDbDao {
     suspend fun delete(scheduleDb: ScheduleDb)
 
     @Query("SELECT * from scheduleDb WHERE id = :id")
-    fun getItem(id: Int): Flow<ScheduleDb>
+    fun getItem(id: Long): Flow<ScheduleDb>
 
     @Query("SELECT * from scheduleDb ORDER BY date ASC")
     fun getAllItems(): Flow<List<ScheduleDb>>

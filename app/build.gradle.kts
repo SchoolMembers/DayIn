@@ -1,8 +1,7 @@
-
-
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)
+//    kotlin("ksp")
 }
 
 android {
@@ -39,18 +38,17 @@ android {
 }
 
 dependencies {
-    implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
     implementation(libs.androidx.activity)
     implementation(libs.androidx.constraintlayout)
+    implementation(libs.androidx.room.common)
     implementation(libs.androidx.room.ktx)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
     implementation("androidx.recyclerview:recyclerview:1.2.1")
     implementation("androidx.databinding:viewbinding:7.0.2")
-    implementation("androidx.viewpager2:viewpager2:1.1.0")
     implementation("com.kizitonwose.calendar:view:2.5.2")
     implementation("com.kizitonwose.calendar:compose:2.5.2")
 }

@@ -1,12 +1,12 @@
 package com.example.dayin
 
+import android.net.wifi.rtt.CivicLocationKeys.ROOM
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
-import androidx.room.Room
 import com.example.dayin.databinding.ActivityMainBinding
 import com.example.dayin.fragments.DiaryFragment
 import com.example.dayin.fragments.MoneyFragment

@@ -27,7 +27,7 @@
 
         <!-- 날짜 영역 -->
         <LinearLayout
-            android:id="@+id/barDate"
+            android:id="@+id/blankBar"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1.5"
@@ -50,7 +50,7 @@
 
         <!-- SMD 영역 -->
         <LinearLayout
-            android:id="@+id/smdBar"
+            android:id="@+id/blankSMD"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_marginLeft="1dp"

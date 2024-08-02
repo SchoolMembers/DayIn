@@ -1,6 +1,6 @@
 package com.example.dayin
 
-import android.net.wifi.rtt.CivicLocationKeys.ROOM
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.enableEdgeToEdge
@@ -84,6 +84,11 @@ class MainActivity : AppCompatActivity() {
                 .replace(R.id.fragmentSMD, DiaryFragment.newInstance())
                 .commit()
             Log.d("customTag", "MainActivity onCreate called; click smd button D (smdButton = 2) set fragment to ScheduleFragment")
+        }
+
+        val intent = Intent(this, MemoActivity::class.java)
+        binding.barMemo.setOnClickListener{
+            startActivity(intent)
         }
     }
 

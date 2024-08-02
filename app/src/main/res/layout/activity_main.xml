@@ -5,16 +5,16 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    tools:context=".MainActivity">
 
     <!-- 홈 화면 Top bar 레이아웃 -->
     <LinearLayout
         android:id="@+id/mainTopBar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_alignParentTop="true">
+        android:layout_alignParentTop="true"
+        android:orientation="horizontal">
 
         <!-- 로고 영역 -->
         <ImageView
@@ -37,15 +37,15 @@
             <TextView
                 android:id="@+id/barDateYear"
                 android:layout_width="0dp"
-                android:layout_weight="1.7"
                 android:layout_height="40dp"
                 android:layout_marginTop="15dp"
                 android:layout_marginBottom="15dp"
+                android:layout_weight="1.7"
+                android:fontFamily="@font/simple"
                 android:gravity="center_vertical"
                 android:text="@string/yearMonth"
                 android:textColor="@android:color/black"
-                android:textSize="20dp"
-                android:fontFamily="@font/simple"/>
+                android:textSize="20dp" />
         </LinearLayout>
 
         <!-- SMD 영역 -->
@@ -53,12 +53,12 @@
             android:id="@+id/smdBar"
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:orientation="horizontal"
-            android:layout_weight="2"
-            android:layout_marginTop="8dp"
-            android:layout_marginBottom="8dp"
             android:layout_marginLeft="1dp"
-            android:layout_marginRight="3dp">
+            android:layout_marginTop="8dp"
+            android:layout_marginRight="3dp"
+            android:layout_marginBottom="8dp"
+            android:layout_weight="2"
+            android:orientation="horizontal">
 
             <android.widget.Button
                 android:id="@+id/smdS"
@@ -105,78 +105,85 @@
         android:id="@+id/weekDay"
         android:layout_width="match_parent"
         android:layout_height="40dp"
-        android:orientation="horizontal"
-        android:layout_below="@id/mainTopBar">
+        android:layout_below="@id/mainTopBar"
+        android:orientation="horizontal">
+
         <TextView
             android:layout_width="0dp"
             android:layout_height="40dp"
             android:layout_weight="1"
+            android:fontFamily="@font/alice"
+            android:gravity="center"
             android:text="SUN"
             android:textColor="@color/gray"
-            android:gravity="center"
-            android:textSize="16dp"
-            android:fontFamily="@font/alice"/>
+            android:textSize="16dp" />
+
         <TextView
             android:layout_width="0dp"
             android:layout_height="40dp"
             android:layout_weight="1"
+            android:fontFamily="@font/alice"
+            android:gravity="center"
             android:text="MON"
             android:textColor="@color/gray"
-            android:gravity="center"
-            android:textSize="16dp"
-            android:fontFamily="@font/alice"/>
+            android:textSize="16dp" />
+
         <TextView
             android:layout_width="0dp"
             android:layout_height="40dp"
             android:layout_weight="1"
+            android:fontFamily="@font/alice"
+            android:gravity="center"
             android:text="TUE"
             android:textColor="@color/gray"
-            android:gravity="center"
-            android:textSize="16dp"
-            android:fontFamily="@font/alice"/>
+            android:textSize="16dp" />
+
         <TextView
             android:layout_width="0dp"
             android:layout_height="40dp"
             android:layout_weight="1"
+            android:fontFamily="@font/alice"
+            android:gravity="center"
             android:text="WED"
             android:textColor="@color/gray"
-            android:gravity="center"
-            android:textSize="16dp"
-            android:fontFamily="@font/alice"/>
+            android:textSize="16dp" />
+
         <TextView
             android:layout_width="0dp"
             android:layout_height="40dp"
             android:layout_weight="1"
+            android:fontFamily="@font/alice"
+            android:gravity="center"
             android:text="THU"
             android:textColor="@color/gray"
-            android:gravity="center"
-            android:textSize="16dp"
-            android:fontFamily="@font/alice"/>
+            android:textSize="16dp" />
+
         <TextView
             android:layout_width="0dp"
             android:layout_height="40dp"
             android:layout_weight="1"
+            android:fontFamily="@font/alice"
+            android:gravity="center"
             android:text="FRI"
             android:textColor="@color/gray"
-            android:gravity="center"
-            android:textSize="16dp"
-            android:fontFamily="@font/alice"/>
+            android:textSize="16dp" />
+
         <TextView
             android:layout_width="0dp"
             android:layout_height="40dp"
             android:layout_weight="1"
+            android:fontFamily="@font/alice"
+            android:gravity="center"
             android:text="SAT"
             android:textColor="@color/gray"
-            android:gravity="center"
-            android:textSize="16dp"
-            android:fontFamily="@font/alice"/>
+            android:textSize="16dp" />
     </LinearLayout>
 
-    <view class="android.view.View"
+    <View
         android:layout_width="match_parent"
         android:layout_height="2dp"
-        android:background="@color/gray"
-        android:layout_above="@id/fragmentSMD"/>
+        android:layout_above="@id/fragmentSMD"
+        android:background="@color/gray" />
 
     <!-- 일 표시 -->
     <androidx.fragment.app.FragmentContainerView
@@ -187,50 +194,52 @@
         android:layout_below="@id/weekDay" />
 
 
-
-    <view class="android.view.View"
+    <View
         android:layout_width="match_parent"
         android:layout_height="2dp"
-        android:background="@color/gray"
-        android:layout_above="@id/bottomBar"/>
+        android:layout_above="@id/bottomBar"
+        android:background="@color/gray" />
 
     <!-- 하단 바 레이아웃 -->
     <LinearLayout
         android:id="@+id/bottomBar"
         android:layout_width="match_parent"
         android:layout_height="60dp"
-        android:orientation="horizontal"
+        android:layout_alignParentBottom="true"
         android:background="@color/white"
-        android:layout_alignParentBottom="true">
+        android:orientation="horizontal">
 
         <ImageButton
             android:id="@+id/barHome"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            app:srcCompat="@drawable/home"
-            android:background="@color/lightGray"/>
+            android:background="@color/lightGray"
+            app:srcCompat="@drawable/home" />
+
         <ImageButton
             android:id="@+id/barMoney"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            app:srcCompat="@drawable/money"
-            android:background="@color/white"/>
+            android:background="@color/white"
+            app:srcCompat="@drawable/money" />
+
         <ImageButton
             android:id="@+id/barMemo"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            app:srcCompat="@drawable/memo"
-            android:background="@color/white"/>
+            android:background="@color/white"
+            app:srcCompat="@drawable/memo" />
+
         <ImageButton
             android:id="@+id/barMenu"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            app:srcCompat="@drawable/menu"
-            android:background="@color/white"/>
+            android:background="@color/white"
+            app:srcCompat="@drawable/menu" />
 
 
     </LinearLayout>

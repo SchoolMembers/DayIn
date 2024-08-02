@@ -180,9 +180,10 @@
     </LinearLayout>
 
     <View
+        android:id="@id/line"
         android:layout_width="match_parent"
         android:layout_height="2dp"
-        android:layout_above="@id/fragmentSMD"
+        android:layout_below="@id/weekDay"
         android:background="@color/gray" />
 
     <!-- 일 표시 -->
@@ -190,11 +191,12 @@
         android:id="@+id/fragmentSMD"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_above="@+id/bottomBar"
-        android:layout_below="@id/weekDay" />
+        android:layout_above="@+id/line2"
+        android:layout_below="@id/line" />
 
 
     <View
+        android:id="@+id/line2"
         android:layout_width="match_parent"
         android:layout_height="2dp"
         android:layout_above="@id/bottomBar"

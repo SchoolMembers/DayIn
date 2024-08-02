@@ -1,5 +1,6 @@
 package com.example.dayin
 
+import android.app.ActivityOptions
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
@@ -86,9 +87,14 @@ class MainActivity : AppCompatActivity() {
             Log.d("customTag", "MainActivity onCreate called; click smd button D (smdButton = 2) set fragment to ScheduleFragment")
         }
 
-        val intent = Intent(this, MemoActivity::class.java)
+        //화면 전환 animation setting
+        val options = ActivityOptions.makeCustomAnimation(this, 0, 0)
+
+        //memo button click event
+        val memoIntent = Intent(this, MemoActivity::class.java)
         binding.barMemo.setOnClickListener{
-            startActivity(intent)
+            startActivity(memoIntent, options.toBundle())
+            Log.d("customTag", "MainActivity onCreate called; click memo button")
         }
     }
 

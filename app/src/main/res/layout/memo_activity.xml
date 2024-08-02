@@ -28,34 +28,11 @@
             android:id="@+id/blankBar"
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="1.5"
+            android:layout_weight="3.5"
             android:gravity="center_horizontal"
             android:orientation="horizontal">
-
-            <View
-                android:layout_width="0dp"
-                android:layout_height="40dp"
-                android:layout_weight="1.5"/>
-
         </LinearLayout>
 
-    <LinearLayout
-        android:id="@+id/blankSMD"
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:layout_marginLeft="1dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginRight="3dp"
-        android:layout_marginBottom="8dp"
-        android:layout_weight="2"
-        android:orientation="horizontal">
-
-        <View
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="2"/>
-
-    </LinearLayout>
 
 
     </LinearLayout>
@@ -70,11 +47,14 @@
     <androidx.recyclerview.widget.RecyclerView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/line"/>
+        android:layout_below="@id/line"
+        android:layout_above="@id/line2"/>
 
     <View
+        android:id="@+id/line2"
         android:layout_width="match_parent"
         android:layout_height="2dp"
+        android:layout_above="@id/bottomBar"
         android:background="@color/gray" />
 
     <!-- 하단 바 레이아웃 -->

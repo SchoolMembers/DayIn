@@ -35,15 +35,11 @@ class MoneyRepository(private val moneyDbDao: MoneyDbDao) {
         return moneyDbDao.getAutoItems()
     }
 
-    fun getIncome(inEx: Int): Flow<List<MoneyDb>> {
-        return moneyDbDao.getIncome(inEx)
+    fun getMonthData(date: List<String>, inEx: Int): Flow<List<MoneyAndCate>> {
+        return moneyDbDao.getMonth(date, inEx)
     }
 
-    fun getMonthData(date: List<String>): Flow<List<MoneyAndCate>> {
-        return moneyDbDao.getMonth(date)
-    }
-
-    fun getYearData(date: List<String>): Flow<List<MoneyAndCate>> {
-        return moneyDbDao.getYear(date)
+    fun getYearData(date: List<String>, inEx: Int): Flow<List<MoneyAndCate>> {
+        return moneyDbDao.getYear(date, inEx)
     }
 }

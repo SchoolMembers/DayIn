@@ -9,5 +9,5 @@ data class MoneyAndCate(
         parentColumn = "cateId",
         entityColumn = "cateId"
     )
-    val cate: Cate
+    val cate: CateDb
 )

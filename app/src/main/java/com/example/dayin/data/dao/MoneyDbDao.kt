@@ -1,5 +1,6 @@
 package com.example.dayin.data.dao
 
+import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
@@ -10,6 +11,7 @@ import com.example.dayin.data.MoneyAndCate
 import com.example.dayin.data.MoneyDb
 import kotlinx.coroutines.flow.Flow
 
+@Dao
 interface MoneyDbDao {
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insert(moneyDb: MoneyDb)
@@ -20,31 +22,33 @@ interface MoneyDbDao {
     @Delete
     suspend fun delete(moneyDb: MoneyDb)
 
+    //id값과 일치하는 데이터 모든 정보(특정 기록 세부사항 수정)
     @Transaction
-    @Query("SELECT * FROM moneyDb WHERE id = :id") //id값과 일치하는 데이터 모든 정보
+    @Query("SELECT * FROM moneyDb JOIN cateDb ON moneyDb.cateId = cateDb.cateId WHERE id = :id")
     fun getItem(id: Long): Flow<MoneyAndCate>
 
+    //date값 기준 오름차순 정렬 모든 데이터(처음 달력에 세팅할 때)
     @Transaction
-    @Query("SELECT * FROM moneyDb ORDER BY date") //date값 기준 오름차순 정렬 모든 데이터
+    @Query("SELECT * FROM moneyDb JOIN cateDb ON moneyDb.cateId = cateDb.cateId ORDER BY date, inEx, money ASC")
     fun getAllItems(): Flow<List<MoneyAndCate>>
 
+    //특정 날짜의 데이터들(날짜칸 클릭했을 때 세팅)
     @Transaction
-    @Query("SELECT * FROM moneyDb WHERE date(date) = date(:date) ORDER BY inEx, money ASC") //특정 날짜의 데이터들
+    @Query("SELECT * FROM moneyDb JOIN cateDb ON moneyDb.cateId = cateDb.cateId WHERE date(date) = date(:date) ORDER BY inEx, money ASC")
     fun getDay(date: String): Flow<List<MoneyAndCate>>
 
+    //자동 등록된 데이터들 (자동 모아보기에서 사용)
     @Transaction
-    @Query("SELECT * FROM moneyDb WHERE auto <> 0 ORDER BY money ASC") //자동 등록된 데이터들 (자동 모아보기에서 사용)
+    @Query("SELECT inEx, name, money FROM moneyDb JOIN cateDb ON moneyDb.cateId = cateDb.cateId WHERE auto <> 0 ORDER BY inEx, name, money ASC")
     fun getAutoItems(): Flow<List<MoneyAndCate>>
 
+    //특정 월의 데이터 (소비패턴에서 사용)
     @Transaction
-    @Query("SELECT money, strftime('%Y-%m', date) AS month FROM moneyDb WHERE inEx = :inEx ORDER BY date ASC") //수입 또는 지출; 금액, 날짜 데이터들 (소비패턴에서 사용)
-    fun getIncome(inEx: Int): Flow<List<MoneyDb>>
+    @Query("SELECT moneyDb.money, cateDb.name FROM moneyDb JOIN cateDb ON moneyDb.cateId = cateDb.cateId WHERE (inEx = :inEx) AND (strftime('%m', moneyDb.date) IN (:date))")
+    fun getMonth(date: List<String>, inEx: Int): Flow<List<MoneyAndCate>>
 
+    //특정 년의 데이터 (소비패턴에서 사용)
     @Transaction
-    @Query("SELECT moneyDb.money, moneyDb.inEx, cate.name FROM moneyDb JOIN cate ON moneyDb.cateId = cate.cateId WHERE strftime('%m', moneyDb.date) IN (:date)") //특정 월의 데이터 (소비패턴에서 사용)
-    fun getMonth(date: List<String>): Flow<List<MoneyAndCate>>
-
-    @Transaction
-    @Query("SELECT moneyDb.money, moneyDb.inEx, cate.name FROM moneyDb JOIN cate ON moneyDb.cateId = cate.cateId WHERE strftime('%Y', moneyDb.date ) = :date") //특정 년의 데이터 (소비패턴에서 사용)
-    fun getYear(date: List<String>): Flow<List<MoneyAndCate>>
+    @Query("SELECT moneyDb.money, cateDb.name FROM moneyDb JOIN cateDb ON moneyDb.cateId = cateDb.cateId WHERE (inEx = :inEx) AND (strftime('%Y', moneyDb.date ) = :date)")
+    fun getYear(date: List<String>, inEx: Int): Flow<List<MoneyAndCate>>
 }

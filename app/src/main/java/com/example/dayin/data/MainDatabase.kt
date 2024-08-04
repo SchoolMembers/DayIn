@@ -4,9 +4,7 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
-import androidx.room.TypeConverters
 import androidx.sqlite.db.SupportSQLiteDatabase
-import com.example.dayin.data.Type.Converters
 import com.example.dayin.data.dao.CateDbDao
 import com.example.dayin.data.dao.DiaryDbDao
 import com.example.dayin.data.dao.MoneyDbDao
@@ -15,9 +13,8 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
-@Database(entities = [ScheduleDb::class, MoneyDb::class, CateDb::class], version = 1, exportSchema = false)
-@TypeConverters(Converters::class)
-abstract class AppDatabase : RoomDatabase() {
+@Database(entities = [ScheduleDb::class, MoneyDb::class, CateDb::class, DiaryDb::class], version = 1, exportSchema = false)
+abstract class MainDatabase : RoomDatabase() {
     abstract fun scheduleDbDao(): ScheduleDbDao
     abstract fun moneyDbDao(): MoneyDbDao
     abstract fun cateDao(): CateDbDao
@@ -25,13 +22,13 @@ abstract class AppDatabase : RoomDatabase() {
 
     companion object {
         @Volatile
-        private var INSTANCE: AppDatabase? = null
+        private var INSTANCE: MainDatabase? = null
 
-        fun getDatabase(context: Context): AppDatabase {
+        fun getDatabase(context: Context): MainDatabase {
             return INSTANCE ?: synchronized(this) {
                 Room.databaseBuilder(
                     context.applicationContext,
-                    AppDatabase::class.java,
+                    MainDatabase::class.java,
                     "app_database"
                 ).addCallback(DatabaseCallback(context)).build().also { INSTANCE = it }
             }

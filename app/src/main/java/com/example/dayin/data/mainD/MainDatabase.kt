@@ -4,7 +4,9 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import androidx.room.TypeConverters
 import androidx.sqlite.db.SupportSQLiteDatabase
+import com.example.dayin.data.Converters
 import com.example.dayin.data.mainD.dao.CateDbDao
 import com.example.dayin.data.mainD.dao.DiaryDbDao
 import com.example.dayin.data.mainD.dao.MoneyDbDao
@@ -14,6 +16,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 @Database(entities = [ScheduleDb::class, MoneyDb::class, CateDb::class, DiaryDb::class], version = 1, exportSchema = false)
+@TypeConverters(Converters::class)
 abstract class MainDatabase : RoomDatabase() {
     abstract fun scheduleDbDao(): ScheduleDbDao
     abstract fun moneyDbDao(): MoneyDbDao

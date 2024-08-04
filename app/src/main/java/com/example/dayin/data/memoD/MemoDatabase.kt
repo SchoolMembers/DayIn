@@ -5,8 +5,11 @@ import androidx.room.Database
 import androidx.room.Room
 import com.example.dayin.data.memoD.dao.MemoDbDao
 import androidx.room.RoomDatabase
+import androidx.room.TypeConverters
+import com.example.dayin.data.Converters
 
 @Database(entities = [MemoDb::class], version = 1, exportSchema = false)
+@TypeConverters(Converters::class)
 abstract class MemoDatabase: RoomDatabase() {
     abstract fun memoDbDao(): MemoDbDao
 

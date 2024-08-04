@@ -1,7 +1,7 @@
-package com.example.dayin.data.repository
+package com.example.dayin.data.mainD.repository
 
-import com.example.dayin.data.DiaryDb
-import com.example.dayin.data.dao.DiaryDbDao
+import com.example.dayin.data.mainD.DiaryDb
+import com.example.dayin.data.mainD.dao.DiaryDbDao
 import kotlinx.coroutines.flow.Flow
 
 class DiaryRepository(private val diaryDbDao: DiaryDbDao) {

@@ -1,7 +1,7 @@
-package com.example.dayin.data.repository
+package com.example.dayin.data.mainD.repository
 
-import com.example.dayin.data.CateDb
-import com.example.dayin.data.dao.CateDbDao
+import com.example.dayin.data.mainD.CateDb
+import com.example.dayin.data.mainD.dao.CateDbDao
 import kotlinx.coroutines.flow.Flow
 
 class CateRepository(private val cateDbDao: CateDbDao) {

@@ -1,7 +1,7 @@
-package com.example.dayin.data.repository
+package com.example.dayin.data.mainD.repository
 
-import com.example.dayin.data.ScheduleDb
-import com.example.dayin.data.dao.ScheduleDbDao
+import com.example.dayin.data.mainD.ScheduleDb
+import com.example.dayin.data.mainD.dao.ScheduleDbDao
 import kotlinx.coroutines.flow.Flow
 
 class ScheduleRepository(private val scheduleDbDao: ScheduleDbDao) {

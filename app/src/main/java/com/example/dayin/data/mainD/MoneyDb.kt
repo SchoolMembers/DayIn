@@ -1,4 +1,4 @@
-package com.example.dayin.data
+package com.example.dayin.data.mainD
 
 import android.graphics.Bitmap
 import androidx.room.Entity

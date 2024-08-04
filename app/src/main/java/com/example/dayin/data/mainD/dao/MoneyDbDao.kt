@@ -1,4 +1,4 @@
-package com.example.dayin.data.dao
+package com.example.dayin.data.mainD.dao
 
 import androidx.room.Dao
 import androidx.room.Delete
@@ -7,8 +7,8 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Transaction
 import androidx.room.Update
-import com.example.dayin.data.MoneyAndCate
-import com.example.dayin.data.MoneyDb
+import com.example.dayin.data.mainD.MoneyAndCate
+import com.example.dayin.data.mainD.MoneyDb
 import kotlinx.coroutines.flow.Flow
 
 @Dao

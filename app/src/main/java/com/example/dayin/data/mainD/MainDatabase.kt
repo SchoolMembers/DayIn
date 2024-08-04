@@ -1,14 +1,14 @@
-package com.example.dayin.data
+package com.example.dayin.data.mainD
 
 import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.sqlite.db.SupportSQLiteDatabase
-import com.example.dayin.data.dao.CateDbDao
-import com.example.dayin.data.dao.DiaryDbDao
-import com.example.dayin.data.dao.MoneyDbDao
-import com.example.dayin.data.dao.ScheduleDbDao
+import com.example.dayin.data.mainD.dao.CateDbDao
+import com.example.dayin.data.mainD.dao.DiaryDbDao
+import com.example.dayin.data.mainD.dao.MoneyDbDao
+import com.example.dayin.data.mainD.dao.ScheduleDbDao
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch

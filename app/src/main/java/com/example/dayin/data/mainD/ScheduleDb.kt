@@ -1,4 +1,4 @@
-package com.example.dayin.data
+package com.example.dayin.data.mainD
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey

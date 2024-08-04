@@ -7,6 +7,7 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Update
 import com.example.dayin.data.memoD.MemoDb
+import com.example.dayin.data.memoD.TitleData
 import kotlinx.coroutines.flow.Flow
 
 @Dao
@@ -27,5 +28,5 @@ interface MemoDbDao {
     fun getMemo(id: Long): Flow<MemoDb>
 
     @Query("SELECT id, title from memoDb ORDER BY id ASC")
-    fun getMemoTitle(): Flow<List<MemoDb>>
+    fun getMemoTitle(): Flow<List<TitleData>>
 }

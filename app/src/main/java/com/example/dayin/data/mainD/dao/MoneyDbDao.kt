@@ -7,8 +7,10 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Transaction
 import androidx.room.Update
+import com.example.dayin.data.mainD.AutoMoney
 import com.example.dayin.data.mainD.MoneyAndCate
 import com.example.dayin.data.mainD.MoneyDb
+import com.example.dayin.data.mainD.MoneyName
 import kotlinx.coroutines.flow.Flow
 
 @Dao
@@ -39,16 +41,16 @@ interface MoneyDbDao {
 
     //자동 등록된 데이터들 (자동 모아보기에서 사용)
     @Transaction
-    @Query("SELECT inEx, name, money FROM moneyDb JOIN cateDb ON moneyDb.cateId = cateDb.cateId WHERE auto <> 0 ORDER BY inEx, name, money ASC")
-    fun getAutoMoney(): Flow<List<MoneyAndCate>>
+    @Query("SELECT inEx, title, money FROM moneyDb JOIN cateDb ON moneyDb.cateId = cateDb.cateId WHERE auto <> 0 ORDER BY inEx, title, money ASC")
+    fun getAutoMoney(): Flow<List<AutoMoney>>
 
     //특정 월의 데이터 (소비패턴에서 사용)
     @Transaction
     @Query("SELECT moneyDb.money, cateDb.name FROM moneyDb JOIN cateDb ON moneyDb.cateId = cateDb.cateId WHERE (inEx = :inEx) AND (strftime('%m', moneyDb.date) IN (:date))")
-    fun getMoneyMonth(date: List<String>, inEx: Int): Flow<List<MoneyAndCate>>
+    fun getMoneyMonth(date: List<String>, inEx: Int): Flow<List<MoneyName>>
 
     //특정 년의 데이터 (소비패턴에서 사용)
     @Transaction
     @Query("SELECT moneyDb.money, cateDb.name FROM moneyDb JOIN cateDb ON moneyDb.cateId = cateDb.cateId WHERE (inEx = :inEx) AND (strftime('%Y', moneyDb.date ) = :date)")
-    fun getMoneyYear(date: List<String>, inEx: Int): Flow<List<MoneyAndCate>>
+    fun getMoneyYear(date: List<String>, inEx: Int): Flow<List<MoneyName>>
 }

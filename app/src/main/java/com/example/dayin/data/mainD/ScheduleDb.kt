@@ -12,10 +12,10 @@ data class ScheduleDb(
     var title: String = "@string/nTitle", //제목
     var auto: Int = 0, //자동 등록 여부 0:기본(등록안함) 1:매주 2:매달 3:매년
     var notify: Int = 0, //알림 설정 0:기본(등록안함) 1:하루전 2:1시간전 3:30분전
-    var memo: String?, //메모
+    var memo: String? = null, //메모
     var check: Int = 0, //체크리스트 완료 여부 0:미완료 1:완료
-    var time: Date?, //등록 시간
-    var loc: String? //장소
+    var time: Date? = null, //등록 시간
+    var loc: String? = null //장소
     /*var frd_pub: Int = 0, //친구 공개 여부 0:비공개 1:공개
     var frd_id: Int //공동 일정 등록 상대 유저 아이디*/
 )

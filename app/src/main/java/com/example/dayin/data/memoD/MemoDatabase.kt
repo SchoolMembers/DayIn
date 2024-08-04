@@ -13,13 +13,13 @@ import com.example.dayin.data.Converters
 abstract class MemoDatabase: RoomDatabase() {
     abstract fun memoDbDao(): MemoDbDao
 
-    companion object{
+    companion object {
         @Volatile
         private var INSTANCE: MemoDatabase? = null
 
         fun getDatabase(context: Context): MemoDatabase {
             return INSTANCE ?: synchronized(this) {
-                Room.databaseBuilder(
+                INSTANCE ?: Room.databaseBuilder(
                     context.applicationContext,
                     MemoDatabase::class.java,
                     "memo_database"

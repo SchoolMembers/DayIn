@@ -1,6 +1,7 @@
 package com.example.dayin.data.memoD.repository
 
 import com.example.dayin.data.memoD.MemoDb
+import com.example.dayin.data.memoD.TitleData
 import com.example.dayin.data.memoD.dao.MemoDbDao
 import kotlinx.coroutines.flow.Flow
 
@@ -26,7 +27,7 @@ class MemoRepository(private val memoDao: MemoDbDao) {
         return memoDao.getMemo(memoId)
     }
 
-    fun getMemoTitles(): Flow<List<MemoDb>> {
+    fun getMemoTitles(): Flow<List<TitleData>> {
         return memoDao.getMemoTitle()
     }
 }

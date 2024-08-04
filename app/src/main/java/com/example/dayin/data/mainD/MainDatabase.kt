@@ -1,6 +1,7 @@
 package com.example.dayin.data.mainD
 
 import android.content.Context
+import android.util.Log
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
@@ -29,19 +30,21 @@ abstract class MainDatabase : RoomDatabase() {
 
         fun getDatabase(context: Context): MainDatabase {
             return INSTANCE ?: synchronized(this) {
-                Room.databaseBuilder(
+                INSTANCE ?: Room.databaseBuilder(
                     context.applicationContext,
                     MainDatabase::class.java,
-                    "app_database"
+                    "main_database"
                 ).addCallback(DatabaseCallback(context)).build().also { INSTANCE = it }
             }
         }
     }
 
+
     private class DatabaseCallback(
         private val context: Context
     ) : RoomDatabase.Callback() {
         override fun onCreate(db: SupportSQLiteDatabase) {
+            Log.d("DatabaseCallback", "Database created")
             super.onCreate(db)
             INSTANCE?.let { database ->
                 CoroutineScope(Dispatchers.IO).launch {
@@ -51,6 +54,7 @@ abstract class MainDatabase : RoomDatabase() {
         }
 
         private suspend fun populateInitialData(cateDao: CateDbDao) {
+            Log.d("DatabaseCallback", "Populating initial data")
             // 기본 카테고리
             val categories = listOf(
                 //지출

@@ -6,27 +6,27 @@ import kotlinx.coroutines.flow.Flow
 
 class ScheduleRepository(private val scheduleDbDao: ScheduleDbDao) {
 
-    suspend fun insertItem(schedule: ScheduleDb) {
+    suspend fun insertSche(schedule: ScheduleDb) {
         scheduleDbDao.insert(schedule)
     }
 
-    suspend fun updateItem(schedule: ScheduleDb) {
+    suspend fun updateSche(schedule: ScheduleDb) {
         scheduleDbDao.update(schedule)
     }
 
-    suspend fun deleteItem(schedule: ScheduleDb) {
+    suspend fun deleteSche(schedule: ScheduleDb) {
         scheduleDbDao.delete(schedule)
     }
 
     fun allSchedules(): Flow<List<ScheduleDb>> {
-        return scheduleDbDao.getAllItems()
+        return scheduleDbDao.getAllSche()
     }
 
     fun getScheduleById(id: Long): Flow<ScheduleDb> {
-        return scheduleDbDao.getItem(id)
+        return scheduleDbDao.getSche(id)
     }
 
     fun getAutoSchedules(): Flow<List<ScheduleDb>> {
-        return scheduleDbDao.getAutoItems()
+        return scheduleDbDao.getAutoSche()
     }
 }

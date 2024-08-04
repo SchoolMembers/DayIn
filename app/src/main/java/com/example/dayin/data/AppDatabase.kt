@@ -8,6 +8,7 @@ import androidx.room.TypeConverters
 import androidx.sqlite.db.SupportSQLiteDatabase
 import com.example.dayin.data.Type.Converters
 import com.example.dayin.data.dao.CateDbDao
+import com.example.dayin.data.dao.DiaryDbDao
 import com.example.dayin.data.dao.MoneyDbDao
 import com.example.dayin.data.dao.ScheduleDbDao
 import kotlinx.coroutines.CoroutineScope
@@ -20,6 +21,7 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun scheduleDbDao(): ScheduleDbDao
     abstract fun moneyDbDao(): MoneyDbDao
     abstract fun cateDao(): CateDbDao
+    abstract fun diaryDbDao(): DiaryDbDao
 
     companion object {
         @Volatile

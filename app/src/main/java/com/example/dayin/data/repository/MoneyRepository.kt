@@ -7,39 +7,39 @@ import kotlinx.coroutines.flow.Flow
 
 class MoneyRepository(private val moneyDbDao: MoneyDbDao) {
 
-    suspend fun insertItem(money: MoneyDb) {
+    suspend fun insertMoney(money: MoneyDb) {
         moneyDbDao.insert(money)
     }
 
-    suspend fun updateItem(money: MoneyDb) {
+    suspend fun updateMoney(money: MoneyDb) {
         moneyDbDao.update(money)
     }
 
-    suspend fun deleteItem(money: MoneyDb) {
+    suspend fun deleteMoney(money: MoneyDb) {
         moneyDbDao.delete(money)
     }
 
-    fun allMoneyItems(): Flow<List<MoneyAndCate>> {
-        return moneyDbDao.getAllItems()
+    fun allMoney(): Flow<List<MoneyAndCate>> {
+        return moneyDbDao.getAllMoney()
     }
 
-    fun getMoneyItemById(id: Long): Flow<MoneyAndCate> {
+    fun getMoney(id: Long): Flow<MoneyAndCate> {
         return moneyDbDao.getItem(id)
     }
 
     fun getDayMoney(date: String): Flow<List<MoneyAndCate>> {
-        return moneyDbDao.getDay(date)
+        return moneyDbDao.getMoneyDay(date)
     }
 
-    fun getAutoMoneyItems(): Flow<List<MoneyAndCate>> {
-        return moneyDbDao.getAutoItems()
+    fun getAutoMoney(): Flow<List<MoneyAndCate>> {
+        return moneyDbDao.getAutoMoney()
     }
 
-    fun getMonthData(date: List<String>, inEx: Int): Flow<List<MoneyAndCate>> {
-        return moneyDbDao.getMonth(date, inEx)
+    fun getMoneyMonthData(date: List<String>, inEx: Int): Flow<List<MoneyAndCate>> {
+        return moneyDbDao.getMoneyMonth(date, inEx)
     }
 
-    fun getYearData(date: List<String>, inEx: Int): Flow<List<MoneyAndCate>> {
-        return moneyDbDao.getYear(date, inEx)
+    fun getMoneyYearData(date: List<String>, inEx: Int): Flow<List<MoneyAndCate>> {
+        return moneyDbDao.getMoneyYear(date, inEx)
     }
 }

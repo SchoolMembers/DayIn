@@ -6,15 +6,15 @@ import kotlinx.coroutines.flow.Flow
 
 class CateRepository(private val cateDbDao: CateDbDao) {
 
-    suspend fun insertItem(cate: CateDb) {
+    suspend fun insertCate(cate: CateDb) {
         cateDbDao.insert(cate)
     }
 
-    suspend fun updateItem(cate: CateDb) {
+    suspend fun updateCate(cate: CateDb) {
         cateDbDao.update(cate)
     }
 
-    suspend fun deleteItem(cate: CateDb) {
+    suspend fun deleteCate(cate: CateDb) {
         cateDbDao.delete(cate)
     }
 

@@ -1,9 +1,6 @@
 package com.example.dayin.data.Type
 
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
 import androidx.room.TypeConverter
-import java.io.ByteArrayOutputStream
 import java.util.Date
 
 class Converters {

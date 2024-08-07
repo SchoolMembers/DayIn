@@ -1,5 +1,6 @@
 package com.example.dayin
 
+import android.icu.util.Calendar
 import android.app.ActivityOptions
 import android.content.Intent
 import android.os.Bundle
@@ -8,16 +9,31 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import com.example.dayin.data.mainD.MainDatabase
+import com.example.dayin.data.mainD.ScheduleDb
+import com.example.dayin.data.mainD.repository.ScheduleRepository
+import com.example.dayin.data.memoD.MemoDatabase
 import com.example.dayin.databinding.ActivityMainBinding
 import com.example.dayin.fragments.DiaryFragment
 import com.example.dayin.fragments.MoneyFragment
 import com.example.dayin.fragments.ScheduleFragment
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import java.sql.Date
 import java.time.LocalDate
 
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
     private lateinit var today: LocalDate
+
+    //데이터 베이스
+    private lateinit var mainDb: MainDatabase
+    private lateinit var memoDb: MemoDatabase
+
+    private lateinit var scheduleRepository: ScheduleRepository
 
 
     //smd 버튼 식별자 CalendarFragment 전달
@@ -37,6 +53,12 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        //database setting
+        val appController = application as AppController
+        mainDb = appController.mainDb
+        memoDb = appController.memoDb
+
+        scheduleRepository = ScheduleRepository(mainDb.scheduleDbDao())
 
         //layout setting
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
@@ -67,6 +89,28 @@ class MainActivity : AppCompatActivity() {
                 .replace(R.id.fragmentSMD, ScheduleFragment.newInstance())
                 .commit()
             Log.d("customTag", "MainActivity onCreate called; click smd button S (smdButton = 0) set fragment to ScheduleFragment")
+
+            val calendar = Calendar.getInstance()
+            calendar.set(2024, Calendar.AUGUST, 4, 14, 30) // 날짜와 시간 설정
+            val scheduleDate = calendar.time
+
+            CoroutineScope(Dispatchers.IO).launch {
+
+                scheduleRepository.insertSche(ScheduleDb(date = scheduleDate, auto = 0, notify = 0, memo = "test", check = 0, time = Date(System.currentTimeMillis()), loc = "test"))
+
+                // UI 업데이트는 메인 스레드에서 수행
+                withContext(Dispatchers.Main) {
+                    // collect를 메인 스레드에서 수행
+                    CoroutineScope(Dispatchers.IO).launch {
+                        scheduleRepository.allSchedules().collect { scheList ->
+                            // 로그를 통해 결과를 확인
+                            scheList.forEach { ScheduleDb ->
+                                Log.d("customTag", ScheduleDb.toString())
+                            }
+                        }
+                    }
+                }
+            }
         }
 
         binding.smdM.setOnClickListener {

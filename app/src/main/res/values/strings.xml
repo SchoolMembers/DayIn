@@ -4,4 +4,5 @@
     <string name="smdMText">가계부</string>
     <string name="smdDText">다이어리</string>
     <string name="yearMonth">0000년 00월</string>
+    <string name="nTitle">제목 없음</string>
 </resources>

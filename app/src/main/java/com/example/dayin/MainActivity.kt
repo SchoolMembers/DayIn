@@ -1,22 +1,18 @@
 package com.example.dayin
 
 import android.icu.util.Calendar
+import android.app.ActivityOptions
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
-import androidx.room.Room
 import com.example.dayin.data.mainD.MainDatabase
-import com.example.dayin.data.mainD.MoneyDb
 import com.example.dayin.data.mainD.ScheduleDb
-import com.example.dayin.data.mainD.repository.CateRepository
-import com.example.dayin.data.mainD.repository.DiaryRepository
-import com.example.dayin.data.mainD.repository.MoneyRepository
 import com.example.dayin.data.mainD.repository.ScheduleRepository
 import com.example.dayin.data.memoD.MemoDatabase
-import com.example.dayin.data.memoD.repository.MemoRepository
 import com.example.dayin.databinding.ActivityMainBinding
 import com.example.dayin.fragments.DiaryFragment
 import com.example.dayin.fragments.MoneyFragment
@@ -133,6 +129,16 @@ class MainActivity : AppCompatActivity() {
                 .replace(R.id.fragmentSMD, DiaryFragment.newInstance())
                 .commit()
             Log.d("customTag", "MainActivity onCreate called; click smd button D (smdButton = 2) set fragment to ScheduleFragment")
+        }
+
+        //화면 전환 animation setting
+        val options = ActivityOptions.makeCustomAnimation(this, 0, 0)
+
+        //memo button click event
+        val memoIntent = Intent(this, MemoActivity::class.java)
+        binding.barMemo.setOnClickListener{
+            startActivity(memoIntent, options.toBundle())
+            Log.d("customTag", "MainActivity onCreate called; click memo button")
         }
     }
 

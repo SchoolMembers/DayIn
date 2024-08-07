@@ -34,20 +34,18 @@ abstract class MainDatabase : RoomDatabase() {
                     context.applicationContext,
                     MainDatabase::class.java,
                     "main_database"
-                ).addCallback(DatabaseCallback(context)).build().also { INSTANCE = it }
+                ).addCallback(DatabaseCallback()).build().also { INSTANCE = it }
             }
         }
     }
 
-
-    private class DatabaseCallback(
-        private val context: Context
-    ) : RoomDatabase.Callback() {
+    private class DatabaseCallback : RoomDatabase.Callback() {
         override fun onCreate(db: SupportSQLiteDatabase) {
-            Log.d("DatabaseCallback", "Database created")
             super.onCreate(db)
+            Log.d("DatabaseCallback", "Database created")
             INSTANCE?.let { database ->
                 CoroutineScope(Dispatchers.IO).launch {
+                    Log.d("DatabaseCallback", "Calling populateInitialData")
                     populateInitialData(database.cateDao())
                 }
             }
@@ -84,9 +82,11 @@ abstract class MainDatabase : RoomDatabase() {
                 CateDb(name = "용돈", inEx = 1),
                 CateDb(name = "부수입", inEx = 1),
                 CateDb(name = "보너스", inEx = 1)
-
             )
-            categories.forEach { cateDao.insert(it) }
+            categories.forEach {
+                Log.d("DatabaseCallback", "Inserting category: ${it.name}")
+                cateDao.insert(it)
+            }
         }
     }
 }

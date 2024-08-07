@@ -58,17 +58,9 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         //database setting
-        mainDb = Room.databaseBuilder(
-            applicationContext,
-            MainDatabase::class.java,
-            "main_database"
-        ).build()
+        mainDb = MainDatabase.getDatabase(this)
 
-        memoDb = Room.databaseBuilder(
-            applicationContext,
-            MemoDatabase::class.java,
-            "memo_database"
-        ).build()
+        memoDb = MemoDatabase.getDatabase(this)
 
         scheduleRepository = ScheduleRepository(mainDb.scheduleDbDao())
 

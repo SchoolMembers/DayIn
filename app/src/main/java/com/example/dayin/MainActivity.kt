@@ -58,9 +58,9 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         //database setting
-        mainDb = MainDatabase.getDatabase(this)
-
-        memoDb = MemoDatabase.getDatabase(this)
+        val appController = application as AppController
+        mainDb = appController.mainDb
+        memoDb = appController.memoDb
 
         scheduleRepository = ScheduleRepository(mainDb.scheduleDbDao())
 

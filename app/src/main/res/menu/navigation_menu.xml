@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/barHome"
+        android:enabled="true"
+        android:title="@string/menu_home"
+        android:icon="@drawable/home" />
+
+    <item
+        android:id="@+id/barMoney"
+        android:enabled="true"
+        android:title="@string/menu_money"
+        android:icon="@drawable/money" />
+
+    <item
+        android:id="@+id/barMemo"
+        android:enabled="true"
+        android:title="@string/menu_memo"
+        android:icon="@drawable/memo" />
+
+    <item
+        android:id="@+id/barMenu"
+        android:enabled="true"
+        android:title="@string/menu_menu"
+        android:icon="@drawable/menu" />
+
+
+</menu>

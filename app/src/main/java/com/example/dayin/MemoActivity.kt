@@ -21,20 +21,44 @@ class MemoActivity : AppCompatActivity() {
         binding = MemoActivityBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.memo)) { v, insets ->
+        //하단 바 활성화 상태
+        binding.bottomNavigation.selectedItemId = R.id.barMemo
+
+        // 상단 바 인셋 처리
+        ViewCompat.setOnApplyWindowInsetsListener(binding.mainTopBar) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
+            v.setPadding(0, systemBars.top, 0, 0)
+            insets
+        }
+
+        // 하단 바 인셋 처리
+        ViewCompat.setOnApplyWindowInsetsListener(binding.bottomNavigation) { view, insets ->
+            val systemBarsInsets = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+            view.setPadding(0, 0, 0, systemBarsInsets.bottom)
             insets
         }
 
         //화면 전환 animation setting
         val options = ActivityOptions.makeCustomAnimation(this, 0, 0)
 
-        //main button click event
-        val mainIntent = Intent(this, MainActivity::class.java)
-        binding.barHome.setOnClickListener{
-            startActivity(mainIntent, options.toBundle())
-            Log.d("customTag", "MemoActivity onCreate called; click main button")
+        //bottom navigation click event
+        val memoIntent = Intent(this, MemoActivity::class.java)
+        val homeIntent = Intent(this, MainActivity::class.java)
+
+        binding.bottomNavigation.setOnItemSelectedListener {
+            when(it.itemId){
+                R.id.barHome -> {
+                    startActivity(homeIntent, options.toBundle())
+                    Log.d("customTag", "MemoActivity onCreate called; click home button")
+                    true
+                }
+                R.id.barMemo -> {
+                    startActivity(memoIntent, options.toBundle())
+                    Log.d("customTag", "MemoActivity onCreate called; click memo button")
+                    true
+                }
+                else -> false
+            }
         }
 
 

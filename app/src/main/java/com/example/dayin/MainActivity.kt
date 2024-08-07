@@ -53,6 +53,9 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        //하단 바 활성화 상태
+        binding.bottomNavigation.selectedItemId = R.id.barHome
+
         //database setting
         val appController = application as AppController
         mainDb = appController.mainDb
@@ -60,10 +63,17 @@ class MainActivity : AppCompatActivity() {
 
         scheduleRepository = ScheduleRepository(mainDb.scheduleDbDao())
 
-        //layout setting
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
+        // 상단 바 인셋 처리
+        ViewCompat.setOnApplyWindowInsetsListener(binding.mainTopBar) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
+            v.setPadding(0, systemBars.top, 0, 0)
+            insets
+        }
+
+        // 하단 바 인셋 처리
+        ViewCompat.setOnApplyWindowInsetsListener(binding.bottomNavigation) { view, insets ->
+            val systemBarsInsets = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+            view.setPadding(0, 0, 0, systemBarsInsets.bottom)
             insets
         }
 
@@ -113,6 +123,7 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
+        //smd button click event
         binding.smdM.setOnClickListener {
             smdButton = 1
             updateButtonStyles()
@@ -134,11 +145,24 @@ class MainActivity : AppCompatActivity() {
         //화면 전환 animation setting
         val options = ActivityOptions.makeCustomAnimation(this, 0, 0)
 
-        //memo button click event
+        //bottom navigation click event
         val memoIntent = Intent(this, MemoActivity::class.java)
-        binding.barMemo.setOnClickListener{
-            startActivity(memoIntent, options.toBundle())
-            Log.d("customTag", "MainActivity onCreate called; click memo button")
+        val homeIntent = Intent(this, MainActivity::class.java)
+
+        binding.bottomNavigation.setOnItemSelectedListener {
+            when(it.itemId){
+                R.id.barHome -> {
+                    startActivity(homeIntent, options.toBundle())
+                    Log.d("customTag", "MainActivity onCreate called; click home button")
+                    true
+                }
+                R.id.barMemo -> {
+                    startActivity(memoIntent, options.toBundle())
+                    Log.d("customTag", "MainActivity onCreate called; click memo button")
+                    true
+                }
+                else -> false
+            }
         }
     }
 

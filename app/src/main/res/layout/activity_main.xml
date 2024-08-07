@@ -206,42 +206,21 @@
     <LinearLayout
         android:id="@+id/bottomBar"
         android:layout_width="match_parent"
-        android:layout_height="60dp"
+        android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:background="@color/white"
-        android:orientation="horizontal">
+        android:background="@color/white">
 
-        <ImageButton
-            android:id="@+id/barHome"
-            android:layout_width="0dp"
+        <com.google.android.material.bottomnavigation.BottomNavigationView
+            android:id="@+id/bottom_navigation"
+            android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:background="@color/lightGray"
-            app:srcCompat="@drawable/home" />
-
-        <ImageButton
-            android:id="@+id/barMoney"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:background="@color/white"
-            app:srcCompat="@drawable/money" />
-
-        <ImageButton
-            android:id="@+id/barMemo"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:background="@color/white"
-            app:srcCompat="@drawable/memo" />
-
-        <ImageButton
-            android:id="@+id/barMenu"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:background="@color/white"
-            app:srcCompat="@drawable/menu" />
+            app:menu="@menu/navigation_menu"
+            app:itemTextColor="@drawable/bottombar_items_color"
+            app:itemIconTint="@drawable/bottombar_items_color"
+            app:labelVisibilityMode="labeled"
+            app:itemBackground="@color/white"
+            app:itemPaddingBottom="0dp"
+            style="@style/Widget.App.BottomNavigationView" />
 
 
     </LinearLayout>

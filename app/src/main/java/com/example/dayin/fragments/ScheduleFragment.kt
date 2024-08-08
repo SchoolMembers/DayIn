@@ -1,11 +1,14 @@
 package com.example.dayin.fragments
 
+import android.app.AlertDialog
 import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.WindowManager
+import android.widget.Button
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import com.example.dayin.MainActivity
@@ -78,8 +81,20 @@ class ScheduleFragment : Fragment() {
                 container.textView.text = day.date.dayOfMonth.toString() //dayText에 날짜 표시
                 if (day.position == DayPosition.MonthDate) { //현재 날짜가 현재 월 내에 있을 때
                     container.textView.setTextColor(Color.BLACK)
+                    // 날짜 아이템 클릭 리스너 설정
+                    container.view.setOnClickListener {
+                        // 날짜 클릭 시 다이얼로그 표시
+                        showDateDialog(day)
+                        Log.d("customTag", "ScheduleFragment onViewCreated called; day clicked")
+                    }
                 } else {
                     container.textView.setTextColor(Color.GRAY)
+                    // 날짜 아이템 클릭 리스너 설정
+                    container.view.setOnClickListener {
+                        // 날짜 클릭 시 다이얼로그 표시
+                        showDateDialog(day)
+                        Log.d("customTag", "ScheduleFragment onViewCreated called; day clicked")
+                    }
                 }
 
             }
@@ -100,6 +115,36 @@ class ScheduleFragment : Fragment() {
         super.onDestroyView()
         _binding = null // 메모리 누수 방지를 위한 바인딩 해제
     }
+
+    //날짜 클릭 다이얼로그 메서드
+    private fun showDateDialog(day: CalendarDay) {
+        // 다이얼로그 빌더를 사용해 다이얼로그 생성
+        val dialogView = LayoutInflater.from(context).inflate(R.layout.dialog_s, null)
+        val dialogBuilder = AlertDialog.Builder(requireContext())
+            .setView(dialogView)
+
+        val dialog = dialogBuilder.create()
+
+        // 다이얼로그 내의 뷰들을 참조해 날짜 정보 설정
+        val monYearTextView = dialogView.findViewById<TextView>(R.id.monYear)
+        monYearTextView.text = day.date.format(DateTimeFormatter.ofPattern("MM월 dd일 (E)").withLocale(Locale.KOREAN))
+
+        // 닫기 버튼 클릭 시 다이얼로그 닫기
+        val closeButton = dialogView.findViewById<Button>(R.id.closeButton)
+        closeButton.setOnClickListener {
+            dialog.dismiss()
+        }
+
+        // 추가 버튼에 대한 클릭 리스너
+        val addButton = dialogView.findViewById<Button>(R.id.addButton)
+        addButton.setOnClickListener {
+            // 구현 예정
+        }
+
+        // 다이얼로그 표시
+        dialog.show()
+    }
+
 
     //정적 멤버
     companion object {

@@ -9,4 +9,5 @@
     <string name="menu_money">소비 분석</string>
     <string name="menu_memo">메모</string>
     <string name="menu_menu">메뉴</string>
+    <string name="monYear">00월 00일 (월)</string>
 </resources>

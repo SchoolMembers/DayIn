@@ -128,11 +128,13 @@ class ScheduleFragment : Fragment() {
         // 다이얼로그 내의 뷰들을 참조해 날짜 정보 설정
         val monYearTextView = dialogView.findViewById<TextView>(R.id.monYear)
         monYearTextView.text = day.date.format(DateTimeFormatter.ofPattern("MM월 dd일 (E)").withLocale(Locale.KOREAN))
+        Log.d("customTag", "ScheduleFragment onViewCreated called; monYearTextView updated")
 
         // 닫기 버튼 클릭 시 다이얼로그 닫기
         val closeButton = dialogView.findViewById<Button>(R.id.closeButton)
         closeButton.setOnClickListener {
             dialog.dismiss()
+            Log.d("customTag", "ScheduleFragment onViewCreated called; dialog closed")
         }
 
         // 추가 버튼에 대한 클릭 리스너

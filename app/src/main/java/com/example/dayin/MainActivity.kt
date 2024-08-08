@@ -31,10 +31,10 @@ class MainActivity : AppCompatActivity() {
     private lateinit var today: LocalDate
 
     //데이터 베이스
-    private lateinit var mainDb: MainDatabase
+    /*private lateinit var mainDb: MainDatabase
     private lateinit var memoDb: MemoDatabase
 
-    private lateinit var scheduleRepository: ScheduleRepository
+    private lateinit var scheduleRepository: ScheduleRepository*/
 
 
 
@@ -59,11 +59,11 @@ class MainActivity : AppCompatActivity() {
         setupTabSelectedListener()
 
         //database setting
-        val appController = application as AppController
+        /*val appController = application as AppController
         mainDb = appController.mainDb
         memoDb = appController.memoDb
 
-        scheduleRepository = ScheduleRepository(mainDb.scheduleDbDao())
+        scheduleRepository = ScheduleRepository(mainDb.scheduleDbDao())*/
 
         // 상단 바 인셋 처리
         ViewCompat.setOnApplyWindowInsetsListener(binding.mainTopBar) { v, insets ->
@@ -130,7 +130,7 @@ class MainActivity : AppCompatActivity() {
                             .commit()
                         Log.d("customTag", "MainActivity onCreate called; set fragment to ScheduleFragment")
 
-                        val calendar = Calendar.getInstance()
+                        /*val calendar = Calendar.getInstance()
                         calendar.set(2024, Calendar.AUGUST, 4, 14, 30) // 날짜와 시간 설정
                         val scheduleDate = calendar.time
 
@@ -152,7 +152,7 @@ class MainActivity : AppCompatActivity() {
                                     }
                                 }
                             }
-                        }
+                        }*/
                     }
 
                     1 -> {

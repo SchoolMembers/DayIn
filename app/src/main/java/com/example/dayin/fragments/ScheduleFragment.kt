@@ -11,8 +11,11 @@ import android.view.WindowManager
 import android.widget.Button
 import android.widget.TextView
 import androidx.fragment.app.Fragment
+import com.example.dayin.AppController
 import com.example.dayin.MainActivity
 import com.example.dayin.R
+import com.example.dayin.data.mainD.MainDatabase
+import com.example.dayin.data.mainD.repository.ScheduleRepository
 import com.example.dayin.databinding.FragmentSBinding
 import com.kizitonwose.calendar.core.CalendarDay
 import com.kizitonwose.calendar.view.ViewContainer
@@ -30,6 +33,10 @@ class ScheduleFragment : Fragment() {
 
     private var _binding: FragmentSBinding? = null
     private val binding get() = _binding!!
+
+    //database
+    private lateinit var mainDb: MainDatabase
+    private lateinit var scheduleRepository: ScheduleRepository
 
 
     //프래그먼트 뷰를 생성하고 초기화. 프래그먼트의 레이아웃 인플레이트 -> 뷰 반환
@@ -74,6 +81,13 @@ class ScheduleFragment : Fragment() {
         Log.d("customTag", "ScheduleFragment onViewCreated called; day setup complete")
 
 
+        //database setting
+        val appController = requireActivity().application as AppController
+        mainDb = appController.mainDb
+        scheduleRepository = ScheduleRepository(mainDb.scheduleDbDao())
+
+        Log.d("customTag", "ScheduleFragment onViewCreated called; database setting complete")
+
         //캘린더의 각 날짜 뷰 정의
         calendarView.dayBinder = object : MonthDayBinder<DayViewContainer> {
             override fun create(view: View) = DayViewContainer(view)
@@ -81,20 +95,14 @@ class ScheduleFragment : Fragment() {
                 container.textView.text = day.date.dayOfMonth.toString() //dayText에 날짜 표시
                 if (day.position == DayPosition.MonthDate) { //현재 날짜가 현재 월 내에 있을 때
                     container.textView.setTextColor(Color.BLACK)
-                    // 날짜 아이템 클릭 리스너 설정
-                    container.view.setOnClickListener {
-                        // 날짜 클릭 시 다이얼로그 표시
-                        showDateDialog(day)
-                        Log.d("customTag", "ScheduleFragment onViewCreated called; day clicked")
-                    }
                 } else {
                     container.textView.setTextColor(Color.GRAY)
-                    // 날짜 아이템 클릭 리스너 설정
-                    container.view.setOnClickListener {
-                        // 날짜 클릭 시 다이얼로그 표시
-                        showDateDialog(day)
-                        Log.d("customTag", "ScheduleFragment onViewCreated called; day clicked")
-                    }
+                }
+                // 날짜 아이템 클릭 리스너 설정
+                container.view.setOnClickListener {
+                    // 날짜 클릭 시 다이얼로그 표시
+                    showDateDialog(day)
+                    Log.d("customTag", "ScheduleFragment onViewCreated called; day clicked")
                 }
 
             }

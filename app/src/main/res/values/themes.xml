@@ -6,6 +6,7 @@
     </style>
 
     <style name="Theme.Dayin" parent="Base.Theme.Dayin" />
+    <!-- 하단 바 테마 -->
     <style name="Widget.App.BottomNavigationView" parent="Widget.MaterialComponents.BottomNavigationView.Colored">
         <item name="materialThemeOverlay">@style/ThemeOverlay.App.BottomNavigationView</item>
     </style>
@@ -13,5 +14,24 @@
     <style name="ThemeOverlay.App.BottomNavigationView" parent="">
         <item name="colorPrimary">@color/white</item>
         <item name="colorOnPrimary">@color/white</item>
+        <item name="fontFamily">@font/okticon_bold</item>
+    </style>
+
+    <!-- smd 테마 -->
+    <style name="Widget.App.TabLayout" parent="Widget.MaterialComponents.TabLayout">
+        <item name="materialThemeOverlay">@style/ThemeOverlay.App.TabLayout</item>
+        <item name="tabTextAppearance">@style/TextAppearance.App.Button</item>
+    </style>
+
+    <style name="ThemeOverlay.App.TabLayout" parent="">
+        <item name="colorPrimary">@color/darkGray</item>
+        <item name="colorSurface">@color/white</item>
+        <item name="colorOnSurface">@color/gray</item>
+    </style>
+
+    <style name="TextAppearance.App.Button" parent="TextAppearance.MaterialComponents.Button">
+        <item name="fontFamily">@font/okticon_bold</item>
+        <item name="android:fontFamily">@font/okticon_bold</item>
+        <item name="android:textSize">10sp</item>"
     </style>
 </resources>

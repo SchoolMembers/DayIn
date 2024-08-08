@@ -4,7 +4,8 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:padding="8dp"
-    android:gravity="center|top">
+    android:gravity="center|top"
+    android:background="@color/white">
 
     <!-- 상단에 날짜 표시 -->
     <TextView

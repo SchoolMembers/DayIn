@@ -5,4 +5,8 @@
     <string name="smdDText">다이어리</string>
     <string name="yearMonth">0000년 00월</string>
     <string name="nTitle">제목 없음</string>
+    <string name="menu_home">홈</string>
+    <string name="menu_money">소비 분석</string>
+    <string name="menu_memo">메모</string>
+    <string name="menu_menu">메뉴</string>
 </resources>

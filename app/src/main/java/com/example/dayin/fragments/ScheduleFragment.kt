@@ -7,7 +7,6 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.WindowManager
 import android.widget.Button
 import android.widget.TextView
 import androidx.fragment.app.Fragment
@@ -148,7 +147,66 @@ class ScheduleFragment : Fragment() {
         // 추가 버튼에 대한 클릭 리스너
         val addButton = dialogView.findViewById<Button>(R.id.addButton)
         addButton.setOnClickListener {
-            // 구현 예정
+            showAddDialog(day)
+        }
+
+        // 다이얼로그 표시
+        dialog.show()
+    }
+
+    private fun showAddDialog(day: CalendarDay) {
+        // 다이얼로그 빌더를 사용해 다이얼로그 생성
+        val dialogView = LayoutInflater.from(context).inflate(R.layout.dialog_s_add, null)
+        val dialogBuilder = AlertDialog.Builder(requireContext())
+            .setView(dialogView)
+
+        val dialog = dialogBuilder.create()
+
+        // 다이얼로그 내의 뷰들을 참조해 날짜 정보 설정
+        val monYearTextView = dialogView.findViewById<TextView>(R.id.monYear)
+        monYearTextView.text = day.date.format(DateTimeFormatter.ofPattern("MM월 dd일 (E)").withLocale(Locale.KOREAN))
+        Log.d("customTag", "ScheduleFragment onViewCreated called; monYearTextView updated")
+
+        // 닫기 버튼 클릭 시 다이얼로그 닫기
+        val closeButton = dialogView.findViewById<Button>(R.id.closeButton)
+        closeButton.setOnClickListener {
+            dialog.dismiss()
+            Log.d("customTag", "ScheduleFragment onViewCreated called; dialog closed")
+        }
+
+        // 체크 버튼
+        val checkButton = dialogView.findViewById<Button>(R.id.checkButton)
+        checkButton.setOnClickListener {
+            dialog.dismiss()
+            Log.d("customTag", "ScheduleFragment onViewCreated called; check button clicked")
+        }
+
+        //시간 등록 활성화 버튼
+        val timeSwitch = dialogView.findViewById<com.google.android.material.switchmaterial.SwitchMaterial>(R.id.timeSwitch)
+        val locSwitch = dialogView.findViewById<com.google.android.material.switchmaterial.SwitchMaterial>(R.id.locSwitch)
+        val timeLayout = dialogView.findViewById<View>(R.id.timeLayout)
+        val locLayout = dialogView.findViewById<View>(R.id.locLayout)
+
+        //시간 등록 활성화 버튼 클릭 리스너
+        timeSwitch.setOnCheckedChangeListener { buttonView, isChecked ->
+            if (isChecked){
+                timeLayout.visibility = View.VISIBLE
+                Log.d("customTag", "ScheduleFragment onViewCreated called; timeSwitch checked")
+            } else {
+                timeLayout.visibility = View.GONE
+                Log.d("customTag", "ScheduleFragment onViewCreated called; timeSwitch unchecked")
+            }
+        }
+
+        //장소 등록 활성화 버튼 클릭 리스너
+        locSwitch.setOnCheckedChangeListener { buttonView, isChecked ->
+            if (isChecked){
+                locLayout.visibility = View.VISIBLE
+                Log.d("customTag", "ScheduleFragment onViewCreated called; timeSwitch checked")
+            } else {
+                locLayout.visibility = View.GONE
+                Log.d("customTag", "ScheduleFragment onViewCreated called; timeSwitch unchecked")
+            }
         }
 
         // 다이얼로그 표시

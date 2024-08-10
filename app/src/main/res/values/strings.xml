@@ -10,4 +10,22 @@
     <string name="menu_memo">메모</string>
     <string name="menu_menu">메뉴</string>
     <string name="monYear">00월 00일 (월)</string>
+    <string name="title">제목</string>
+    <string name="titleHint">제목 입력</string>
+    <string name="auto">자동 등록</string>
+    <string name="autoDefault">없음</string>
+    <string name="autoWeek">매주</string>
+    <string name="autoMonth">매달</string>
+    <string name="autoYear">매년</string>
+    <string name="time">시간 등록</string>
+    <string name="timeHint">00</string>
+    <string name="timeAm">AM</string>
+    <string name="timePm">PM</string>
+    <string name="notify">알림 설정</string>
+    <string name="notiDay">하루 전</string>
+    <string name="notiHour">1시간 전</string>
+    <string name="notiMin">30분 전</string>
+    <string name="loc">장소 등록</string>
+    <string name="locHint">주소 입력</string>
+    <string name="memoHint">메모</string>
 </resources>

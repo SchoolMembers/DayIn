@@ -28,4 +28,7 @@
     <string name="loc">장소 등록</string>
     <string name="locHint">주소 입력</string>
     <string name="memoHint">메모</string>
+    <string name="memo_plus">추가</string>
+    <string name="memo_delete">휴지통</string>
+    <string name="memo_check">선택</string>
 </resources>

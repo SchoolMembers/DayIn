@@ -8,11 +8,15 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.schedule.dayin.databinding.ActivityMainBinding
 import com.schedule.dayin.databinding.MemoActivityBinding
 
 class MemoActivity : AppCompatActivity() {
 
     private lateinit var binding: MemoActivityBinding
+
+    val Memobinding by lazy { ActivityMainBinding.inflate(layoutInflater) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -43,7 +47,7 @@ class MemoActivity : AppCompatActivity() {
 
         //bottom navigation click event
         val memoIntent = Intent(this, MemoActivity::class.java)
-        val homeIntent = Intent(this, com.schedule.dayin.MainActivity::class.java)
+        val homeIntent = Intent(this, MainActivity::class.java)
 
         binding.bottomNavigation.setOnItemSelectedListener {
             when(it.itemId){
@@ -61,6 +65,23 @@ class MemoActivity : AppCompatActivity() {
             }
         }
 
+        var adapter = MemoCustomAdapter()
+        adapter.listData = loadData()
+        binding.recyclerViewMemo.adapter = adapter
 
+        binding.recyclerViewMemo.layoutManager = LinearLayoutManager(this)
+
+    }
+
+    fun loadData(): MutableList<MemoData>{
+        val data : MutableList<MemoData> = mutableListOf()
+
+        for(no in 1..20) {
+            val title = "예제 ${no} 입니다"
+            val date = System.currentTimeMillis()
+            var memo = MemoData(no, title, date)
+            data.add(memo)
+        }
+        return data
     }
 }

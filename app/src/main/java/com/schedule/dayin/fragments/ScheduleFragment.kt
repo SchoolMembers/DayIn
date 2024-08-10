@@ -3,12 +3,16 @@ package com.schedule.dayin.fragments
 import android.app.AlertDialog
 import android.graphics.Color
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.EditText
 import android.widget.TextView
+import android.widget.Toast
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.Fragment
 import com.google.android.gms.maps.MapView
@@ -179,6 +183,38 @@ class ScheduleFragment : Fragment() {
             Log.d("customTag", "ScheduleFragment onViewCreated called; dialog closed")
         }
 
+        //제목 입력 저장
+        val titleEditText = dialogView.findViewById<EditText>(R.id.titleText)
+        var titleText: String
+
+        titleEditText.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                titleText = s?.toString() ?: ""
+                Log.d("customTag", "ScheduleFragment onViewCreated called; titleText: $titleText")
+            }
+            override fun afterTextChanged(s: Editable?) {}
+        })
+
+        // autoToggle 리스너
+        var auto = 0
+
+        val autoToggle = dialogView.findViewById<com.google.android.material.button.MaterialButtonToggleGroup>(R.id.autoToggle)
+        autoToggle.addOnButtonCheckedListener { group, checkedId, isChecked ->
+            if (isChecked) {
+                auto = when (checkedId) {
+                    R.id.autoDefault -> 0
+                    R.id.autoWeek -> 1
+                    R.id.autoMon -> 2
+                    R.id.autoYear -> 3
+                    else -> auto // 기본값 유지
+                }
+                Log.d("customTag", "auto value updated: $auto")
+            }
+        }
+
+
         // 체크 버튼
         val checkButton = dialogView.findViewById<Button>(R.id.checkButton)
         checkButton.setOnClickListener {
@@ -189,18 +225,115 @@ class ScheduleFragment : Fragment() {
         //시간 등록 활성화 버튼
         val timeSwitch = dialogView.findViewById<com.google.android.material.switchmaterial.SwitchMaterial>(R.id.timeSwitch)
         val timeLayout = dialogView.findViewById<View>(R.id.timeLayout)
+        val timeAmPm = dialogView.findViewById<com.google.android.material.button.MaterialButtonToggleGroup>(R.id.timeAmPm)
+        val timeHourEditText = dialogView.findViewById<EditText>(R.id.timeHour)
+        val timeMinEditText = dialogView.findViewById<EditText>(R.id.timeMin)
 
-        //시간 등록 활성화 버튼 클릭 리스너
+        var timeHourText = 0
+        var timeMinText = 0
+
+        val notifyToggle = dialogView.findViewById<com.google.android.material.button.MaterialButtonToggleGroup>(R.id.notify)
+
+        var noti = 0
+
+        // 시간 EditText에 대한 공통 TextWatcher 생성 함수
+        fun createTextWatcher(isPm: Boolean, isHourEditText: Boolean) = object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                val value = s.toString().toIntOrNull() ?: 0
+
+                if (isHourEditText) {
+                    timeHourText = if (isPm) {
+                        if (value < 12 && value != 0) value + 12 else value
+                    } else {
+                        if (value >= 12) value - 12 else value
+                    }
+                } else {
+                    timeMinText = value
+                }
+
+                // 범위 체크
+                if (timeHourText >= 24) {
+                    timeHourText = 0
+                    timeHourEditText.setText("00")
+                    Toast.makeText(requireContext(), "올바르지 않은 시간(Hour)입니다.", Toast.LENGTH_SHORT).show()
+                }
+                if (timeMinText >= 60) {
+                    timeMinText = 0
+                    timeMinEditText.setText("00")
+                    Toast.makeText(requireContext(), "올바르지 않은 분(Minute)입니다.", Toast.LENGTH_SHORT).show()
+                }
+
+                Log.d("customTag", "timeHourText updated: $timeHourText | timeMinText updated: $timeMinText")
+            }
+
+            override fun afterTextChanged(s: Editable?) {}
+        }
+
         timeSwitch.setOnCheckedChangeListener { buttonView, isChecked ->
             if (isChecked){
                 timeLayout.visibility = View.VISIBLE
                 Log.d("customTag", "ScheduleFragment onViewCreated called; timeSwitch checked")
-            } else {
+
+                //시간 설정------------------------------------------------------------------------------------------
+
+
+                timeAmPm.addOnButtonCheckedListener { group, checkedId, isChecked ->
+                    if (isChecked) {
+                        when (checkedId) {
+                            R.id.timeAm -> {
+                                Log.d("customTag", "ScheduleFragment onViewCreated called; timeAm clicked")
+                                timeHourEditText.addTextChangedListener(createTextWatcher(isPm = false, isHourEditText = true))
+                                timeMinEditText.addTextChangedListener(createTextWatcher(isPm = false, isHourEditText = false))
+                            }
+                            R.id.timePm -> {
+                                Log.d("customTag", "ScheduleFragment onViewCreated called; timePm clicked")
+                                timeHourEditText.addTextChangedListener(createTextWatcher(isPm = true, isHourEditText = true))
+                                timeMinEditText.addTextChangedListener(createTextWatcher(isPm = true, isHourEditText = false))
+                            }
+                        }
+                    }
+                }
+
+                //알림 설정------------------------------------------------------------------------------------------
+                notifyToggle.addOnButtonCheckedListener { group, checkedId, isChecked ->
+                    if (isChecked) {
+                        noti = when (checkedId) {
+                            R.id.notiDefault -> 0
+                            R.id.notiDay -> 1
+                            R.id.notiHour -> 2
+                            R.id.notiMin -> 3
+                            else -> noti // 기본값 유지
+                        }
+                        Log.d("customTag", "notify value updated: $noti")
+                    }
+                }
+            }
+            else {
                 timeLayout.visibility = View.GONE
+                timeHourText = 0
+                timeMinText = 0
+                noti = 0
+                auto = 0
                 Log.d("customTag", "ScheduleFragment onViewCreated called; timeSwitch unchecked")
             }
         
         }
+
+        //메모
+        val memo = dialogView.findViewById<EditText>(R.id.memoText)
+        var memoText: String
+        memo.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                memoText = s?.toString() ?: ""
+                Log.d("customTag", "ScheduleFragment onViewCreated called; memoText: $memoText")
+            }
+            override fun afterTextChanged(s: Editable?) {}
+        })
+
 
         // 다이얼로그 표시
         dialog.show()

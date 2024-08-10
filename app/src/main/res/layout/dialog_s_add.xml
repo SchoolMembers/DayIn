@@ -325,15 +325,34 @@
                 android:layout_marginTop="5dp"
                 android:layout_marginEnd="15dp"
                 android:orientation="vertical"
-                android:visibility="gone">
-                <EditText
-                    android:id="@+id/locText"
+                >
+                <LinearLayout
                     android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+                    <EditText
+                        android:id="@+id/locText"
+                        android:layout_width="300dp"
+                        android:layout_height="wrap_content"
+                        android:hint="@string/locHint"
+                        android:textSize="14sp"
+                        android:fontFamily="@font/okticon_regular"
+                        android:maxLines="1" />
+                    <android.widget.Button
+                        android:id="@+id/searchButton"
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:background="@drawable/search_icon" />
+                </LinearLayout>
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/recommendations"
+                    android:layout_width="297dp"
                     android:layout_height="wrap_content"
-                    android:hint="@string/locHint"
-                    android:textSize="14sp"
-                    android:fontFamily="@font/okticon_regular"
-                    android:maxLines="1" />
+                    android:visibility="gone"/>
+                <com.kakao.vectormap.MapView
+                    android:id="@+id/mapLayout"
+                    android:layout_marginTop="10dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="240dp"/>
             </LinearLayout>
 
             <!-- 메모 -->

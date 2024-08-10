@@ -57,5 +57,9 @@ dependencies {
     implementation("androidx.room:room-ktx:2.6.1")
     kapt("androidx.room:room-compiler:2.6.1")
 
-    implementation("com.google.android.gms:play-services-location:21.0.1")
+    implementation ("com.kakao.sdk:v2-all:2.20.3")
+
+    implementation ("com.google.android.gms:play-services-location:21.3.0")
+
+    implementation ("com.kakao.maps.open:android:2.11.9")
 }

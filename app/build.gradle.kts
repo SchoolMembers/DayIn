@@ -6,16 +6,18 @@ plugins {
 }
 
 android {
-    namespace = "com.example.dayin"
+    namespace = "com.schedule.dayin"
     compileSdk = 34
     viewBinding.isEnabled = true
 
     defaultConfig {
-        applicationId = "com.example.dayin"
+        applicationId = "com.schedule.dayin"
         minSdk = 28
         targetSdk = 34
         versionCode = 1
         versionName = "1.0"
+
+        multiDexEnabled = true
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -54,4 +56,6 @@ dependencies {
     implementation("androidx.room:room-runtime:2.6.1")
     implementation("androidx.room:room-ktx:2.6.1")
     kapt("androidx.room:room-compiler:2.6.1")
+
+    implementation("com.google.android.gms:play-services-location:21.0.1")
 }

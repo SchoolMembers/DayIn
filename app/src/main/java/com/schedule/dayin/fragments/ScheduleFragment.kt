@@ -1,6 +1,5 @@
 package com.schedule.dayin.fragments
 
-import android.R.attr.start
 import android.app.AlertDialog
 import android.graphics.Color
 import android.os.Bundle
@@ -10,13 +9,9 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
-import android.widget.Toast
-import android.widget.Toast.makeText
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.Fragment
-import com.kakao.vectormap.KakaoMap
-import com.kakao.vectormap.KakaoMapReadyCallback
-import com.kakao.vectormap.MapLifeCycleCallback
-import com.kakao.vectormap.MapView
+import com.google.android.gms.maps.MapView
 import com.kizitonwose.calendar.core.CalendarDay
 import com.kizitonwose.calendar.core.CalendarMonth
 import com.kizitonwose.calendar.core.DayPosition
@@ -45,7 +40,6 @@ class ScheduleFragment : Fragment() {
     private lateinit var mainDb: MainDatabase
     private lateinit var scheduleRepository: ScheduleRepository
 
-    private lateinit var mapView: MapView
 
 
     //프래그먼트 뷰를 생성하고 초기화. 프래그먼트의 레이아웃 인플레이트 -> 뷰 반환
@@ -172,8 +166,6 @@ class ScheduleFragment : Fragment() {
 
         val dialog = dialogBuilder.create()
 
-        //카카오 지도
-        mapView = dialogView.findViewById(R.id.mapLayout)
 
         // 다이얼로그 내의 뷰들을 참조해 날짜 정보 설정
         val monYearTextView = dialogView.findViewById<TextView>(R.id.monYear)
@@ -196,9 +188,7 @@ class ScheduleFragment : Fragment() {
 
         //시간 등록 활성화 버튼
         val timeSwitch = dialogView.findViewById<com.google.android.material.switchmaterial.SwitchMaterial>(R.id.timeSwitch)
-        val locSwitch = dialogView.findViewById<com.google.android.material.switchmaterial.SwitchMaterial>(R.id.locSwitch)
         val timeLayout = dialogView.findViewById<View>(R.id.timeLayout)
-        val locLayout = dialogView.findViewById<View>(R.id.locLayout)
 
         //시간 등록 활성화 버튼 클릭 리스너
         timeSwitch.setOnCheckedChangeListener { buttonView, isChecked ->
@@ -209,51 +199,13 @@ class ScheduleFragment : Fragment() {
                 timeLayout.visibility = View.GONE
                 Log.d("customTag", "ScheduleFragment onViewCreated called; timeSwitch unchecked")
             }
-        }
-
-        //장소 등록 활성화 버튼 클릭 리스너
-        locSwitch.setOnCheckedChangeListener { buttonView, isChecked ->
-            if (isChecked){
-                locLayout.visibility = View.VISIBLE
-                Log.d("customTag", "ScheduleFragment onViewCreated called; timeSwitch checked")
-
-                mapView.start(object : MapLifeCycleCallback() {
-                    override fun onMapDestroy() {
-                        // 지도 API 가 정상적으로 종료될 때 호출됨
-                        Log.d("customTag", "ScheduleFragment onViewCreated called; map destroyed")
-                    }
-
-                    override fun onMapError(error: Exception) {
-                        // 인증 실패 및 지도 사용 중 에러가 발생할 때 호출됨
-                        makeText(context, "Error(권한 없음)", Toast.LENGTH_SHORT).show()
-                        Log.d("customTag", "ScheduleFragment onViewCreated called; map error")
-                    }
-                }, object : KakaoMapReadyCallback() {
-                    override fun onMapReady(kakaoMap: KakaoMap) {
-                        // 인증 후 API 가 정상적으로 실행될 때 호출됨
-                        Log.d("customTag", "ScheduleFragment onViewCreated called; map ready")
-
-                    }
-                })
-            } else {
-                locLayout.visibility = View.GONE
-                Log.d("customTag", "ScheduleFragment onViewCreated called; timeSwitch unchecked")
-            }
+        
         }
 
         // 다이얼로그 표시
         dialog.show()
     }
 
-    override fun onResume() {
-        super.onResume()
-        mapView.resume() // MapView 의 resume 호출
-    }
-
-    override fun onPause() {
-        super.onPause()
-        mapView.pause() // MapView 의 pause 호출
-    }
 
     //정적 멤버
     companion object {

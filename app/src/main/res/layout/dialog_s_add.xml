@@ -289,78 +289,11 @@
                 </com.google.android.material.button.MaterialButtonToggleGroup>
             </LinearLayout>
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="40dp"
-                android:layout_marginStart="15dp"
-                android:layout_marginTop="30dp"
-                android:layout_marginEnd="15dp"
-                android:gravity="center_vertical">
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="@font/okticon_regular"
-                    android:text="@string/loc"
-                    android:textSize="18sp"
-                    android:layout_marginEnd="5dp"/>
-                <android.widget.Button
-                    android:id="@+id/infoButton4"
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
-                    android:background="@drawable/info_icon"
-                    android:layout_marginEnd="43dp"/>
-                <com.google.android.material.switchmaterial.SwitchMaterial
-                    android:id="@+id/locSwitch"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    app:trackTint="@drawable/switch_track"
-                    app:thumbTint="@drawable/switch_thumb" />
-            </LinearLayout>
-            <!-- 여기부터 장소 활성화 레이아웃. 아직 구현 x 추가 수정 필요 -->
-            <LinearLayout
-                android:id="@+id/locLayout"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="15dp"
-                android:layout_marginTop="5dp"
-                android:layout_marginEnd="15dp"
-                android:orientation="vertical"
-                android:visibility="gone">
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
-                    <EditText
-                        android:id="@+id/locText"
-                        android:layout_width="300dp"
-                        android:layout_height="wrap_content"
-                        android:hint="@string/locHint"
-                        android:textSize="14sp"
-                        android:fontFamily="@font/okticon_regular"
-                        android:maxLines="1" />
-                    <android.widget.Button
-                        android:id="@+id/searchButton"
-                        android:layout_width="30dp"
-                        android:layout_height="30dp"
-                        android:background="@drawable/search_icon" />
-                </LinearLayout>
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/recommendations"
-                    android:layout_width="297dp"
-                    android:layout_height="wrap_content"
-                    android:visibility="gone"/>
-                <com.kakao.vectormap.MapView
-                    android:id="@+id/mapLayout"
-                    android:layout_marginTop="10dp"
-                    android:layout_width="match_parent"
-                    android:layout_height="240dp"
-                    android:visibility="gone"/>
-            </LinearLayout>
-
             <!-- 메모 -->
             <EditText
                 android:id="@+id/memoText"
                 android:layout_width="match_parent"
-                android:layout_height="120dp"
+                android:layout_height="150dp"
                 android:layout_marginStart="15dp"
                 android:layout_marginTop="30dp"
                 android:layout_marginEnd="15dp"

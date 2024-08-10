@@ -15,7 +15,6 @@ data class ScheduleDb(
     var memo: String? = null, //메모
     var check: Int = 0, //체크리스트 완료 여부 0:미완료 1:완료
     var time: Date? = null, //등록 시간
-    var loc: String? = null //장소
     /*var frd_pub: Int = 0, //친구 공개 여부 0:비공개 1:공개
     var frd_id: Int //공동 일정 등록 상대 유저 아이디*/
 )

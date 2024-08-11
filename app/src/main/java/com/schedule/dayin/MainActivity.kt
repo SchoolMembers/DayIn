@@ -105,29 +105,6 @@ class MainActivity : AppCompatActivity() {
                             .commit()
                         Log.d("customTag", "MainActivity onCreate called; set fragment to ScheduleFragment")
 
-                        /*val calendar = Calendar.getInstance()
-                        calendar.set(2024, Calendar.AUGUST, 4, 14, 30) // 날짜와 시간 설정
-                        val scheduleDate = calendar.time
-
-                        CoroutineScope(Dispatchers.IO).launch {
-
-                            scheduleRepository.insertSche(
-                                ScheduleDb(date = scheduleDate, auto = 0, notify = 0, memo = "test", check = 0, time = Date(System.currentTimeMillis()), loc = "test")
-                            )
-
-                            // UI 업데이트는 메인 스레드에서 수행
-                            withContext(Dispatchers.Main) {
-                                // collect를 메인 스레드에서 수행
-                                CoroutineScope(Dispatchers.IO).launch {
-                                    scheduleRepository.allSchedules().collect { scheList ->
-                                        // 로그를 통해 결과를 확인
-                                        scheList.forEach { scheduleDb ->
-                                            Log.d("customTag", scheduleDb.toString())
-                                        }
-                                    }
-                                }
-                            }
-                        }*/
                     }
 
                     1 -> {

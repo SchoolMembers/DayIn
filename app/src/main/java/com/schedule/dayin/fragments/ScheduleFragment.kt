@@ -309,13 +309,13 @@ class ScheduleFragment : Fragment() {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                val value = s.toString().toIntOrNull() ?: 0
+                val value = s?.toString()?.toIntOrNull() ?: 0
 
                 if (isHourEditText) {
-                    timeHourText = if (isPm) {
-                        if (value < 12 && value != 0) value + 12 else value
-                    } else {
-                        if (value == 12) 0 else value
+                    timeHourText = when {
+                        isPm && value in 1..11 -> value + 12
+                        !isPm && value == 12 -> 0
+                        else -> value
                     }
                     updateTextField(timeHourEditText, timeHourText, 24, errorMessage)
                 } else {
@@ -324,7 +324,6 @@ class ScheduleFragment : Fragment() {
                 }
 
                 Log.d("customTag", "timeHourText updated: $timeHourText | timeMinText updated: $timeMinText")
-
                 calendar.set(Calendar.HOUR_OF_DAY, timeHourText)
                 calendar.set(Calendar.MINUTE, timeMinText)
                 calendar.set(Calendar.SECOND, 0)
@@ -357,12 +356,23 @@ class ScheduleFragment : Fragment() {
                             R.id.timeAm -> {
                                 Log.d("customTag", "ScheduleFragment onViewCreated called; timeAm clicked")
                                 timeAmPmIndex = 0
+                                if (timeHourText == 12) {
+                                    timeHourText = 0
+                                }
+                                timeHourEditText.addTextChangedListener(createTextWatcher(isPm = false, isHourEditText = true))
+                                timeMinEditText.addTextChangedListener(createTextWatcher(isPm = false, isHourEditText = false))
                             }
                             R.id.timePm -> {
                                 Log.d("customTag", "ScheduleFragment onViewCreated called; timePm clicked")
                                 timeAmPmIndex = 1
+                                if (timeHourText in 1..11) {
+                                    timeHourText += 12
+                                }
+                                timeHourEditText.addTextChangedListener(createTextWatcher(isPm = true, isHourEditText = true))
+                                timeMinEditText.addTextChangedListener(createTextWatcher(isPm = true, isHourEditText = false))
                             }
                         }
+                        calendar.set(Calendar.HOUR_OF_DAY, timeHourText)
                     }
                 }
 

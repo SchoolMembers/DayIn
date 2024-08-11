@@ -315,7 +315,7 @@ class ScheduleFragment : Fragment() {
                     timeHourText = if (isPm) {
                         if (value < 12 && value != 0) value + 12 else value
                     } else {
-                        if (value in 12..23) value - 12 else value
+                        if (value == 12) 0 else value
                     }
                     updateTextField(timeHourEditText, timeHourText, 24, errorMessage)
                 } else {
@@ -360,7 +360,7 @@ class ScheduleFragment : Fragment() {
                             }
                             R.id.timePm -> {
                                 Log.d("customTag", "ScheduleFragment onViewCreated called; timePm clicked")
-                                timeAmPmIndex = 0
+                                timeAmPmIndex = 1
                             }
                         }
                     }

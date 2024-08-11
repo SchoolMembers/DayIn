@@ -31,4 +31,7 @@
     <string name="memo_plus">추가</string>
     <string name="memo_delete">휴지통</string>
     <string name="memo_check">선택</string>
+    <string name="value_error">올바르지 않은 값입니다.</string>
+    <string name="auto_info1">매주, 매달, 매년 간격으로 일정이 자동 등록돼요!</string>
+    <string name="auto_info2">하루 전, 1시간 전, 30분 전에 팝업창을 통하여 미리 알림이 와요!</string>
 </resources>

@@ -21,15 +21,6 @@ class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
     private lateinit var today: LocalDate
 
-    //데이터 베이스
-    /*private lateinit var mainDb: MainDatabase
-    private lateinit var memoDb: MemoDatabase
-
-    private lateinit var scheduleRepository: ScheduleRepository*/
-
-
-
-
     //오늘 날짜 전달 함수
     /*fun fetchToday(): LocalDate {
         return today
@@ -48,13 +39,6 @@ class MainActivity : AppCompatActivity() {
 
         //smd 탭 버튼
         setupTabSelectedListener()
-
-        //database setting
-        /*val appController = application as AppController
-        mainDb = appController.mainDb
-        memoDb = appController.memoDb
-
-        scheduleRepository = ScheduleRepository(mainDb.scheduleDbDao())*/
 
         // 상단 바 인셋 처리
         ViewCompat.setOnApplyWindowInsetsListener(binding.mainTopBar) { v, insets ->

@@ -2,6 +2,7 @@ package com.schedule.dayin.fragments
 
 import android.app.AlertDialog
 import android.graphics.Color
+import android.icu.lang.UCharacter.GraphemeClusterBreak.T
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -13,9 +14,7 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.Fragment
-import com.google.android.gms.maps.MapView
 import com.kizitonwose.calendar.core.CalendarDay
 import com.kizitonwose.calendar.core.CalendarMonth
 import com.kizitonwose.calendar.core.DayPosition
@@ -27,8 +26,13 @@ import com.schedule.dayin.AppController
 import com.schedule.dayin.MainActivity
 import com.schedule.dayin.R
 import com.schedule.dayin.data.mainD.MainDatabase
+import com.schedule.dayin.data.mainD.ScheduleDb
 import com.schedule.dayin.data.mainD.repository.ScheduleRepository
 import com.schedule.dayin.databinding.FragmentSBinding
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.time.YearMonth
 import java.time.format.DateTimeFormatter
 import java.time.temporal.WeekFields
@@ -44,6 +48,17 @@ class ScheduleFragment : Fragment() {
     private lateinit var mainDb: MainDatabase
     private lateinit var scheduleRepository: ScheduleRepository
 
+    private var calendar = Calendar.getInstance()
+
+    //시간 등록
+    private var timeAmPmIndex = 0
+    private var time = 0
+
+    //알림 설정 여부
+    private var noti: Int = 0
+
+    //메모
+    private var memoText: String? = ""
 
 
     //프래그먼트 뷰를 생성하고 초기화. 프래그먼트의 레이아웃 인플레이트 -> 뷰 반환
@@ -176,6 +191,10 @@ class ScheduleFragment : Fragment() {
         monYearTextView.text = day.date.format(DateTimeFormatter.ofPattern("MM월 dd일 (E)").withLocale(Locale.KOREAN))
         Log.d("customTag", "ScheduleFragment onViewCreated called; monYearTextView updated")
 
+        //date 설정
+        calendar = Calendar.getInstance()
+        calendar.set(day.date.year, day.date.monthValue - 1, day.date.dayOfMonth) // 날짜 설정
+
         // 닫기 버튼 클릭 시 다이얼로그 닫기
         val closeButton = dialogView.findViewById<Button>(R.id.closeButton)
         closeButton.setOnClickListener {
@@ -185,7 +204,7 @@ class ScheduleFragment : Fragment() {
 
         //제목 입력 저장
         val titleEditText = dialogView.findViewById<EditText>(R.id.titleText)
-        var titleText: String
+        var titleText: String = ""
 
         titleEditText.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
@@ -214,12 +233,46 @@ class ScheduleFragment : Fragment() {
             }
         }
 
+        // autoToggle info 리스너
+        val infoButton1 = dialogView.findViewById<Button>(R.id.infoButton1)
+        infoButton1.setOnClickListener {
+            Toast.makeText(context, R.string.auto_info1, Toast.LENGTH_SHORT).show()
+            Log.d("customTag", "ScheduleFragment onViewCreated called; infoButton1 clicked")
+        }
+
 
         // 체크 버튼
         val checkButton = dialogView.findViewById<Button>(R.id.checkButton)
         checkButton.setOnClickListener {
             dialog.dismiss()
             Log.d("customTag", "ScheduleFragment onViewCreated called; check button clicked")
+            val scheduleDate = calendar.time
+
+            //데이터 저장(일정 추가)
+            CoroutineScope(Dispatchers.IO).launch {
+
+                if (memoText == ""){
+                    memoText = null
+                }
+
+                scheduleRepository.insertSche(
+                    ScheduleDb(date = scheduleDate, title = titleText, auto = auto, notify = noti, memo = memoText, check = 0, time = time)
+                )
+
+                // UI 업데이트는 메인 스레드에서 수행
+                withContext(Dispatchers.Main) {
+                    // collect를 메인 스레드에서 수행
+                    CoroutineScope(Dispatchers.Main).launch {
+                        scheduleRepository.allSchedules().collect { scheList ->
+                            // 로그를 통해 결과를 확인
+                            scheList.forEach { scheduleDb ->
+                                Log.d("customTag", scheduleDb.toString())
+                            }
+                        }
+                    }
+                }
+            }
+            Log.d("customTag", "ScheduleFragment onViewCreated called; data saved")
         }
 
         //시간 등록 활성화 버튼
@@ -229,12 +282,27 @@ class ScheduleFragment : Fragment() {
         val timeHourEditText = dialogView.findViewById<EditText>(R.id.timeHour)
         val timeMinEditText = dialogView.findViewById<EditText>(R.id.timeMin)
 
+        var textWatcher: TextWatcher? = null
+
         var timeHourText = 0
         var timeMinText = 0
 
+        val errorMessage = requireContext().getString(R.string.value_error)
+
         val notifyToggle = dialogView.findViewById<com.google.android.material.button.MaterialButtonToggleGroup>(R.id.notify)
 
-        var noti = 0
+
+        fun updateTextField(editText: EditText, value: Int, max: Int, errorMessage: String) {
+            if (value >= max) {
+                try {
+                    editText.removeTextChangedListener(textWatcher) // 무한 루프 방지
+                    editText.setText("")
+                    Toast.makeText(context, errorMessage, Toast.LENGTH_SHORT).show()
+                }  catch(e: Exception) {
+                    editText.addTextChangedListener(textWatcher) // 리스너 재등록
+                }
+            }
+        }
 
         // 시간 EditText에 대한 공통 TextWatcher 생성 함수
         fun createTextWatcher(isPm: Boolean, isHourEditText: Boolean) = object : TextWatcher {
@@ -247,50 +315,52 @@ class ScheduleFragment : Fragment() {
                     timeHourText = if (isPm) {
                         if (value < 12 && value != 0) value + 12 else value
                     } else {
-                        if (value >= 12) value - 12 else value
+                        if (value in 12..23) value - 12 else value
                     }
+                    updateTextField(timeHourEditText, timeHourText, 24, errorMessage)
                 } else {
                     timeMinText = value
-                }
-
-                // 범위 체크
-                if (timeHourText >= 24) {
-                    timeHourText = 0
-                    timeHourEditText.setText("00")
-                    Toast.makeText(requireContext(), "올바르지 않은 시간(Hour)입니다.", Toast.LENGTH_SHORT).show()
-                }
-                if (timeMinText >= 60) {
-                    timeMinText = 0
-                    timeMinEditText.setText("00")
-                    Toast.makeText(requireContext(), "올바르지 않은 분(Minute)입니다.", Toast.LENGTH_SHORT).show()
+                    updateTextField(timeMinEditText, timeMinText, 60, errorMessage)
                 }
 
                 Log.d("customTag", "timeHourText updated: $timeHourText | timeMinText updated: $timeMinText")
+
+                calendar.set(Calendar.HOUR_OF_DAY, timeHourText)
+                calendar.set(Calendar.MINUTE, timeMinText)
+                calendar.set(Calendar.SECOND, 0)
             }
 
             override fun afterTextChanged(s: Editable?) {}
         }
 
+
         timeSwitch.setOnCheckedChangeListener { buttonView, isChecked ->
             if (isChecked){
                 timeLayout.visibility = View.VISIBLE
+                time = 1
+                timeAmPmIndex = 0 //0은 am, 1은 pm
                 Log.d("customTag", "ScheduleFragment onViewCreated called; timeSwitch checked")
 
                 //시간 설정------------------------------------------------------------------------------------------
 
+                if (timeAmPmIndex == 0) {
+                    timeHourEditText.addTextChangedListener(createTextWatcher(isPm = false, isHourEditText = true))
+                    timeMinEditText.addTextChangedListener(createTextWatcher(isPm = false, isHourEditText = false))
+                } else {
+                    timeHourEditText.addTextChangedListener(createTextWatcher(isPm = true, isHourEditText = true))
+                    timeMinEditText.addTextChangedListener(createTextWatcher(isPm = true, isHourEditText = false))
+                }
 
                 timeAmPm.addOnButtonCheckedListener { group, checkedId, isChecked ->
                     if (isChecked) {
                         when (checkedId) {
                             R.id.timeAm -> {
                                 Log.d("customTag", "ScheduleFragment onViewCreated called; timeAm clicked")
-                                timeHourEditText.addTextChangedListener(createTextWatcher(isPm = false, isHourEditText = true))
-                                timeMinEditText.addTextChangedListener(createTextWatcher(isPm = false, isHourEditText = false))
+                                timeAmPmIndex = 0
                             }
                             R.id.timePm -> {
                                 Log.d("customTag", "ScheduleFragment onViewCreated called; timePm clicked")
-                                timeHourEditText.addTextChangedListener(createTextWatcher(isPm = true, isHourEditText = true))
-                                timeMinEditText.addTextChangedListener(createTextWatcher(isPm = true, isHourEditText = false))
+                                timeAmPmIndex = 0
                             }
                         }
                     }
@@ -309,6 +379,13 @@ class ScheduleFragment : Fragment() {
                         Log.d("customTag", "notify value updated: $noti")
                     }
                 }
+
+                // 알림 설정 info 리스너
+                val infoButton2 = dialogView.findViewById<Button>(R.id.infoButton2)
+                infoButton2.setOnClickListener {
+                    Toast.makeText(context, R.string.auto_info2, Toast.LENGTH_SHORT).show()
+                    Log.d("customTag", "ScheduleFragment onViewCreated called; infoButton2 clicked")
+                }
             }
             else {
                 timeLayout.visibility = View.GONE
@@ -316,6 +393,7 @@ class ScheduleFragment : Fragment() {
                 timeMinText = 0
                 noti = 0
                 auto = 0
+                time = 0
                 Log.d("customTag", "ScheduleFragment onViewCreated called; timeSwitch unchecked")
             }
         
@@ -323,7 +401,6 @@ class ScheduleFragment : Fragment() {
 
         //메모
         val memo = dialogView.findViewById<EditText>(R.id.memoText)
-        var memoText: String
         memo.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
 

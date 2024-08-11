@@ -102,7 +102,8 @@
                 app:checkedButton="@id/autoDefault"
                 app:singleSelection="true"
                 android:layout_marginStart="15dp"
-                android:layout_marginTop="5dp">
+                android:layout_marginTop="5dp"
+                app:selectionRequired="true">
                 <Button
                     android:id="@+id/autoDefault"
                     android:layout_width="0dp"
@@ -147,12 +148,6 @@
                     android:text="@string/time"
                     android:textSize="18sp"
                     android:layout_marginEnd="5dp"/>
-                <android.widget.Button
-                    android:id="@+id/infoButton2"
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
-                    android:background="@drawable/info_icon"
-                    android:layout_marginEnd="43dp"/>
                 <com.google.android.material.switchmaterial.SwitchMaterial
                     android:id="@+id/timeSwitch"
                     android:layout_width="wrap_content"
@@ -211,7 +206,8 @@
                         android:layout_height="30dp"
                         app:checkedButton="@id/timeAm"
                         app:singleSelection="true"
-                        android:layout_marginStart="28dp">
+                        android:layout_marginStart="28dp"
+                        app:selectionRequired="true">
                         <Button
                             android:id="@+id/timeAm"
                             android:layout_width="0dp"
@@ -229,31 +225,32 @@
                             style="@style/Widget.App.Button.OutlinedButton.IconOnly" />
                     </com.google.android.material.button.MaterialButtonToggleGroup>
                 </LinearLayout>
-                    <LinearLayout
+                <LinearLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:gravity="center_vertical">
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:fontFamily="@font/okticon_regular"
-                            android:text="@string/notify"
-                            android:textSize="18sp"
-                            android:layout_marginBottom="8dp"
-                            android:layout_marginTop="10dp"
-                            android:layout_marginEnd="5dp"/>
-                        <android.widget.Button
-                            android:id="@+id/infoButton3"
-                            android:layout_width="20dp"
-                            android:layout_height="20dp"
-                            android:background="@drawable/info_icon" />
-                    </LinearLayout>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/okticon_regular"
+                        android:text="@string/notify"
+                        android:textSize="18sp"
+                        android:layout_marginBottom="8dp"
+                        android:layout_marginTop="10dp"
+                        android:layout_marginEnd="5dp"/>
+                    <android.widget.Button
+                        android:id="@+id/infoButton2"
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:background="@drawable/info_icon" />
+                </LinearLayout>
                 <com.google.android.material.button.MaterialButtonToggleGroup
                     android:id="@+id/notify"
                     android:layout_width="250dp"
                     android:layout_height="40dp"
                     app:checkedButton="@id/notiDefault"
-                    app:singleSelection="true">
+                    app:singleSelection="true"
+                    app:selectionRequired="true">
                     <Button
                         android:id="@+id/notiDefault"
                         android:layout_width="0dp"
@@ -297,6 +294,7 @@
                 android:layout_marginStart="15dp"
                 android:layout_marginTop="30dp"
                 android:layout_marginEnd="15dp"
+                android:layout_marginBottom="20dp"
                 android:textSize="15sp"
                 android:hint="@string/memoHint"
                 android:background="@drawable/time_back"

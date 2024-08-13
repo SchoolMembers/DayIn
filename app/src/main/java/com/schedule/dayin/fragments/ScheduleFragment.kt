@@ -2,7 +2,6 @@ package com.schedule.dayin.fragments
 
 import android.app.AlertDialog
 import android.graphics.Color
-import android.icu.lang.UCharacter.GraphemeClusterBreak.T
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -31,18 +30,26 @@ import com.schedule.dayin.data.mainD.repository.ScheduleRepository
 import com.schedule.dayin.databinding.FragmentSBinding
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.time.YearMonth
 import java.time.format.DateTimeFormatter
 import java.time.temporal.WeekFields
 import java.util.*
+import kotlin.coroutines.CoroutineContext
 
 
-class ScheduleFragment : Fragment() {
+class ScheduleFragment : Fragment(), CoroutineScope {
 
     private var _binding: FragmentSBinding? = null
     private val binding get() = _binding!!
+
+    private var job = Job()
+    private val uiScope: CoroutineScope get() = CoroutineScope(Dispatchers.Main + job)
+
+    override val coroutineContext: CoroutineContext
+        get() = Dispatchers.Main + job
 
     //database
     private lateinit var mainDb: MainDatabase
@@ -60,6 +67,10 @@ class ScheduleFragment : Fragment() {
     //메모
     private var memoText: String? = ""
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        job = Job() // Job 초기화
+    }
 
     //프래그먼트 뷰를 생성하고 초기화. 프래그먼트의 레이아웃 인플레이트 -> 뷰 반환
     override fun onCreateView(
@@ -140,10 +151,19 @@ class ScheduleFragment : Fragment() {
 
     }
 
+
     //프래그먼트의 뷰가 파괴될 때 호출. 리소스 해제 등
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null // 메모리 누수 방지를 위한 바인딩 해제
+        job.cancel() // 코루틴 취소
+    }
+
+    // 다이얼로그 내의 뷰들을 참조해 날짜 정보 설정
+    private fun setupDialog(dialogView: View, day: CalendarDay) {
+        val monYearTextView = dialogView.findViewById<TextView>(R.id.monYear)
+        monYearTextView.text = day.date.format(DateTimeFormatter.ofPattern("MM월 dd일 (E)").withLocale(Locale.KOREAN))
+        Log.d("customTag", "ScheduleFragment onViewCreated called; monYearTextView updated")
     }
 
     //날짜 클릭 다이얼로그 메서드
@@ -155,10 +175,8 @@ class ScheduleFragment : Fragment() {
 
         val dialog = dialogBuilder.create()
 
-        // 다이얼로그 내의 뷰들을 참조해 날짜 정보 설정
-        val monYearTextView = dialogView.findViewById<TextView>(R.id.monYear)
-        monYearTextView.text = day.date.format(DateTimeFormatter.ofPattern("MM월 dd일 (E)").withLocale(Locale.KOREAN))
-        Log.d("customTag", "ScheduleFragment onViewCreated called; monYearTextView updated")
+        //날짜 설정
+        setupDialog(dialogView, day)
 
         // 닫기 버튼 클릭 시 다이얼로그 닫기
         val closeButton = dialogView.findViewById<Button>(R.id.closeButton)
@@ -185,11 +203,8 @@ class ScheduleFragment : Fragment() {
 
         val dialog = dialogBuilder.create()
 
-
-        // 다이얼로그 내의 뷰들을 참조해 날짜 정보 설정
-        val monYearTextView = dialogView.findViewById<TextView>(R.id.monYear)
-        monYearTextView.text = day.date.format(DateTimeFormatter.ofPattern("MM월 dd일 (E)").withLocale(Locale.KOREAN))
-        Log.d("customTag", "ScheduleFragment onViewCreated called; monYearTextView updated")
+        //날짜 설정
+        setupDialog(dialogView, day)
 
         //date 설정
         calendar = Calendar.getInstance()
@@ -249,31 +264,30 @@ class ScheduleFragment : Fragment() {
             val scheduleDate = calendar.time
 
             //데이터 저장(일정 추가)
-            CoroutineScope(Dispatchers.IO).launch {
+            uiScope.launch {
+                withContext(Dispatchers.IO) {
+                    if (memoText == "") {
+                        memoText = null
+                    }
 
-                if (memoText == ""){
-                    memoText = null
+                    scheduleRepository.insertSche(
+                        ScheduleDb(date = scheduleDate, title = titleText, auto = auto, notify = noti, memo = memoText, check = 0, time = time)
+                    )
                 }
-
-                scheduleRepository.insertSche(
-                    ScheduleDb(date = scheduleDate, title = titleText, auto = auto, notify = noti, memo = memoText, check = 0, time = time)
-                )
 
                 // UI 업데이트는 메인 스레드에서 수행
                 withContext(Dispatchers.Main) {
-                    // collect를 메인 스레드에서 수행
-                    CoroutineScope(Dispatchers.Main).launch {
-                        scheduleRepository.allSchedules().collect { scheList ->
-                            // 로그를 통해 결과를 확인
-                            scheList.forEach { scheduleDb ->
-                                Log.d("customTag", scheduleDb.toString())
-                            }
+                    scheduleRepository.allSchedules().collect { scheList ->
+                        // 로그를 통해 결과를 확인
+                        scheList.forEach { scheduleDb ->
+                            Log.d("customTag", scheduleDb.toString())
                         }
                     }
                 }
             }
             Log.d("customTag", "ScheduleFragment onViewCreated called; data saved")
         }
+
 
         //시간 등록 활성화 버튼
         val timeSwitch = dialogView.findViewById<com.google.android.material.switchmaterial.SwitchMaterial>(R.id.timeSwitch)

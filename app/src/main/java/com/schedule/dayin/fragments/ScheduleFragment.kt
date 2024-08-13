@@ -314,7 +314,9 @@ class ScheduleFragment : Fragment() {
                 if (isHourEditText) {
                     timeHourText = when {
                         isPm && value in 1..11 -> value + 12
+                        isPm && value == 12 -> 12
                         !isPm && value == 12 -> 0
+                        !isPm && value == 0 -> 0
                         else -> value
                     }
                     updateTextField(timeHourEditText, timeHourText, 24, errorMessage)

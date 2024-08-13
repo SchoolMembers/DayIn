@@ -21,6 +21,16 @@
             android:textSize="20sp" />
 
         <android.widget.Button
+            android:id="@+id/starButton"
+            android:layout_width="0dp"
+            android:layout_height="30dp"
+            android:layout_weight="0.5"
+            android:layout_gravity="center"
+            android:background="@drawable/star_border_icon"
+            android:backgroundTint="@color/yellow"
+            android:layout_marginEnd="15dp"/>
+
+        <android.widget.Button
             android:id="@+id/addButton"
             android:layout_width="0dp"
             android:layout_height="30dp"

@@ -1,6 +1,8 @@
 package com.schedule.dayin.fragments
 
+import android.app.Activity
 import android.app.AlertDialog
+import android.content.SharedPreferences
 import android.graphics.Color
 import android.os.Bundle
 import android.text.Editable
@@ -13,6 +15,8 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
+import androidx.core.content.ContextCompat
+import androidx.core.content.res.ResourcesCompat
 import androidx.fragment.app.Fragment
 import com.kizitonwose.calendar.core.CalendarDay
 import com.kizitonwose.calendar.core.CalendarMonth
@@ -33,6 +37,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.time.LocalDate
 import java.time.YearMonth
 import java.time.format.DateTimeFormatter
 import java.time.temporal.WeekFields
@@ -50,6 +55,39 @@ class ScheduleFragment : Fragment(), CoroutineScope {
 
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.Main + job
+
+    var currentDayViewContainer: DayViewContainer? = null
+
+
+
+    //중요 날짜 데이터 불러오는 함수
+    fun saveImportantDates(date: LocalDate) {
+        //저장 객체
+        val dateString = date.format(DateTimeFormatter.ISO_LOCAL_DATE)
+        val pref: SharedPreferences = requireContext().getSharedPreferences("pref", Activity.MODE_PRIVATE)
+        val editor: SharedPreferences.Editor = pref.edit()
+        editor.putInt(dateString, 0)
+        editor.apply()
+    }
+
+    fun checkImportantDates(date: LocalDate): Boolean {
+        val pref: SharedPreferences =  requireContext().getSharedPreferences("pref", Activity.MODE_PRIVATE)
+
+        val dateString = date.format(DateTimeFormatter.ISO_LOCAL_DATE)
+        val check = pref.getInt(dateString, -1)
+
+        return check != -1
+
+    }
+
+    fun removeImportantDates(date: LocalDate) {
+        val dateString = date.format(DateTimeFormatter.ISO_LOCAL_DATE)
+        val pref: SharedPreferences = requireContext().getSharedPreferences("pref", Activity.MODE_PRIVATE)
+        val editor: SharedPreferences.Editor = pref.edit()
+        editor.remove(dateString)
+        editor.apply()
+    }
+
 
     //database
     private lateinit var mainDb: MainDatabase
@@ -126,14 +164,11 @@ class ScheduleFragment : Fragment(), CoroutineScope {
             override fun create(view: View) = DayViewContainer(view)
             override fun bind(container: DayViewContainer, day: CalendarDay) {
                 container.textView.text = day.date.dayOfMonth.toString() //dayText에 날짜 표시
-                if (day.position == DayPosition.MonthDate) { //현재 날짜가 현재 월 내에 있을 때
-                    container.textView.setTextColor(Color.BLACK)
-                } else {
-                    container.textView.setTextColor(Color.GRAY)
-                }
+                daySet(container, day)
                 // 날짜 아이템 클릭 리스너 설정
                 container.view.setOnClickListener {
                     // 날짜 클릭 시 다이얼로그 표시
+                    currentDayViewContainer = container
                     showDateDialog(day)
                     Log.d("customTag", "ScheduleFragment onViewCreated called; day clicked")
                 }
@@ -175,6 +210,14 @@ class ScheduleFragment : Fragment(), CoroutineScope {
 
         val dialog = dialogBuilder.create()
 
+        //중요 버튼 초기 설정
+        val starButton = dialogView.findViewById<Button>(R.id.starButton)
+        starButton.background = if (checkImportantDates(day.date)) {
+            ResourcesCompat.getDrawable(resources, R.drawable.star_icon, null)
+        } else {
+            ResourcesCompat.getDrawable(resources, R.drawable.star_border_icon, null)
+        }
+
         //날짜 설정
         setupDialog(dialogView, day)
 
@@ -191,8 +234,46 @@ class ScheduleFragment : Fragment(), CoroutineScope {
             showAddDialog(day)
         }
 
+        //중요(별표) 버튼에 대한 리스너
+
+        starButton.setOnClickListener {
+            val container = currentDayViewContainer
+            if (checkImportantDates(day.date)) {
+                removeImportantDates(day.date)
+                starButton.background = ResourcesCompat.getDrawable(resources, R.drawable.star_border_icon, null)
+                Toast.makeText(context, R.string.star_cancel, Toast.LENGTH_SHORT).show()
+                Log.d("customTag", "ScheduleFragment onViewCreated called; starButton clicked")
+            } else {
+                saveImportantDates(day.date)
+                starButton.background = ResourcesCompat.getDrawable(resources, R.drawable.star_icon, null)
+                Toast.makeText(context, R.string.star, Toast.LENGTH_SHORT).show()
+                Log.d("customTag", "ScheduleFragment onViewCreated called; starButton cancel")
+            }
+            if (container != null) {
+                daySet(container, day)
+            }
+        }
+
         // 다이얼로그 표시
         dialog.show()
+    }
+
+    private fun daySet(container: DayViewContainer, day: CalendarDay) {
+        val color = ContextCompat.getColor(requireContext(), R.color.pink)
+        if (day.position == DayPosition.MonthDate) { //현재 날짜가 현재 월 내에 있을 때
+            if (checkImportantDates(day.date)) {
+                container.textView.setTextColor(color)
+            } else {
+                container.textView.setTextColor(Color.BLACK)
+            }
+
+        } else {
+            if (checkImportantDates(day.date)) { //현재 날짜가 현재 월 내에 없을 때
+                container.textView.setTextColor(color)
+            } else {
+                container.textView.setTextColor(Color.GRAY)
+            }
+        }
     }
 
     private fun showAddDialog(day: CalendarDay) {

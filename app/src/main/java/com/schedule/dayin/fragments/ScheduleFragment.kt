@@ -200,6 +200,7 @@ class ScheduleFragment : Fragment(), CoroutineScope {
                 }
 
                 container.click.setOnClickListener {
+                    currentDayViewContainer = container
                     showDateDialog(day)
                 }
 
@@ -470,10 +471,20 @@ class ScheduleFragment : Fragment(), CoroutineScope {
                     }
 
                     scheduleRepository.insertSche(
-                        ScheduleDb(date = scheduleDate, title = titleText, auto = auto, notify = noti, memo = memoText, check = 0, time = time)
+                        ScheduleDb(
+                            date = scheduleDate,
+                            title = titleText,
+                            auto = auto,
+                            notify = noti,
+                            memo = memoText,
+                            check = 0,
+                            time = time
+                        )
                     )
                 }
             }
+
+
             Log.d("customTag", "ScheduleFragment onViewCreated called; data saved")
         }
 

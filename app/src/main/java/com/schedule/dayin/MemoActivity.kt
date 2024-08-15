@@ -11,10 +11,12 @@ import androidx.core.view.WindowInsetsCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.schedule.dayin.databinding.ActivityMainBinding
 import com.schedule.dayin.databinding.MemoActivityBinding
+import com.schedule.dayin.databinding.MemoItemBinding
 
 class MemoActivity : AppCompatActivity() {
 
     private lateinit var binding: MemoActivityBinding
+    private lateinit var item_binding: MemoItemBinding
 
     val Memobinding by lazy { ActivityMainBinding.inflate(layoutInflater) }
 
@@ -23,6 +25,8 @@ class MemoActivity : AppCompatActivity() {
         enableEdgeToEdge()
 
         binding = MemoActivityBinding.inflate(layoutInflater)
+        item_binding = MemoItemBinding.inflate(layoutInflater)
+        setContentView(item_binding.root)
         setContentView(binding.root)
 
         //하단 바 활성화 상태
@@ -71,6 +75,11 @@ class MemoActivity : AppCompatActivity() {
 
         binding.recyclerViewMemo.layoutManager = LinearLayoutManager(this)
 
+        item_binding.memoCheckBox.isChecked = true
+
+        item_binding.memoCheckBox.setOnCheckedChangeListener { compoundButton, b ->
+            println(b)
+        }
     }
 
     fun loadData(): MutableList<MemoData>{

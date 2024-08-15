@@ -32,7 +32,7 @@ class ScheduleRepository(private val scheduleDbDao: ScheduleDbDao) {
         return scheduleDbDao.getAutoSche()
     }
 
-    fun getTimes(startDate: Long, endDate: Long): Flow<List<timeData>> {
+    fun getTimes(startDate: Long, endDate: Long): List<timeData> {
         return scheduleDbDao.getTitleTime(startDate, endDate)
     }
 }

@@ -244,15 +244,12 @@ class ScheduleFragment : Fragment(), CoroutineScope {
                 scheduleRepository.getTimes(
                     startZoneTime.toInstant().toEpochMilli(),
                     endZoneTime.toInstant().toEpochMilli()
-                ).collect { schedules ->
-                    Log.d("ScheduleData", "Schedules collected: $schedules")
-                    schedules.forEach { schedule ->
-                        val formattedTime = formatDate(schedule.date)
-                        if (schedule.time != 0) {
-                            dataList.add(Triple(schedule.id, schedule.title, formattedTime))
-                        } else {
-                            dataList.add(Triple(schedule.id, schedule.title, ""))
-                        }
+                ).forEach { schedule ->
+                    val formattedTime = formatDate(schedule.date)
+                    if (schedule.time != 0) {
+                        dataList.add(Triple(schedule.id, schedule.title, formattedTime))
+                    } else {
+                        dataList.add(Triple(schedule.id, schedule.title, ""))
                     }
                 }
             } catch (e: Exception) {

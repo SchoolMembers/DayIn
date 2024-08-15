@@ -15,6 +15,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.EditText
+import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.core.content.ContextCompat
@@ -196,6 +197,10 @@ class ScheduleFragment : Fragment(), CoroutineScope {
 
                 container.view.setOnClickListener {
                     currentDayViewContainer = container
+                    showDateDialog(day)
+                }
+
+                container.click.setOnClickListener {
                     showDateDialog(day)
                 }
 
@@ -646,6 +651,7 @@ class ScheduleFragment : Fragment(), CoroutineScope {
 
     class DayViewContainer(view: View) : ViewContainer(view) {
         val textView: TextView = view.findViewById(R.id.dayText)
+        val click: LinearLayout = view.findViewById(R.id.clickLayout)
         val scheduleRecyclerView: RecyclerView = view.findViewById(R.id.scheduleRecyclerView)
     }
 }

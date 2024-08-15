@@ -48,7 +48,7 @@ class ScheduleAdapter(private val context: Context, private val dataList: Mutabl
         }
 
         //날짜 칸 누른 상태일 때
-        if (!clickCheck) {
+        if (clickCheck) {
             binding.text.maxLines = 10
         }
         //달력 상태일 때
@@ -66,9 +66,9 @@ class ScheduleAdapter(private val context: Context, private val dataList: Mutabl
         //체크리스트 클릭
         binding.check.setOnCheckedChangeListener { buttonView, isChecked ->
             if (isChecked) {
-                saveCheck(id, isChecked)
+                saveCheck(id, true)
             } else {
-                //체크박스 해제.
+                saveCheck(id, false)
             }
         }
 

@@ -1,11 +1,11 @@
-package com.schedule.dayin
+package com.schedule.dayin.views
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
+import com.schedule.dayin.MemoData
 import com.schedule.dayin.databinding.MemoItemBinding
-import java.text.SimpleDateFormat
 
 class MemoCustomAdapter : RecyclerView.Adapter<Holder>() {
     var listData = mutableListOf<MemoData>()

@@ -11,6 +11,7 @@ import androidx.core.view.WindowInsetsCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.schedule.dayin.databinding.ActivityMainBinding
 import com.schedule.dayin.databinding.MemoActivityBinding
+import com.schedule.dayin.views.MemoCustomAdapter
 
 class MemoActivity : AppCompatActivity() {
 

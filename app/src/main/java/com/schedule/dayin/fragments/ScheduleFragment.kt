@@ -2,12 +2,14 @@ package com.schedule.dayin.fragments
 
 import android.app.Activity
 import android.app.AlertDialog
+import android.content.Context
 import android.content.SharedPreferences
 import android.graphics.Color
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
+import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -18,6 +20,8 @@ import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
 import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.kizitonwose.calendar.core.CalendarDay
 import com.kizitonwose.calendar.core.CalendarMonth
 import com.kizitonwose.calendar.core.DayPosition
@@ -32,6 +36,7 @@ import com.schedule.dayin.data.mainD.MainDatabase
 import com.schedule.dayin.data.mainD.ScheduleDb
 import com.schedule.dayin.data.mainD.repository.ScheduleRepository
 import com.schedule.dayin.databinding.FragmentSBinding
+import com.schedule.dayin.views.ScheduleAdapter
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -43,6 +48,12 @@ import java.time.format.DateTimeFormatter
 import java.time.temporal.WeekFields
 import java.util.*
 import kotlin.coroutines.CoroutineContext
+import com.schedule.dayin.views.ItemDecoration
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.invoke
+import kotlinx.coroutines.runBlocking
+import java.text.SimpleDateFormat
+import java.time.ZoneId
 
 
 class ScheduleFragment : Fragment(), CoroutineScope {
@@ -51,12 +62,16 @@ class ScheduleFragment : Fragment(), CoroutineScope {
     private val binding get() = _binding!!
 
     private var job = Job()
-    private val uiScope: CoroutineScope get() = CoroutineScope(Dispatchers.Main + job)
+    private val uiScope = CoroutineScope(Dispatchers.Main)
 
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.Main + job
 
     var currentDayViewContainer: DayViewContainer? = null
+
+    //데이터 체크
+    private var clickCheck = false
+    private lateinit var adapter: ScheduleAdapter
 
 
 
@@ -89,6 +104,8 @@ class ScheduleFragment : Fragment(), CoroutineScope {
     }
 
 
+
+
     //database
     private lateinit var mainDb: MainDatabase
     private lateinit var scheduleRepository: ScheduleRepository
@@ -117,6 +134,7 @@ class ScheduleFragment : Fragment(), CoroutineScope {
     ): View? {
         _binding = FragmentSBinding.inflate(inflater, container, false)
         Log.d("customTag", "ScheduleFragment onCreateView called")
+
         return binding.root
     }
 
@@ -163,16 +181,34 @@ class ScheduleFragment : Fragment(), CoroutineScope {
         calendarView.dayBinder = object : MonthDayBinder<DayViewContainer> {
             override fun create(view: View) = DayViewContainer(view)
             override fun bind(container: DayViewContainer, day: CalendarDay) {
-                container.textView.text = day.date.dayOfMonth.toString() //dayText에 날짜 표시
+                container.textView.text = day.date.dayOfMonth.toString() // 날짜 표시
+
                 daySet(container, day)
-                // 날짜 아이템 클릭 리스너 설정
+
+                container.scheduleRecyclerView.setHasFixedSize(true)
+                container.scheduleRecyclerView.addItemDecoration(
+                    ItemDecoration(TypedValue.applyDimension(
+                        TypedValue.COMPLEX_UNIT_DIP, 2f, resources.displayMetrics).toInt())
+                )
+
                 container.view.setOnClickListener {
-                    // 날짜 클릭 시 다이얼로그 표시
                     currentDayViewContainer = container
                     showDateDialog(day)
-                    Log.d("customTag", "ScheduleFragment onViewCreated called; day clicked")
                 }
 
+                // 비동기로 데이터 로드
+                uiScope.launch {
+                    val dataList = loadScheduleDataForDay(day)
+
+                    Log.d("ScheduleData", "Date: ${day.date}, Loaded Data: $dataList")
+                    if (dataList.isNotEmpty()) {
+                        val adapter = ScheduleAdapter(requireContext(), dataList, clickCheck)
+                        container.scheduleRecyclerView.adapter = adapter
+                        container.scheduleRecyclerView.layoutManager = LinearLayoutManager(context)
+                    } else {
+                        container.scheduleRecyclerView.adapter = null
+                    }
+                }
             }
         }
 
@@ -186,6 +222,44 @@ class ScheduleFragment : Fragment(), CoroutineScope {
 
     }
 
+    //리사이클러 데이터 세팅
+    suspend fun loadScheduleDataForDay(day: CalendarDay): MutableList<Triple<Long, String, String>> {
+        val date = day.date.toDate()
+        val dataList = mutableListOf<Triple<Long, String, String>>()
+
+        withContext(Dispatchers.IO) {
+            try {
+                scheduleRepository.getTimes(date).collect { schedules ->
+                    Log.d("ScheduleData", "Schedules collected: $schedules")
+                    schedules.forEach { schedule ->
+                        val formattedTime = formatDate(schedule.date)
+                        if (schedule.time != 0) {
+                            dataList.add(Triple(schedule.id, schedule.title, formattedTime))
+                        } else {
+                            dataList.add(Triple(schedule.id, schedule.title, ""))
+                        }
+                    }
+                }
+            } catch (e: Exception) {
+                Log.e("ScheduleData", "Error collecting schedules", e)
+            }
+        }
+
+        Log.d("ScheduleData", "Date: $date, DataList: $dataList")
+
+        return dataList
+    }
+
+    fun formatDate(date: Date?): String {
+        return date?.let {
+            val dateFormat = SimpleDateFormat("hh:mma", Locale.KOREAN)
+            dateFormat.format(it)
+        } ?: "" // null인 경우 빈 문자열 반환
+    }
+
+    fun LocalDate.toDate(): Date {
+        return Date.from(this.atStartOfDay(ZoneId.systemDefault()).toInstant())
+    }
 
     //프래그먼트의 뷰가 파괴될 때 호출. 리소스 해제 등
     override fun onDestroyView() {
@@ -209,6 +283,25 @@ class ScheduleFragment : Fragment(), CoroutineScope {
             .setView(dialogView)
 
         val dialog = dialogBuilder.create()
+
+        clickCheck = true
+
+        //리사이클러
+        val recyclerViewInDialog: RecyclerView = dialogView.findViewById(R.id.scheduleRecyclerView)
+        recyclerViewInDialog.layoutManager = LinearLayoutManager(context)
+        var datas = mutableListOf<Triple<Long, String, String>>()
+        uiScope.launch {
+            datas = loadScheduleDataForDay(day)
+        }
+        val adapter = ScheduleAdapter(requireContext(), datas, clickCheck)
+        recyclerViewInDialog.adapter = adapter
+
+        //리사이클러 뷰 데코레이션 지정
+        val verticalSpaceHeight = TypedValue.applyDimension(
+            TypedValue.COMPLEX_UNIT_DIP, 2f, resources.displayMetrics
+        ).toInt()
+
+        recyclerViewInDialog.addItemDecoration(ItemDecoration(verticalSpaceHeight))
 
         //중요 버튼 초기 설정
         val starButton = dialogView.findViewById<Button>(R.id.starButton)
@@ -256,6 +349,11 @@ class ScheduleFragment : Fragment(), CoroutineScope {
 
         // 다이얼로그 표시
         dialog.show()
+
+        //다이얼로그가 닫혔을 때
+        dialog.setOnDismissListener {
+            clickCheck = false
+        }
     }
 
     private fun daySet(container: DayViewContainer, day: CalendarDay) {
@@ -536,5 +634,6 @@ class ScheduleFragment : Fragment(), CoroutineScope {
 
     class DayViewContainer(view: View) : ViewContainer(view) {
         val textView: TextView = view.findViewById(R.id.dayText)
+        val scheduleRecyclerView: RecyclerView = view.findViewById(R.id.scheduleRecyclerView)
     }
 }

@@ -7,18 +7,18 @@
     android:orientation="horizontal">
 
     <TextView
+        android:fontFamily="@font/okticon_regular"
         android:id="@+id/textTitle"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_weight="6.5"
+        android:layout_weight="7"
         android:text="Title" />
 
-    <ImageView
-        android:id="@+id/cb1"
+    <CheckBox
+        android:id="@+id/memo_checkBox"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_weight="0.5"
-        app:srcCompat="@drawable/blank_checkbox_icon" />
+        android:layout_weight="0.1" />
 
 
 </LinearLayout>

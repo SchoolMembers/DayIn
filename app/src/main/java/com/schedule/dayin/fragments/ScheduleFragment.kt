@@ -473,16 +473,6 @@ class ScheduleFragment : Fragment(), CoroutineScope {
                         ScheduleDb(date = scheduleDate, title = titleText, auto = auto, notify = noti, memo = memoText, check = 0, time = time)
                     )
                 }
-
-                // UI 업데이트는 메인 스레드에서 수행
-                withContext(Dispatchers.Main) {
-                    scheduleRepository.allSchedules().collect { scheList ->
-                        // 로그를 통해 결과를 확인
-                        scheList.forEach { scheduleDb ->
-                            Log.d("customTag", scheduleDb.toString())
-                        }
-                    }
-                }
             }
             Log.d("customTag", "ScheduleFragment onViewCreated called; data saved")
         }

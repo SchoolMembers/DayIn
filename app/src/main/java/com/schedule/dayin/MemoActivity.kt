@@ -74,12 +74,6 @@ class MemoActivity : AppCompatActivity() {
         binding.recyclerViewMemo.adapter = adapter
 
         binding.recyclerViewMemo.layoutManager = LinearLayoutManager(this)
-
-        item_binding.memoCheckBox.isChecked = true
-
-        item_binding.memoCheckBox.setOnCheckedChangeListener { compoundButton, b ->
-            println(b)
-        }
     }
 
     fun loadData(): MutableList<MemoData>{

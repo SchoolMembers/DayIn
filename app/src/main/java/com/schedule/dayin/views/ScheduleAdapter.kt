@@ -2,13 +2,24 @@ package com.schedule.dayin.views
 
 import android.app.Activity
 import android.content.Context
+import android.content.Intent
 import android.content.SharedPreferences
+import android.content.res.Resources
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.core.content.ContentProviderCompat.requireContext
+import androidx.core.content.ContextCompat.startActivity
+import androidx.core.view.contains
+import androidx.core.view.marginEnd
 import androidx.recyclerview.widget.RecyclerView
+import com.kizitonwose.calendar.core.CalendarDay
+import com.schedule.dayin.MainActivity
+import com.schedule.dayin.databinding.FragmentSBinding
 import com.schedule.dayin.databinding.ScheduleRecyItemsBinding
+import java.time.LocalDate
+import java.time.ZoneId
+import java.util.Date
 
 class ScheduleAdapter(private val context: Context, private val dataList: MutableList<Triple<Long, String, String>>, private val clickCheck: Boolean): RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
@@ -47,21 +58,48 @@ class ScheduleAdapter(private val context: Context, private val dataList: Mutabl
             binding.time.visibility = ViewGroup.VISIBLE
         }
 
+        //dp 단위 px로 변환
+        fun dpToPx(dp: Int): Int {
+            return (dp * Resources.getSystem().displayMetrics.density).toInt()
+        }
+
+
+
+        val layoutParams = binding.layout.layoutParams as ViewGroup.MarginLayoutParams
+
         //날짜 칸 누른 상태일 때
         if (clickCheck) {
             binding.text.maxLines = 10
+
+            //레이아웃 클릭
+            binding.layout.isClickable = true
+            binding.layout.setOnClickListener {
+                if (clickCheck){
+                    Log.d("customTag", "ScheduleAdapter onBindViewHolder called; item clicked")
+                }
+            }
+
+            binding.check.visibility = ViewGroup.VISIBLE
+            binding.time.visibility = ViewGroup.VISIBLE
+
+            val marginInPx = dpToPx(5)
+            layoutParams.setMargins(marginInPx, marginInPx, marginInPx, marginInPx)
+            binding.layout.layoutParams = layoutParams
         }
         //달력 상태일 때
         else {
             binding.text.maxLines = 1
+
+            binding.layout.isClickable = false
+
+            binding.check.visibility = ViewGroup.GONE
+            binding.time.visibility = ViewGroup.GONE
+            val marginInPx = dpToPx(0)
+            layoutParams.setMargins(marginInPx, marginInPx, marginInPx, marginInPx)
+            binding.layout.layoutParams = layoutParams
         }
 
-        //레이아웃 클릭
-        binding.layout.setOnClickListener {
-            if (clickCheck){
-                Log.d("customTag", "ScheduleAdapter onBindViewHolder called; item clicked")
-            }
-        }
+
 
         //체크리스트 클릭
         binding.check.setOnCheckedChangeListener { buttonView, isChecked ->

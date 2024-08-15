@@ -188,7 +188,6 @@ class ScheduleFragment : Fragment(), CoroutineScope {
 
                 daySet(container, day)
 
-                container.scheduleRecyclerView.setHasFixedSize(true)
                 container.scheduleRecyclerView.addItemDecoration(
                     ItemDecoration(TypedValue.applyDimension(
                         TypedValue.COMPLEX_UNIT_DIP, 2f, resources.displayMetrics).toInt())
@@ -300,13 +299,17 @@ class ScheduleFragment : Fragment(), CoroutineScope {
 
         //리사이클러
         val recyclerViewInDialog: RecyclerView = dialogView.findViewById(R.id.scheduleRecyclerView)
-        recyclerViewInDialog.layoutManager = LinearLayoutManager(context)
-        var datas = mutableListOf<Triple<Long, String, String>>()
         uiScope.launch {
-            datas = loadScheduleDataForDay(day)
+            var datas = loadScheduleDataForDay(day)
+            if (datas.isNotEmpty()) {
+                val adapter = ScheduleAdapter(requireContext(), datas, clickCheck)
+                recyclerViewInDialog.adapter = adapter
+                recyclerViewInDialog.layoutManager = LinearLayoutManager(context)
+            } else {
+                recyclerViewInDialog.adapter = null
+            }
         }
-        val adapter = ScheduleAdapter(requireContext(), datas, clickCheck)
-        recyclerViewInDialog.adapter = adapter
+
 
         //리사이클러 뷰 데코레이션 지정
         val verticalSpaceHeight = TypedValue.applyDimension(

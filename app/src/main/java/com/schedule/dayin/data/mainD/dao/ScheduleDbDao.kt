@@ -31,6 +31,6 @@ interface ScheduleDbDao {
     @Query("SELECT * from scheduleDb WHERE auto <> 0 ORDER BY title ASC")
     fun getAutoSche(): Flow<List<ScheduleDb>>
 
-    @Query("SELECT id, date, title, time from scheduleDb WHERE date = :date ORDER BY date, id ASC")
-    fun getTitleTime(date: Date): Flow<List<timeData>>
+    @Query("SELECT id, date, title, time from scheduleDb WHERE :startDate <= date and date <= :endDate ORDER BY date, id ASC")
+    fun getTitleTime(startDate: Long, endDate: Long): Flow<List<timeData>>
 }

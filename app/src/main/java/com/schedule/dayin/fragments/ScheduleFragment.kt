@@ -50,9 +50,12 @@ import java.util.*
 import kotlin.coroutines.CoroutineContext
 import com.schedule.dayin.views.ItemDecoration
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.forEach
 import kotlinx.coroutines.invoke
 import kotlinx.coroutines.runBlocking
 import java.text.SimpleDateFormat
+import java.time.LocalDateTime
+import java.time.LocalTime
 import java.time.ZoneId
 
 
@@ -224,12 +227,24 @@ class ScheduleFragment : Fragment(), CoroutineScope {
 
     //리사이클러 데이터 세팅
     suspend fun loadScheduleDataForDay(day: CalendarDay): MutableList<Triple<Long, String, String>> {
-        val date = day.date.toDate()
+        val date = day.date
         val dataList = mutableListOf<Triple<Long, String, String>>()
+        // date == 2024-08-01 00:00:00 ~ 2024-08-01 23:59:59
+        // dateStart = 2024-08-01 00:00:00
+        // dateEnd = 2024-08-01 23:59:59
+
+        val startDate = date.atTime(LocalTime.MIN)
+        val endDate = date.atTime(LocalTime.MAX)
+
+        val startZoneTime = startDate.atZone(ZoneId.systemDefault())
+        val endZoneTime = endDate.atZone(ZoneId.systemDefault())
 
         withContext(Dispatchers.IO) {
             try {
-                scheduleRepository.getTimes(date).collect { schedules ->
+                scheduleRepository.getTimes(
+                    startZoneTime.toInstant().toEpochMilli(),
+                    endZoneTime.toInstant().toEpochMilli()
+                ).collect { schedules ->
                     Log.d("ScheduleData", "Schedules collected: $schedules")
                     schedules.forEach { schedule ->
                         val formattedTime = formatDate(schedule.date)
@@ -601,7 +616,7 @@ class ScheduleFragment : Fragment(), CoroutineScope {
                 time = 0
                 Log.d("customTag", "ScheduleFragment onViewCreated called; timeSwitch unchecked")
             }
-        
+
         }
 
         //메모

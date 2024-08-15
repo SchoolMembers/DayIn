@@ -39,6 +39,6 @@
         android:textSize="12sp"
         android:fontFamily="@font/okticon_regular"
         android:gravity="center"
-        android:text="00:00AM"
+        android:text=""
         android:visibility="gone"/>
 </LinearLayout>

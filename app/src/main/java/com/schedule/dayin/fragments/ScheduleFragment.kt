@@ -77,6 +77,8 @@ class ScheduleFragment : Fragment(), CoroutineScope {
     private var clickCheck = false
     private lateinit var adapter: ScheduleAdapter
 
+    var dataList = mutableListOf<Triple<Long, String, String>>()
+
 
 
     //중요 날짜 데이터 불러오는 함수
@@ -206,7 +208,7 @@ class ScheduleFragment : Fragment(), CoroutineScope {
 
                 // 비동기로 데이터 로드
                 uiScope.launch {
-                    val dataList = loadScheduleDataForDay(day)
+                    dataList = loadScheduleDataForDay(day)
 
                     Log.d("ScheduleData", "Date: ${day.date}, Loaded Data: $dataList")
                     if (dataList.isNotEmpty()) {
@@ -269,7 +271,7 @@ class ScheduleFragment : Fragment(), CoroutineScope {
 
     fun formatDate(date: Date?): String {
         return date?.let {
-            val dateFormat = SimpleDateFormat("hh:mma", Locale.KOREAN)
+            val dateFormat = SimpleDateFormat("HH:mm", Locale.KOREAN)
             dateFormat.format(it)
         } ?: "" // null인 경우 빈 문자열 반환
     }
@@ -305,10 +307,11 @@ class ScheduleFragment : Fragment(), CoroutineScope {
 
         //리사이클러
         val recyclerViewInDialog: RecyclerView = dialogView.findViewById(R.id.scheduleRecyclerView)
+
         uiScope.launch {
-            var datas = loadScheduleDataForDay(day)
-            if (datas.isNotEmpty()) {
-                val adapter = ScheduleAdapter(requireContext(), datas, clickCheck)
+            dataList = loadScheduleDataForDay(day)
+            if (dataList.isNotEmpty()) {
+                val adapter = ScheduleAdapter(requireContext(), dataList, clickCheck)
                 recyclerViewInDialog.adapter = adapter
                 recyclerViewInDialog.layoutManager = LinearLayoutManager(context)
             } else {

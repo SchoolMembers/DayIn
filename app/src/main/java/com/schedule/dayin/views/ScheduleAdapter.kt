@@ -79,6 +79,10 @@ class ScheduleAdapter(private val context: Context, private val dataList: Mutabl
                 }
             }
 
+            if (dataList[position].third == "") {
+                binding.time.visibility = ViewGroup.GONE
+            }
+
             binding.check.visibility = ViewGroup.VISIBLE
             binding.time.visibility = ViewGroup.VISIBLE
 

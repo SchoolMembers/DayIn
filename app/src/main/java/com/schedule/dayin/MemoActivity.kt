@@ -69,20 +69,21 @@ class MemoActivity : AppCompatActivity() {
             }
         }
 
-        var adapter = MemoCustomAdapter()
+        val adapter = MemoCustomAdapter()
         adapter.listData = loadData()
         binding.recyclerViewMemo.adapter = adapter
 
         binding.recyclerViewMemo.layoutManager = LinearLayoutManager(this)
     }
 
-    fun loadData(): MutableList<MemoData>{
+    private fun loadData(): MutableList<MemoData>{
         val data : MutableList<MemoData> = mutableListOf()
 
         for(no in 1..20) {
             val title = "예제 ${no} 입니다"
             val date = System.currentTimeMillis()
-            var memo = MemoData(no, title, date)
+            val isChecked = false
+            val memo = MemoData(no, title, date, isChecked)
             data.add(memo)
         }
         return data

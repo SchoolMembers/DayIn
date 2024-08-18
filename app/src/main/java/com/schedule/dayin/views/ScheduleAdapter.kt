@@ -2,29 +2,23 @@ package com.schedule.dayin.views
 
 import android.app.Activity
 import android.content.Context
-import android.content.Intent
 import android.content.SharedPreferences
 import android.content.res.Resources
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.core.content.ContentProviderCompat.requireContext
-import androidx.core.content.ContextCompat.startActivity
-import androidx.core.view.contains
-import androidx.core.view.marginEnd
 import androidx.recyclerview.widget.RecyclerView
-import com.kizitonwose.calendar.core.CalendarDay
-import com.schedule.dayin.MainActivity
-import com.schedule.dayin.databinding.FragmentSBinding
 import com.schedule.dayin.databinding.ScheduleRecyItemsBinding
-import java.time.LocalDate
-import java.time.ZoneId
-import java.util.Date
 
-class ScheduleAdapter(private val context: Context, private val dataList: MutableList<Triple<Long, String, String>>, private val clickCheck: Boolean): RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class ScheduleAdapter(private val context: Context, private var dataList: MutableList<Triple<Long, String, String>>, private val clickCheck: Boolean): RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     private val sharedPreferences: SharedPreferences by lazy {
         context.getSharedPreferences("pref", Activity.MODE_PRIVATE)
+    }
+
+    fun updateData(newData: MutableList<Triple<Long, String, String>>) {
+        dataList = newData
+        notifyDataSetChanged()
     }
 
     // SharedPreferences Editor 객체

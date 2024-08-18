@@ -35,4 +35,8 @@ class ScheduleRepository(private val scheduleDbDao: ScheduleDbDao) {
     fun getTimes(startDate: Long, endDate: Long): List<timeData> {
         return scheduleDbDao.getTitleTime(startDate, endDate)
     }
+
+    fun getLast(): List<timeData> {
+        return scheduleDbDao.getLast()
+    }
 }

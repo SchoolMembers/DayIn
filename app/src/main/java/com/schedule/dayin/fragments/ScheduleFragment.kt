@@ -73,11 +73,14 @@ class ScheduleFragment : Fragment(), CoroutineScope {
 
     var currentDayViewContainer: DayViewContainer? = null
 
+    var loadContainer: DayViewContainer? = null
+
     //데이터 체크
     private var clickCheck = false
+
     private lateinit var adapter: ScheduleAdapter
 
-    var dataList = mutableListOf<Triple<Long, String, String>>()
+    private var dataList = mutableListOf<Triple<Long, String, String>>()
 
 
 
@@ -191,6 +194,24 @@ class ScheduleFragment : Fragment(), CoroutineScope {
 
                 daySet(container, day)
 
+                // 비동기로 데이터 로드
+                uiScope.launch {
+                    val dataList = loadScheduleDataForDay(day)
+
+                    Log.d("ScheduleData", "Date: ${day.date}, Loaded Data: $dataList")
+                    if (dataList.isNotEmpty()) {
+                        if (container.scheduleRecyclerView.adapter == null) {
+                            adapter = ScheduleAdapter(requireContext(), dataList, clickCheck)
+                            container.scheduleRecyclerView.adapter = adapter
+                            container.scheduleRecyclerView.layoutManager = LinearLayoutManager(context)
+                        } else {
+                            (container.scheduleRecyclerView.adapter as ScheduleAdapter).updateData(dataList)
+                        }
+                    } else {
+                        container.scheduleRecyclerView.adapter = null
+                    }
+                }
+
                 container.scheduleRecyclerView.addItemDecoration(
                     ItemDecoration(TypedValue.applyDimension(
                         TypedValue.COMPLEX_UNIT_DIP, 2f, resources.displayMetrics).toInt())
@@ -198,27 +219,16 @@ class ScheduleFragment : Fragment(), CoroutineScope {
 
                 container.view.setOnClickListener {
                     currentDayViewContainer = container
+                    loadContainer = container
                     showDateDialog(day)
                 }
 
                 container.click.setOnClickListener {
                     currentDayViewContainer = container
+                    loadContainer = container
                     showDateDialog(day)
                 }
 
-                // 비동기로 데이터 로드
-                uiScope.launch {
-                    dataList = loadScheduleDataForDay(day)
-
-                    Log.d("ScheduleData", "Date: ${day.date}, Loaded Data: $dataList")
-                    if (dataList.isNotEmpty()) {
-                        val adapter = ScheduleAdapter(requireContext(), dataList, clickCheck)
-                        container.scheduleRecyclerView.adapter = adapter
-                        container.scheduleRecyclerView.layoutManager = LinearLayoutManager(context)
-                    } else {
-                        container.scheduleRecyclerView.adapter = null
-                    }
-                }
             }
         }
 
@@ -236,9 +246,6 @@ class ScheduleFragment : Fragment(), CoroutineScope {
     suspend fun loadScheduleDataForDay(day: CalendarDay): MutableList<Triple<Long, String, String>> {
         val date = day.date
         val dataList = mutableListOf<Triple<Long, String, String>>()
-        // date == 2024-08-01 00:00:00 ~ 2024-08-01 23:59:59
-        // dateStart = 2024-08-01 00:00:00
-        // dateEnd = 2024-08-01 23:59:59
 
         val startDate = date.atTime(LocalTime.MIN)
         val endDate = date.atTime(LocalTime.MAX)
@@ -276,9 +283,6 @@ class ScheduleFragment : Fragment(), CoroutineScope {
         } ?: "" // null인 경우 빈 문자열 반환
     }
 
-    fun LocalDate.toDate(): Date {
-        return Date.from(this.atStartOfDay(ZoneId.systemDefault()).toInstant())
-    }
 
     //프래그먼트의 뷰가 파괴될 때 호출. 리소스 해제 등
     override fun onDestroyView() {
@@ -311,8 +315,8 @@ class ScheduleFragment : Fragment(), CoroutineScope {
         uiScope.launch {
             dataList = loadScheduleDataForDay(day)
             if (dataList.isNotEmpty()) {
-                val adapter = ScheduleAdapter(requireContext(), dataList, clickCheck)
-                recyclerViewInDialog.adapter = adapter
+                val adapterD = ScheduleAdapter(requireContext(), dataList, clickCheck)
+                recyclerViewInDialog.adapter = adapterD
                 recyclerViewInDialog.layoutManager = LinearLayoutManager(context)
             } else {
                 recyclerViewInDialog.adapter = null
@@ -343,12 +347,15 @@ class ScheduleFragment : Fragment(), CoroutineScope {
         closeButton.setOnClickListener {
             dialog.dismiss()
             Log.d("customTag", "ScheduleFragment onViewCreated called; dialog closed")
+            clickCheck = false
         }
 
         // 추가 버튼에 대한 클릭 리스너
         val addButton = dialogView.findViewById<Button>(R.id.addButton)
         addButton.setOnClickListener {
             showAddDialog(day)
+            dialog.dismiss()
+            clickCheck = false
         }
 
         //중요(별표) 버튼에 대한 리스너
@@ -371,13 +378,13 @@ class ScheduleFragment : Fragment(), CoroutineScope {
             }
         }
 
-        // 다이얼로그 표시
-        dialog.show()
-
         //다이얼로그가 닫혔을 때
         dialog.setOnDismissListener {
             clickCheck = false
         }
+
+        // 다이얼로그 표시
+        dialog.show()
     }
 
     private fun daySet(container: DayViewContainer, day: CalendarDay) {
@@ -405,6 +412,8 @@ class ScheduleFragment : Fragment(), CoroutineScope {
             .setView(dialogView)
 
         val dialog = dialogBuilder.create()
+        noti = 0
+        time = 0
 
         //날짜 설정
         setupDialog(dialogView, day)
@@ -417,6 +426,8 @@ class ScheduleFragment : Fragment(), CoroutineScope {
         val closeButton = dialogView.findViewById<Button>(R.id.closeButton)
         closeButton.setOnClickListener {
             dialog.dismiss()
+            noti = 0
+            time = 0
             Log.d("customTag", "ScheduleFragment onViewCreated called; dialog closed")
         }
 
@@ -466,6 +477,7 @@ class ScheduleFragment : Fragment(), CoroutineScope {
             Log.d("customTag", "ScheduleFragment onViewCreated called; check button clicked")
             val scheduleDate = calendar.time
 
+
             //데이터 저장(일정 추가)
             uiScope.launch {
                 withContext(Dispatchers.IO) {
@@ -485,8 +497,27 @@ class ScheduleFragment : Fragment(), CoroutineScope {
                         )
                     )
                 }
-            }
+                withContext(Dispatchers.Main) {
+                    val container = loadContainer
+                    if (container != null) {
+                        val dataList = loadScheduleDataForDay(day)
 
+                        Log.d("ScheduleData", "Date: ${day.date}, Loaded Data: $dataList")
+                        if (dataList.isNotEmpty()) {
+                            if (container.scheduleRecyclerView.adapter == null) {
+                                adapter = ScheduleAdapter(requireContext(), dataList, clickCheck)
+                                container.scheduleRecyclerView.adapter = adapter
+                                container.scheduleRecyclerView.layoutManager = LinearLayoutManager(context)
+                            } else {
+                                (container.scheduleRecyclerView.adapter as ScheduleAdapter).updateData(dataList)
+                            }
+
+                        } else {
+                            container.scheduleRecyclerView.adapter = null
+                        }
+                    }
+                }
+            }
 
             Log.d("customTag", "ScheduleFragment onViewCreated called; data saved")
         }
@@ -640,6 +671,10 @@ class ScheduleFragment : Fragment(), CoroutineScope {
             override fun afterTextChanged(s: Editable?) {}
         })
 
+        // 다이얼로그가 닫힐 때
+        dialog.setOnDismissListener {
+            clickCheck = false
+        }
 
         // 다이얼로그 표시
         dialog.show()

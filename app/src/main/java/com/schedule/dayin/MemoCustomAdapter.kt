@@ -21,7 +21,7 @@ class MemoCustomAdapter : RecyclerView.Adapter<Holder>() {
     }
 
     override fun onBindViewHolder(holder: Holder, position: Int) {
-        val memo = listData.get(position)
+        val memo = listData[position]
         holder.setMemo(memo)
     }
 }

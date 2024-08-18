@@ -2,7 +2,6 @@ package com.schedule.dayin.fragments
 
 import android.app.Activity
 import android.app.AlertDialog
-import android.content.Context
 import android.content.SharedPreferences
 import android.graphics.Color
 import android.os.Bundle
@@ -50,12 +49,7 @@ import java.time.temporal.WeekFields
 import java.util.*
 import kotlin.coroutines.CoroutineContext
 import com.schedule.dayin.views.ItemDecoration
-import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.forEach
-import kotlinx.coroutines.invoke
-import kotlinx.coroutines.runBlocking
 import java.text.SimpleDateFormat
-import java.time.LocalDateTime
 import java.time.LocalTime
 import java.time.ZoneId
 

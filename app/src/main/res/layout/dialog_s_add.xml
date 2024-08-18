@@ -27,7 +27,7 @@
             android:layout_height="30dp"
             android:layout_weight="0.5"
             android:layout_gravity="center"
-            android:background="@drawable/check_icon"
+            android:background="@drawable/save_icon"
             android:layout_marginEnd="15dp"/>
 
         <android.widget.Button

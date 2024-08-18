@@ -33,7 +33,7 @@ class ScheduleAdapter(private val context: Context, private var dataList: Mutabl
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        val  binding = (holder as ScheduleViewHolder).binding
+        val binding = (holder as ScheduleViewHolder).binding
 
 
 

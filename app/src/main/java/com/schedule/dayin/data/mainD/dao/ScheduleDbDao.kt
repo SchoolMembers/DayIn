@@ -9,7 +9,6 @@ import androidx.room.Update
 import com.schedule.dayin.data.mainD.ScheduleDb
 import com.schedule.dayin.data.mainD.timeData
 import kotlinx.coroutines.flow.Flow
-import java.util.Date
 
 @Dao
 interface ScheduleDbDao {

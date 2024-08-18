@@ -25,15 +25,4 @@
         android:layout_height="wrap_content"
         android:orientation="vertical" />
 
-    <!-- 추가 버튼 -->
-    <ImageView
-        android:id="@+id/addMoneyButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="end|center"
-        android:gravity="center"
-        android:src="@drawable/ic_add"
-        android:padding="8dp"
-        android:visibility="gone" /> <!-- 기본적으로는 숨겨둠 -->
-
 </LinearLayout>

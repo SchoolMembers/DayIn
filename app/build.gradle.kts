@@ -6,16 +6,18 @@ plugins {
 }
 
 android {
-    namespace = "com.example.dayin"
+    namespace = "com.schedule.dayin"
     compileSdk = 34
     viewBinding.isEnabled = true
 
     defaultConfig {
-        applicationId = "com.example.dayin"
+        applicationId = "com.schedule.dayin"
         minSdk = 28
         targetSdk = 34
         versionCode = 1
         versionName = "1.0"
+
+        multiDexEnabled = true
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -43,6 +45,7 @@ dependencies {
     implementation(libs.material)
     implementation(libs.androidx.activity)
     implementation(libs.androidx.constraintlayout)
+    implementation(libs.play.services.maps)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -54,4 +57,7 @@ dependencies {
     implementation("androidx.room:room-runtime:2.6.1")
     implementation("androidx.room:room-ktx:2.6.1")
     kapt("androidx.room:room-compiler:2.6.1")
+
+    implementation ("com.kakao.sdk:v2-all:2.20.3")
+
 }

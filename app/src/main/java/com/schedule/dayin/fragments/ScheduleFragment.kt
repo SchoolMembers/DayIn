@@ -195,22 +195,7 @@ class ScheduleFragment : Fragment(), CoroutineScope {
                 daySet(container, day)
 
                 // 비동기로 데이터 로드
-                uiScope.launch {
-                    val dataList = loadScheduleDataForDay(day)
-
-                    Log.d("ScheduleData", "Date: ${day.date}, Loaded Data: $dataList")
-                    if (dataList.isNotEmpty()) {
-                        if (container.scheduleRecyclerView.adapter == null) {
-                            adapter = ScheduleAdapter(requireContext(), dataList, clickCheck)
-                            container.scheduleRecyclerView.adapter = adapter
-                            container.scheduleRecyclerView.layoutManager = LinearLayoutManager(context)
-                        } else {
-                            (container.scheduleRecyclerView.adapter as ScheduleAdapter).updateData(dataList)
-                        }
-                    } else {
-                        container.scheduleRecyclerView.adapter = null
-                    }
-                }
+                dataLoad(container, day)
 
                 container.scheduleRecyclerView.addItemDecoration(
                     ItemDecoration(TypedValue.applyDimension(
@@ -240,6 +225,26 @@ class ScheduleFragment : Fragment(), CoroutineScope {
             }
         }
 
+    }
+
+    //리사이클러 비동기 데이터 로그 함수
+    fun dataLoad(container: DayViewContainer, day: CalendarDay) {
+        uiScope.launch {
+            val dataList = loadScheduleDataForDay(day)
+
+            Log.d("ScheduleData", "Date: ${day.date}, Loaded Data: $dataList")
+            if (dataList.isNotEmpty()) {
+                if (container.scheduleRecyclerView.adapter == null) {
+                    adapter = ScheduleAdapter(requireContext(), dataList, clickCheck)
+                    container.scheduleRecyclerView.adapter = adapter
+                    container.scheduleRecyclerView.layoutManager = LinearLayoutManager(context)
+                } else {
+                    (container.scheduleRecyclerView.adapter as ScheduleAdapter).updateData(dataList)
+                }
+            } else {
+                container.scheduleRecyclerView.adapter = null
+            }
+        }
     }
 
     //리사이클러 데이터 세팅
@@ -499,23 +504,7 @@ class ScheduleFragment : Fragment(), CoroutineScope {
                 }
                 withContext(Dispatchers.Main) {
                     val container = loadContainer
-                    if (container != null) {
-                        val dataList = loadScheduleDataForDay(day)
-
-                        Log.d("ScheduleData", "Date: ${day.date}, Loaded Data: $dataList")
-                        if (dataList.isNotEmpty()) {
-                            if (container.scheduleRecyclerView.adapter == null) {
-                                adapter = ScheduleAdapter(requireContext(), dataList, clickCheck)
-                                container.scheduleRecyclerView.adapter = adapter
-                                container.scheduleRecyclerView.layoutManager = LinearLayoutManager(context)
-                            } else {
-                                (container.scheduleRecyclerView.adapter as ScheduleAdapter).updateData(dataList)
-                            }
-
-                        } else {
-                            container.scheduleRecyclerView.adapter = null
-                        }
-                    }
+                    dataLoad(container!!, day)
                 }
             }
 

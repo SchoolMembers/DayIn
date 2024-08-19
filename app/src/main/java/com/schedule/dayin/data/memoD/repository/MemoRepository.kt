@@ -1,7 +1,6 @@
 package com.schedule.dayin.data.memoD.repository
 
 import com.schedule.dayin.data.memoD.MemoDb
-import com.schedule.dayin.data.memoD.TitleData
 import com.schedule.dayin.data.memoD.dao.MemoDbDao
 import kotlinx.coroutines.flow.Flow
 
@@ -27,7 +26,7 @@ class MemoRepository(private val memoDao: MemoDbDao) {
         return memoDao.getMemo(memoId)
     }
 
-    fun getMemoTitles(): Flow<List<TitleData>> {
+    fun getMemoTitles(): Flow<List<MemoDb>> {
         return memoDao.getMemoTitle()
     }
 }

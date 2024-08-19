@@ -9,15 +9,28 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.schedule.dayin.databinding.ActivityMainBinding
+import com.schedule.dayin.data.memoD.repository.MemoRepository
 import com.schedule.dayin.databinding.MemoActivityBinding
 import com.schedule.dayin.views.MemoCustomAdapter
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+
 
 class MemoActivity : AppCompatActivity() {
 
     private lateinit var binding: MemoActivityBinding
 
-    val Memobinding by lazy { ActivityMainBinding.inflate(layoutInflater) }
+    //리사이클러
+    private lateinit var adapter: MemoCustomAdapter
+    private var dataList = mutableListOf<Triple<Long, String, String>>()
+    private var checkList = mutableListOf<Long>()
+    private val uiScope = CoroutineScope(Dispatchers.Main)
+
+    private lateinit var memoRepository: MemoRepository
+
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -25,6 +38,11 @@ class MemoActivity : AppCompatActivity() {
 
         binding = MemoActivityBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        //db
+        val appController = this.application as AppController
+        val memoDb = appController.memoDb
+        memoRepository = MemoRepository(memoDb.memoDbDao())
 
         //하단 바 활성화 상태
         binding.bottomNavigation.selectedItemId = R.id.barMemo
@@ -42,6 +60,15 @@ class MemoActivity : AppCompatActivity() {
             view.setPadding(0, 0, 0, systemBarsInsets.bottom)
             insets
         }
+
+        //리사이클러 데이터 로드
+        uiScope.launch {
+            loadData()
+        }
+
+        adapter = MemoCustomAdapter(this, dataList, checkList)
+        binding.recyclerViewMemo.adapter = adapter
+        binding.recyclerViewMemo.layoutManager = LinearLayoutManager(this)
 
         //화면 전환 animation setting
         val options = ActivityOptions.makeCustomAnimation(this, 0, 0)
@@ -66,23 +93,39 @@ class MemoActivity : AppCompatActivity() {
             }
         }
 
-        var adapter = MemoCustomAdapter()
-        adapter.listData = loadData()
-        binding.recyclerViewMemo.adapter = adapter
 
-        binding.recyclerViewMemo.layoutManager = LinearLayoutManager(this)
-
-    }
-
-    fun loadData(): MutableList<MemoData>{
-        val data : MutableList<MemoData> = mutableListOf()
-
-        for(no in 1..20) {
-            val title = "예제 ${no} 입니다"
-            val date = System.currentTimeMillis()
-            var memo = MemoData(no, title, date)
-            data.add(memo)
+        //메모 추가
+        binding.btnPlus.setOnClickListener {
+            val intent = Intent(this, MemoEditActivity::class.java)
+            startActivity(intent, options.toBundle())
+            Log.d("customTag", "MemoActivity onCreate called; click plus button")
         }
-        return data
+
     }
+
+    override fun onResume() {
+        super.onResume()
+        // 액티비티가 다시 포커스를 얻을 때 데이터 로드 및 UI 갱신
+        uiScope.launch {
+            dataList.clear() // 이전 데이터 삭제
+            loadData()
+        }
+    }
+
+
+    //메모 데이터 불러오는 함수
+    private suspend fun loadData() {
+        withContext(Dispatchers.IO) {
+            memoRepository.getMemoTitles().collect { memoList ->
+                dataList.clear()
+                memoList.forEach { memo ->
+                    dataList.add(Triple(memo.id, memo.title, memo.des))
+                }
+                withContext(Dispatchers.Main) {
+                    adapter.notifyDataSetChanged()
+                }
+            }
+        }
+    }
+
 }

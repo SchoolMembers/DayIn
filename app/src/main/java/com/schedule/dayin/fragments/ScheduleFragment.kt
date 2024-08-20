@@ -197,10 +197,6 @@ class ScheduleFragment : Fragment(), CoroutineScope {
                 // 비동기로 데이터 로드
                 dataLoad(container, day)
 
-                container.scheduleRecyclerView.addItemDecoration(
-                    ItemDecoration(TypedValue.applyDimension(
-                        TypedValue.COMPLEX_UNIT_DIP, 2f, resources.displayMetrics).toInt())
-                )
 
                 container.view.setOnClickListener {
                     currentDayViewContainer = container
@@ -267,7 +263,9 @@ class ScheduleFragment : Fragment(), CoroutineScope {
 
             }
 
-            container.setHeight(cellHeight)
+            withContext(Dispatchers.Main) {
+                container.setHeight(cellHeight)
+            }
 
         }
     }

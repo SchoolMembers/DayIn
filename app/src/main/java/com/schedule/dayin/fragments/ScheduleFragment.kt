@@ -111,7 +111,7 @@ class ScheduleFragment : Fragment(), CoroutineScope {
     //몇 번째 주?
     private var weekOfMonth = 0
     //셀 높이 조정
-    private var cellHeight = 350
+    private var cellHeight = 300
     private var dataSize = 0
 
 
@@ -220,7 +220,7 @@ class ScheduleFragment : Fragment(), CoroutineScope {
                 Log.d("customTag", "ScheduleFragment onViewCreated called; barDateYear updated")
 
                 weekOfMonth = 0
-                cellHeight = 350
+                cellHeight = 300
                 dataSize = 0
             }
         }
@@ -238,7 +238,7 @@ class ScheduleFragment : Fragment(), CoroutineScope {
 
             if (todayWeek != weekOfMonth) {
                 weekOfMonth = todayWeek
-                cellHeight = 350
+                cellHeight = 300
                 dataSize = 0
             }
 

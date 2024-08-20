@@ -261,7 +261,10 @@ class ScheduleFragment : Fragment(), CoroutineScope {
 
             if (dataList.size > dataSize && todayWeek == weekOfMonth) {
                 dataSize = dataList.size
-                cellHeight = (dataSize + 1) * 73
+                if (dataList.size > 2) {
+                    cellHeight = (dataSize + 1) * 73
+                }
+
             }
 
             container.setHeight(cellHeight)

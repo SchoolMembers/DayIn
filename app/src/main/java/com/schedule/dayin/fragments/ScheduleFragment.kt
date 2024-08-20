@@ -485,6 +485,12 @@ class ScheduleFragment : Fragment(), CoroutineScope {
             Log.d("customTag", "ScheduleFragment onViewCreated called; infoButton1 clicked")
         }
 
+        //시간 등록 활성화 버튼
+        val timeSwitch = dialogView.findViewById<com.google.android.material.switchmaterial.SwitchMaterial>(R.id.timeSwitch)
+
+        val timeHourEditText = dialogView.findViewById<EditText>(R.id.timeHour)
+        val timeMinEditText = dialogView.findViewById<EditText>(R.id.timeMin)
+
 
         // 체크 버튼
         val checkButton = dialogView.findViewById<Button>(R.id.checkButton)
@@ -524,14 +530,11 @@ class ScheduleFragment : Fragment(), CoroutineScope {
         }
 
 
-        //시간 등록 활성화 버튼
-        val timeSwitch = dialogView.findViewById<com.google.android.material.switchmaterial.SwitchMaterial>(R.id.timeSwitch)
+        //시간 등록 활성화 이벤트
         val timeLayout = dialogView.findViewById<View>(R.id.timeLayout)
-        val timeAmPm = dialogView.findViewById<com.google.android.material.button.MaterialButtonToggleGroup>(R.id.timeAmPm)
-        val timeHourEditText = dialogView.findViewById<EditText>(R.id.timeHour)
-        val timeMinEditText = dialogView.findViewById<EditText>(R.id.timeMin)
 
-        var textWatcher: TextWatcher? = null
+
+        val textWatcher: TextWatcher? = null
 
         var timeHourText = 0
         var timeMinText = 0
@@ -554,21 +557,18 @@ class ScheduleFragment : Fragment(), CoroutineScope {
         }
 
         // 시간 EditText에 대한 공통 TextWatcher 생성 함수
-        fun createTextWatcher(isPm: Boolean, isHourEditText: Boolean) = object : TextWatcher {
+        fun createTextWatcher(isHourEditText: Boolean) = object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 val value = s?.toString()?.toIntOrNull() ?: 0
 
                 if (isHourEditText) {
-                    timeHourText = when {
-                        isPm && value in 1..11 -> value + 12
-                        isPm && value == 12 -> 12
-                        !isPm && value == 12 -> 0
-                        !isPm && value == 0 -> 0
+                    timeHourText =  when {
+                        value == 24 -> 0
                         else -> value
                     }
-                    updateTextField(timeHourEditText, timeHourText, 24, errorMessage)
+                    updateTextField(timeHourEditText, timeHourText, 25, errorMessage)
                 } else {
                     timeMinText = value
                     updateTextField(timeMinEditText, timeMinText, 60, errorMessage)
@@ -588,44 +588,20 @@ class ScheduleFragment : Fragment(), CoroutineScope {
             if (isChecked){
                 timeLayout.visibility = View.VISIBLE
                 time = 1
-                timeAmPmIndex = 0 //0은 am, 1은 pm
+
+                timeHourText = 0
+                timeMinText = 0
+
+                calendar.set(Calendar.HOUR_OF_DAY, 0)
+                calendar.set(Calendar.MINUTE, 0)
+
                 Log.d("customTag", "ScheduleFragment onViewCreated called; timeSwitch checked")
 
                 //시간 설정------------------------------------------------------------------------------------------
 
-                if (timeAmPmIndex == 0) {
-                    timeHourEditText.addTextChangedListener(createTextWatcher(isPm = false, isHourEditText = true))
-                    timeMinEditText.addTextChangedListener(createTextWatcher(isPm = false, isHourEditText = false))
-                } else {
-                    timeHourEditText.addTextChangedListener(createTextWatcher(isPm = true, isHourEditText = true))
-                    timeMinEditText.addTextChangedListener(createTextWatcher(isPm = true, isHourEditText = false))
-                }
+                timeHourEditText.addTextChangedListener(createTextWatcher(isHourEditText = true))
+                timeMinEditText.addTextChangedListener(createTextWatcher(isHourEditText = false))
 
-                timeAmPm.addOnButtonCheckedListener { group, checkedId, isChecked ->
-                    if (isChecked) {
-                        when (checkedId) {
-                            R.id.timeAm -> {
-                                Log.d("customTag", "ScheduleFragment onViewCreated called; timeAm clicked")
-                                timeAmPmIndex = 0
-                                if (timeHourText == 12) {
-                                    timeHourText = 0
-                                }
-                                timeHourEditText.addTextChangedListener(createTextWatcher(isPm = false, isHourEditText = true))
-                                timeMinEditText.addTextChangedListener(createTextWatcher(isPm = false, isHourEditText = false))
-                            }
-                            R.id.timePm -> {
-                                Log.d("customTag", "ScheduleFragment onViewCreated called; timePm clicked")
-                                timeAmPmIndex = 1
-                                if (timeHourText in 1..11) {
-                                    timeHourText += 12
-                                }
-                                timeHourEditText.addTextChangedListener(createTextWatcher(isPm = true, isHourEditText = true))
-                                timeMinEditText.addTextChangedListener(createTextWatcher(isPm = true, isHourEditText = false))
-                            }
-                        }
-                        calendar.set(Calendar.HOUR_OF_DAY, timeHourText)
-                    }
-                }
 
                 //알림 설정------------------------------------------------------------------------------------------
                 notifyToggle.addOnButtonCheckedListener { group, checkedId, isChecked ->

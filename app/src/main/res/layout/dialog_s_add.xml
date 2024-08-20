@@ -200,30 +200,6 @@
                         android:inputType="number"
                         android:maxLines="1"
                         android:maxLength="2"/>
-                    <com.google.android.material.button.MaterialButtonToggleGroup
-                        android:id="@+id/timeAmPm"
-                        android:layout_width="100dp"
-                        android:layout_height="30dp"
-                        app:checkedButton="@id/timeAm"
-                        app:singleSelection="true"
-                        android:layout_marginStart="28dp"
-                        app:selectionRequired="true">
-                        <Button
-                            android:id="@+id/timeAm"
-                            android:layout_width="0dp"
-                            android:layout_weight="1"
-                            android:layout_height="wrap_content"
-                            android:text="@string/timeAm"
-                            style="@style/Widget.App.Button.OutlinedButton.IconOnly"
-                            android:maxLines="1" />
-                        <Button
-                            android:id="@+id/timePm"
-                            android:layout_width="0dp"
-                            android:layout_weight="1"
-                            android:layout_height="wrap_content"
-                            android:text="@string/timePm"
-                            style="@style/Widget.App.Button.OutlinedButton.IconOnly" />
-                    </com.google.android.material.button.MaterialButtonToggleGroup>
                 </LinearLayout>
                 <LinearLayout
                         android:layout_width="wrap_content"

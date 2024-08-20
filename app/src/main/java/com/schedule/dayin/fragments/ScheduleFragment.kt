@@ -485,6 +485,12 @@ class ScheduleFragment : Fragment(), CoroutineScope {
             Log.d("customTag", "ScheduleFragment onViewCreated called; infoButton1 clicked")
         }
 
+        //시간 등록 활성화 버튼
+        val timeSwitch = dialogView.findViewById<com.google.android.material.switchmaterial.SwitchMaterial>(R.id.timeSwitch)
+
+        val timeHourEditText = dialogView.findViewById<EditText>(R.id.timeHour)
+        val timeMinEditText = dialogView.findViewById<EditText>(R.id.timeMin)
+
 
         // 체크 버튼
         val checkButton = dialogView.findViewById<Button>(R.id.checkButton)
@@ -524,14 +530,12 @@ class ScheduleFragment : Fragment(), CoroutineScope {
         }
 
 
-        //시간 등록 활성화 버튼
-        val timeSwitch = dialogView.findViewById<com.google.android.material.switchmaterial.SwitchMaterial>(R.id.timeSwitch)
+        //시간 등록 활성화 이벤트
         val timeLayout = dialogView.findViewById<View>(R.id.timeLayout)
         val timeAmPm = dialogView.findViewById<com.google.android.material.button.MaterialButtonToggleGroup>(R.id.timeAmPm)
-        val timeHourEditText = dialogView.findViewById<EditText>(R.id.timeHour)
-        val timeMinEditText = dialogView.findViewById<EditText>(R.id.timeMin)
 
-        var textWatcher: TextWatcher? = null
+
+        val textWatcher: TextWatcher? = null
 
         var timeHourText = 0
         var timeMinText = 0
@@ -623,7 +627,28 @@ class ScheduleFragment : Fragment(), CoroutineScope {
                                 timeMinEditText.addTextChangedListener(createTextWatcher(isPm = true, isHourEditText = false))
                             }
                         }
-                        calendar.set(Calendar.HOUR_OF_DAY, timeHourText)
+
+                        //editText 빈 값 처리
+                        when (timeAmPmIndex) {
+                            0 -> {
+                                if (timeHourEditText.text.toString().trim().isEmpty()) {
+                                    calendar.set(Calendar.HOUR_OF_DAY, 0)
+                                } else {
+                                    calendar.set(Calendar.HOUR_OF_DAY, timeHourText)
+                                }
+                            }
+                            1 -> {
+                                if (timeHourEditText.text.toString().trim().isEmpty()) {
+                                    calendar.set(Calendar.HOUR_OF_DAY, 12)
+                                } else {
+                                    calendar.set(Calendar.HOUR_OF_DAY, timeHourText)
+                                }
+                            }
+                        }
+
+                        if (timeMinEditText.text.toString().trim().isEmpty()) {
+                            calendar.set(Calendar.MINUTE, 0)
+                        }
                     }
                 }
 

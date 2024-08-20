@@ -34,6 +34,7 @@ import com.schedule.dayin.MainActivity
 import com.schedule.dayin.R
 import com.schedule.dayin.data.mainD.MainDatabase
 import com.schedule.dayin.data.mainD.ScheduleDb
+import com.schedule.dayin.data.mainD.TimeData
 import com.schedule.dayin.data.mainD.repository.ScheduleRepository
 import com.schedule.dayin.databinding.FragmentSBinding
 import com.schedule.dayin.views.ScheduleAdapter
@@ -49,7 +50,6 @@ import java.time.temporal.WeekFields
 import java.util.*
 import kotlin.coroutines.CoroutineContext
 import com.schedule.dayin.views.ItemDecoration
-import java.text.SimpleDateFormat
 import java.time.LocalTime
 import java.time.ZoneId
 
@@ -74,7 +74,7 @@ class ScheduleFragment : Fragment(), CoroutineScope {
 
     private lateinit var adapter: ScheduleAdapter
 
-    private var dataList = mutableListOf<Triple<Long, String, String>>()
+    private var dataList = mutableListOf<TimeData>()
 
 
 
@@ -271,9 +271,9 @@ class ScheduleFragment : Fragment(), CoroutineScope {
     }
 
     //리사이클러 데이터 세팅
-    suspend fun loadScheduleDataForDay(day: CalendarDay): MutableList<Triple<Long, String, String>> {
+    suspend fun loadScheduleDataForDay(day: CalendarDay): MutableList<TimeData> {
         val date = day.date
-        val dataList = mutableListOf<Triple<Long, String, String>>()
+        val dataList = mutableListOf<TimeData>()
 
         val startDate = date.atTime(LocalTime.MIN)
         val endDate = date.atTime(LocalTime.MAX)
@@ -287,12 +287,7 @@ class ScheduleFragment : Fragment(), CoroutineScope {
                     startZoneTime.toInstant().toEpochMilli(),
                     endZoneTime.toInstant().toEpochMilli()
                 ).forEach { schedule ->
-                    val formattedTime = formatDate(schedule.date)
-                    if (schedule.time != 0) {
-                        dataList.add(Triple(schedule.id, schedule.title, formattedTime))
-                    } else {
-                        dataList.add(Triple(schedule.id, schedule.title, ""))
-                    }
+                    dataList.add(TimeData(schedule.id, schedule.date, schedule.title, schedule.time, 0))
                 }
             } catch (e: Exception) {
                 Log.e("ScheduleData", "Error collecting schedules", e)
@@ -302,13 +297,6 @@ class ScheduleFragment : Fragment(), CoroutineScope {
         Log.d("ScheduleData", "Date: $date, DataList: $dataList")
 
         return dataList
-    }
-
-    fun formatDate(date: Date?): String {
-        return date?.let {
-            val dateFormat = SimpleDateFormat("HH:mm", Locale.KOREAN)
-            dateFormat.format(it)
-        } ?: "" // null인 경우 빈 문자열 반환
     }
 
 
@@ -521,7 +509,8 @@ class ScheduleFragment : Fragment(), CoroutineScope {
                             notify = noti,
                             memo = memoText,
                             check = 0,
-                            time = time
+                            time = time,
+                            color = 0
                         )
                     )
                 }

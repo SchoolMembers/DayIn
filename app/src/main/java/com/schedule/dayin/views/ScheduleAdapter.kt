@@ -8,17 +8,28 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.schedule.dayin.data.mainD.TimeData
 import com.schedule.dayin.databinding.ScheduleRecyItemsBinding
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
-class ScheduleAdapter(private val context: Context, private var dataList: MutableList<Triple<Long, String, String>>, private val clickCheck: Boolean): RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class ScheduleAdapter(private val context: Context, private var dataList: MutableList<TimeData>, private val clickCheck: Boolean): RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     private val sharedPreferences: SharedPreferences by lazy {
         context.getSharedPreferences("pref", Activity.MODE_PRIVATE)
     }
 
-    fun updateData(newData: MutableList<Triple<Long, String, String>>) {
+    fun updateData(newData: MutableList<TimeData>) {
         dataList = newData
         notifyDataSetChanged()
+    }
+
+    fun formatDate(date: Date?): String {
+        return date?.let {
+            val dateFormat = SimpleDateFormat("HH:mm", Locale.KOREAN)
+            dateFormat.format(it)
+        } ?: "" // null인 경우 빈 문자열 반환
     }
 
     // SharedPreferences Editor 객체
@@ -37,18 +48,26 @@ class ScheduleAdapter(private val context: Context, private var dataList: Mutabl
 
 
 
-        binding.text.text = dataList[position].second
+        binding.text.text = dataList[position].title
 
         // 체크박스 초기 상태 설정
-        val id = dataList[position].first
+        val id = dataList[position].id
         val isChecked = loadCheck(id) == 1
         binding.check.isChecked = isChecked
 
+        //시간 포매팅
+        val time: String
+        if (dataList[position].time != 0) {
+            time = formatDate(dataList[position].date)
+        } else {
+            time = ""
+        }
+
         //레이아웃 디자인 변경
-        if (dataList[position].third == "") {
+        if (time == "") {
             binding.time.visibility = ViewGroup.GONE
         } else {
-            binding.time.text = dataList[position].third
+            binding.time.text = time
             binding.time.visibility = ViewGroup.VISIBLE
         }
 
@@ -73,7 +92,7 @@ class ScheduleAdapter(private val context: Context, private var dataList: Mutabl
                 }
             }
 
-            if (dataList[position].third == "") {
+            if (time == "") {
                 binding.time.visibility = ViewGroup.GONE
             }
 

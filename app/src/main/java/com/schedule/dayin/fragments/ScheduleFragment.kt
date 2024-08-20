@@ -78,6 +78,7 @@ class ScheduleFragment : Fragment(), CoroutineScope {
 
 
 
+
     //중요 날짜 데이터 불러오는 함수
     fun saveImportantDates(date: LocalDate) {
         //저장 객체
@@ -107,6 +108,11 @@ class ScheduleFragment : Fragment(), CoroutineScope {
     }
 
 
+    //몇 번째 주?
+    private var weekOfMonth = 0
+    //셀 높이 조정
+    private var cellHeight = 1
+    private var dataSize = 0
 
 
     //database
@@ -168,7 +174,7 @@ class ScheduleFragment : Fragment(), CoroutineScope {
         //시작 월, 종료 월, 첫 주의 요일
         calendarView.setup(firstMonth, lastMonth, firstDayOfWeek)
         calendarView.scrollToMonth(currentMonth)
-        calendarView.daySize = DaySize.Rectangle
+        calendarView.daySize = DaySize.SeventhWidth
 
         Log.d("customTag", "ScheduleFragment onViewCreated called; day setup complete")
 
@@ -216,6 +222,10 @@ class ScheduleFragment : Fragment(), CoroutineScope {
             override fun invoke(p1: CalendarMonth) {
                 barDateYear?.text = p1.yearMonth.format(DateTimeFormatter.ofPattern("yyyy년 MM월"))
                 Log.d("customTag", "ScheduleFragment onViewCreated called; barDateYear updated")
+
+                weekOfMonth = 0
+                cellHeight = 1
+                dataSize = 0
             }
         }
 
@@ -225,6 +235,16 @@ class ScheduleFragment : Fragment(), CoroutineScope {
     fun dataLoad(container: DayViewContainer, day: CalendarDay) {
         uiScope.launch {
             val dataList = loadScheduleDataForDay(day)
+
+            // 몇 번째 주인지 구하기
+            val weekFields = WeekFields.of(Locale.getDefault())
+            val todayWeek = day.date.get(weekFields.weekOfMonth())
+
+            if (todayWeek != weekOfMonth) {
+                weekOfMonth = todayWeek
+                cellHeight = 350
+                dataSize = 0
+            }
 
             Log.d("ScheduleData", "Date: ${day.date}, Loaded Data: $dataList")
             if (dataList.isNotEmpty()) {
@@ -238,6 +258,14 @@ class ScheduleFragment : Fragment(), CoroutineScope {
             } else {
                 container.scheduleRecyclerView.adapter = null
             }
+
+            if (dataList.size > dataSize && todayWeek == weekOfMonth) {
+                dataSize = dataList.size
+                cellHeight = (dataSize + 1) * 73
+            }
+
+            container.setHeight(cellHeight)
+
         }
     }
 
@@ -678,5 +706,14 @@ class ScheduleFragment : Fragment(), CoroutineScope {
         val textView: TextView = view.findViewById(R.id.dayText)
         val click: LinearLayout = view.findViewById(R.id.clickLayout)
         val scheduleRecyclerView: RecyclerView = view.findViewById(R.id.scheduleRecyclerView)
+
+        //셀 크기 조절
+        fun setHeight(cellHeight: Int) {
+
+            val params = view.layoutParams
+            params.height = cellHeight
+            view.layoutParams = params
+
+        }
     }
 }

@@ -84,45 +84,53 @@
                 android:gravity="center_vertical">
                 <android.widget.Button
                     android:id="@+id/colorDefault"
-                    android:layout_width="45dp"
-                    android:layout_height="45dp"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
                     android:background="@drawable/circle_icon"
                     android:backgroundTint="@color/lightGray"
-                    android:layout_marginEnd="10dp"/>
+                    android:layout_marginEnd="7dp"/>
                 <android.widget.Button
                     android:id="@+id/colorGray"
-                    android:layout_width="45dp"
-                    android:layout_height="45dp"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
                     android:background="@drawable/circle_icon"
                     android:backgroundTint="@color/darkGray"
-                    android:layout_marginEnd="10dp"/>
+                    android:layout_marginEnd="7dp"/>
                 <android.widget.Button
                     android:id="@+id/colorYellow"
-                    android:layout_width="45dp"
-                    android:layout_height="45dp"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
                     android:background="@drawable/circle_icon"
                     android:backgroundTint="@color/yellow"
-                    android:layout_marginEnd="10dp"/>
+                    android:layout_marginEnd="7dp"/>
                 <android.widget.Button
                     android:id="@+id/colorPurple"
-                    android:layout_width="45dp"
-                    android:layout_height="45dp"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
                     android:background="@drawable/circle_icon"
                     android:backgroundTint="@color/purple1"
-                    android:layout_marginEnd="10dp"/>
+                    android:layout_marginEnd="7dp"/>
                 <android.widget.Button
                     android:id="@+id/colorBlue"
-                    android:layout_width="45dp"
-                    android:layout_height="45dp"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
                     android:background="@drawable/circle_icon"
                     android:backgroundTint="@color/blue1"
-                    android:layout_marginEnd="10dp"/>
+                    android:layout_marginEnd="7dp"/>
                 <android.widget.Button
                     android:id="@+id/colorGreen"
-                    android:layout_width="45dp"
-                    android:layout_height="45dp"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
                     android:background="@drawable/circle_icon"
-                    android:backgroundTint="@color/green1" />
+                    android:backgroundTint="@color/green1"
+                    android:layout_marginEnd="7dp"/>
+                <android.widget.Button
+                    android:id="@+id/colorRed"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:background="@drawable/circle_icon"
+                    android:backgroundTint="@color/pink" />
+
             </LinearLayout>
             <LinearLayout
                 android:layout_width="match_parent"

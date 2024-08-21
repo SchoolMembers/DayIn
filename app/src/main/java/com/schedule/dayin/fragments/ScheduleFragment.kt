@@ -550,6 +550,13 @@ class ScheduleFragment : Fragment(), CoroutineScope {
             Log.d("customTag", "ScheduleFragment onViewCreated called; color value updated green")
         }
 
+        val colorButton6 = dialogView.findViewById<Button>(R.id.colorRed)
+        colorButton6.setOnClickListener {
+            color = 6
+            Toast.makeText(context, "빨간색으로 설정되었습니다", Toast.LENGTH_SHORT).show()
+            Log.d("customTag", "ScheduleFragment onViewCreated called; color value updated red")
+        }
+
 
         // autoToggle 리스너
         var auto = 0

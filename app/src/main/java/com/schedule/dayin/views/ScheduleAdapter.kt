@@ -105,6 +105,10 @@ class ScheduleAdapter(private val context: Context, private var dataList: Mutabl
                 binding.layout.background = ContextCompat.getDrawable(context, R.drawable.recy_items_back_green)
                 binding.text.setTextColor(ContextCompat.getColor(context, R.color.black))
             }
+            6 -> {
+                binding.layout.background = ContextCompat.getDrawable(context, R.drawable.recy_items_back_red)
+                binding.text.setTextColor(ContextCompat.getColor(context, R.color.black))
+            }
         }
 
 

@@ -3,11 +3,17 @@ package com.schedule.dayin.views
 import android.app.Activity
 import android.content.Context
 import android.content.SharedPreferences
+import android.content.res.ColorStateList
 import android.content.res.Resources
+import android.graphics.drawable.GradientDrawable
+import android.graphics.drawable.LayerDrawable
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import android.widget.CheckBox
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
+import com.schedule.dayin.R
 import com.schedule.dayin.data.mainD.TimeData
 import com.schedule.dayin.databinding.ScheduleRecyItemsBinding
 import java.text.SimpleDateFormat
@@ -70,6 +76,39 @@ class ScheduleAdapter(private val context: Context, private var dataList: Mutabl
             binding.time.text = time
             binding.time.visibility = ViewGroup.VISIBLE
         }
+
+        //색상 변경
+        //colorDefault(lightGray) : 0 | colorGray : 1 | colorYellow : 2 | colorPurple : 3 | colorBlue : 4 | colorGreen 5
+        when (dataList[position].color) {
+            0 -> {
+                binding.layout.background = ContextCompat.getDrawable(context, R.drawable.recy_items_back_light_gray)
+                binding.text.setTextColor(ContextCompat.getColor(context, R.color.black))
+            }
+            1 -> {
+                binding.layout.background = ContextCompat.getDrawable(context, R.drawable.recy_items_back_dark_gray)
+                binding.text.setTextColor(ContextCompat.getColor(context, R.color.white))
+                binding.check.buttonTintList = ColorStateList.valueOf(ContextCompat.getColor(context, R.color.white))
+            }
+            2 -> {
+                binding.layout.background = ContextCompat.getDrawable(context, R.drawable.recy_items_back_yellow)
+                binding.text.setTextColor(ContextCompat.getColor(context, R.color.black))
+            }
+            3 -> {
+                binding.layout.background = ContextCompat.getDrawable(context, R.drawable.recy_items_back_purple)
+                binding.text.setTextColor(ContextCompat.getColor(context, R.color.black))
+            }
+            4 -> {
+                binding.layout.background = ContextCompat.getDrawable(context, R.drawable.recy_items_back_blue)
+                binding.text.setTextColor(ContextCompat.getColor(context, R.color.black))
+            }
+            5 -> {
+                binding.layout.background = ContextCompat.getDrawable(context, R.drawable.recy_items_back_green)
+                binding.text.setTextColor(ContextCompat.getColor(context, R.color.black))
+            }
+        }
+
+
+
 
         //dp 단위 px로 변환
         fun dpToPx(dp: Int): Int {

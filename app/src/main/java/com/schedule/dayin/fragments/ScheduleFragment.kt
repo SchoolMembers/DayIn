@@ -331,7 +331,7 @@ class ScheduleFragment : Fragment(), CoroutineScope {
                     startZoneTime.toInstant().toEpochMilli(),
                     endZoneTime.toInstant().toEpochMilli()
                 ).forEach { schedule ->
-                    dataList.add(TimeData(schedule.id, schedule.date, schedule.title, schedule.time, 0))
+                    dataList.add(TimeData(schedule.id, schedule.date, schedule.title, schedule.time, schedule.color))
                 }
             } catch (e: Exception) {
                 Log.e("ScheduleData", "Error collecting schedules", e)
@@ -505,6 +505,52 @@ class ScheduleFragment : Fragment(), CoroutineScope {
             override fun afterTextChanged(s: Editable?) {}
         })
 
+        //색상 설정 리스너
+        //colorDefault(lightGray) : 0 | colorGray : 1 | colorYellow : 2 | colorPurple : 3 | colorBlue : 4 | colorGreen 5
+        var color = 0
+        val colorButton0 = dialogView.findViewById<Button>(R.id.colorDefault)
+        colorButton0.setOnClickListener {
+            color = 0
+            Toast.makeText(context, "회색으로 설정되었습니다", Toast.LENGTH_SHORT).show()
+            Log.d("customTag", "ScheduleFragment onViewCreated called; color value updated lightGray")
+        }
+
+        val colorButton1 = dialogView.findViewById<Button>(R.id.colorGray)
+        colorButton1.setOnClickListener {
+            color = 1
+            Toast.makeText(context, "검정색으로 설정되었습니다", Toast.LENGTH_SHORT).show()
+            Log.d("customTag", "ScheduleFragment onViewCreated called; color value updated gray")
+        }
+
+        val colorButton2 = dialogView.findViewById<Button>(R.id.colorYellow)
+        colorButton2.setOnClickListener {
+            color = 2
+            Toast.makeText(context, "노란색으로 설정되었습니다", Toast.LENGTH_SHORT).show()
+            Log.d("customTag", "ScheduleFragment onViewCreated called; color value updated yellow")
+        }
+
+        val colorButton3 = dialogView.findViewById<Button>(R.id.colorPurple)
+        colorButton3.setOnClickListener {
+            color = 3
+            Toast.makeText(context, "보라색으로 설정되었습니다", Toast.LENGTH_SHORT).show()
+            Log.d("customTag", "ScheduleFragment onViewCreated called; color value updated purple")
+        }
+
+        val colorButton4 = dialogView.findViewById<Button>(R.id.colorBlue)
+        colorButton4.setOnClickListener {
+            color = 4
+            Toast.makeText(context, "파란색으로 설정되었습니다", Toast.LENGTH_SHORT).show()
+            Log.d("customTag", "ScheduleFragment onViewCreated called; color value updated blue")
+        }
+
+        val colorButton5 = dialogView.findViewById<Button>(R.id.colorGreen)
+        colorButton5.setOnClickListener {
+            color = 5
+            Toast.makeText(context, "초록색으로 설정되었습니다", Toast.LENGTH_SHORT).show()
+            Log.d("customTag", "ScheduleFragment onViewCreated called; color value updated green")
+        }
+
+
         // autoToggle 리스너
         var auto = 0
 
@@ -560,7 +606,7 @@ class ScheduleFragment : Fragment(), CoroutineScope {
                             memo = memoText,
                             check = 0,
                             time = time,
-                            color = 0
+                            color = color
                         )
                     )
                 }

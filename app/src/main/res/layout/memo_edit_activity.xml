@@ -63,12 +63,14 @@
         app:layout_constraintTop_toBottomOf="@+id/line"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent">
+
         <EditText
             android:id="@+id/des"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="@color/white"
-            android:hint="@string/memoHint"/>
+            android:hint="@string/memoHint"
+            android:paddingLeft="10dp"/>
     </ScrollView>
 
     <View

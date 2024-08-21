@@ -2,12 +2,16 @@ package com.schedule.dayin
 
 import android.app.ActivityOptions
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
+import android.text.Html
+import android.text.Spanned
 import android.util.Log
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.recyclerview.widget.RecyclerView
 import com.schedule.dayin.data.memoD.MemoDb
 import com.schedule.dayin.data.memoD.repository.MemoRepository
 import com.schedule.dayin.databinding.MemoEditActivityBinding
@@ -79,7 +83,20 @@ class MemoEditActivity : AppCompatActivity() {
             finish()
         }
 
+        // 예제 HTML 텍스트
+        val htmlText = "This is <font color=#0000FF>blue</font> and <i>italic</i>."
+
+        // HTML 텍스트를 Spanned로 변환하여 EditText에 설정
+        binding.des.setText(htmlText.toSpanned())
     }
 
-
+    // 확장 함수: String을 Spanned로 변환
+    private fun String.toSpanned(): Spanned {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            return Html.fromHtml(this, Html.FROM_HTML_MODE_LEGACY)
+        } else {
+            @Suppress("DEPRECATION")
+            return Html.fromHtml(this)
+        }
+    }
 }

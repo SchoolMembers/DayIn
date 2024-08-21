@@ -493,13 +493,13 @@ class ScheduleFragment : Fragment(), CoroutineScope {
 
         //제목 입력 저장
         val titleEditText = dialogView.findViewById<EditText>(R.id.titleText)
-        var titleText: String = ""
+        var titleText: String = "제목 없음"
 
         titleEditText.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                titleText = s?.toString() ?: ""
+                titleText = s?.toString() ?: "제목 없음"
                 Log.d("customTag", "ScheduleFragment onViewCreated called; titleText: $titleText")
             }
             override fun afterTextChanged(s: Editable?) {}

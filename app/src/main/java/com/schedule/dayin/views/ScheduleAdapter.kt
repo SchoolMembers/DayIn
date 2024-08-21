@@ -110,6 +110,13 @@ class ScheduleAdapter(private val context: Context, private var dataList: Mutabl
             }
         }
 
+        //아이템 터치 리스너
+        binding.layout.setOnClickListener {
+            if (clickCheck){
+                Log.d("customTag", "ScheduleAdapter onBindViewHolder called; item clicked")
+            }
+        }
+
 
 
 

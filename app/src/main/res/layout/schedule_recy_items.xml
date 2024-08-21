@@ -27,7 +27,7 @@
             android:layout_height="24dp"
             android:layout_weight="9"
             android:maxLines="1"
-            android:textSize="14sp"
+            android:textSize="11sp"
             android:fontFamily="@font/okticon_regular"
             android:gravity="center"
             android:text="@string/testMedium"/>

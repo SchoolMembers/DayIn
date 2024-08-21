@@ -13,10 +13,4 @@ data class MoneyName(
     val name: String
 )
 
-data class TimeData(
-    val id: Long = 0L,
-    var date: Date,
-    var title: String = "@string/nTitle",
-    var time: Int = 0,
-    var color: Int = 0
-)
+

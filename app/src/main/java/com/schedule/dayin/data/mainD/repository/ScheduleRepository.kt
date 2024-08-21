@@ -1,7 +1,6 @@
 package com.schedule.dayin.data.mainD.repository
 
 import com.schedule.dayin.data.mainD.ScheduleDb
-import com.schedule.dayin.data.mainD.TimeData
 import com.schedule.dayin.data.mainD.dao.ScheduleDbDao
 import kotlinx.coroutines.flow.Flow
 
@@ -31,11 +30,11 @@ class ScheduleRepository(private val scheduleDbDao: ScheduleDbDao) {
         return scheduleDbDao.getAutoSche()
     }
 
-    fun getTimes(startDate: Long, endDate: Long): List<TimeData> {
+    fun getTimes(startDate: Long, endDate: Long): List<ScheduleDb> {
         return scheduleDbDao.getTitleTime(startDate, endDate)
     }
 
-    fun getLast(): List<TimeData> {
+    fun getLast(): List<ScheduleDb> {
         return scheduleDbDao.getLast()
     }
 }

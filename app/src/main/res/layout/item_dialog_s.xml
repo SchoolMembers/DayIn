@@ -10,7 +10,6 @@
         android:layout_width="match_parent"
         android:layout_height="40dp">
         <View
-            android:id="@+id/monYear"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="5"
@@ -53,8 +52,8 @@
 
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="400dp"
-        android:minHeight="400dp">
+        android:layout_height="500dp"
+        android:minHeight="500dp">
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -63,21 +62,35 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:textSize="17sp"
+                android:text="Title"
                 android:fontFamily="@font/okticon_regular"
-                android:text="@string/nTitle"
-                android:textSize="15sp"
-                android:layout_marginTop="18dp"/>
-            <View
-                android:id="@id/line2"
+                android:paddingStart="8dp"/>
+            <TextView
+                android:id="@+id/title"
                 android:layout_width="match_parent"
-                android:layout_height="2dp"
-                android:background="@color/darkGray"
-                android:layout_marginTop="3dp" />
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="20dp"
+                android:textSize="15sp"
+                android:text="@string/title"
+                android:background="@drawable/time_back"
+                android:fontFamily="@font/okticon_regular"
+                android:padding="8dp"
+                android:textAlignment="viewStart"
+                android:gravity="top|start"/>
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:textSize="17sp"
+                android:text="Memo"
+                android:fontFamily="@font/okticon_regular"
+                android:paddingStart="8dp"/>
             <TextView
                 android:id="@+id/memoText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="30dp"
                 android:layout_marginBottom="20dp"
                 android:textSize="15sp"
                 android:text="@string/memoHint"
@@ -111,6 +124,7 @@
                     android:layout_marginBottom="3dp"
                     android:layout_marginTop="15dp"/>
                 <TextView
+                    android:id="@+id/time"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/okticon_regular"
@@ -125,6 +139,7 @@
                     android:textSize="15sp"
                     android:layout_marginBottom="3dp"/>
                 <TextView
+                    android:id="@+id/notify"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/okticon_regular"
@@ -139,6 +154,7 @@
                     android:textSize="15sp"
                     android:layout_marginBottom="3dp"/>
                 <TextView
+                    android:id="@+id/auto"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/okticon_regular"

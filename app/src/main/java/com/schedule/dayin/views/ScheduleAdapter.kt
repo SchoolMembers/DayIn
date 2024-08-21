@@ -1,6 +1,7 @@
 package com.schedule.dayin.views
 
 import android.app.Activity
+import android.app.AlertDialog
 import android.content.Context
 import android.content.SharedPreferences
 import android.content.res.ColorStateList
@@ -8,25 +9,46 @@ import android.content.res.Resources
 import android.graphics.drawable.GradientDrawable
 import android.graphics.drawable.LayerDrawable
 import android.util.Log
+import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.CheckBox
+import android.widget.TextView
+import android.widget.Toast
+import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.core.content.ContextCompat
+import androidx.core.content.res.ResourcesCompat
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.kizitonwose.calendar.core.CalendarDay
+import com.schedule.dayin.AppController
 import com.schedule.dayin.R
-import com.schedule.dayin.data.mainD.TimeData
+import com.schedule.dayin.data.mainD.MainDatabase
+import com.schedule.dayin.data.mainD.ScheduleDb
+import com.schedule.dayin.data.mainD.repository.ScheduleRepository
 import com.schedule.dayin.databinding.ScheduleRecyItemsBinding
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.forEach
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import okhttp3.internal.notify
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 
-class ScheduleAdapter(private val context: Context, private var dataList: MutableList<TimeData>, private val clickCheck: Boolean): RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class ScheduleAdapter(private val context: Context, private var dataList: MutableList<ScheduleDb>, private val clickCheck: Boolean, private val appController: AppController): RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     private val sharedPreferences: SharedPreferences by lazy {
         context.getSharedPreferences("pref", Activity.MODE_PRIVATE)
     }
 
-    fun updateData(newData: MutableList<TimeData>) {
+    private var mainDb = appController.mainDb
+    private  var scheduleRepository = ScheduleRepository(mainDb.scheduleDbDao())
+    private val uiScope = CoroutineScope(Dispatchers.Main)
+
+    fun updateData(newData: MutableList<ScheduleDb>) {
         dataList = newData
         notifyDataSetChanged()
     }
@@ -34,6 +56,13 @@ class ScheduleAdapter(private val context: Context, private var dataList: Mutabl
     fun formatDate(date: Date?): String {
         return date?.let {
             val dateFormat = SimpleDateFormat("HH:mm", Locale.KOREAN)
+            dateFormat.format(it)
+        } ?: "" // null인 경우 빈 문자열 반환
+    }
+
+    fun formatDateKo(date: Date?): String {
+        return date?.let {
+            val dateFormat = SimpleDateFormat("HH시 mm분", Locale.KOREAN)
             dateFormat.format(it)
         } ?: "" // null인 경우 빈 문자열 반환
     }
@@ -110,13 +139,6 @@ class ScheduleAdapter(private val context: Context, private var dataList: Mutabl
             }
         }
 
-        //아이템 터치 리스너
-        binding.layout.setOnClickListener {
-            if (clickCheck){
-                Log.d("customTag", "ScheduleAdapter onBindViewHolder called; item clicked")
-            }
-        }
-
 
 
 
@@ -135,10 +157,14 @@ class ScheduleAdapter(private val context: Context, private var dataList: Mutabl
 
             //레이아웃 클릭
             binding.layout.isClickable = true
-            binding.layout.setOnClickListener {
-                if (clickCheck){
-                    Log.d("customTag", "ScheduleAdapter onBindViewHolder called; item clicked")
-                }
+            binding.text.isClickable = true
+            //아이템 터치 리스너
+            binding.text.setOnClickListener {
+
+                Log.d("customTag", "ScheduleAdapter onBindViewHolder called; item clicked")
+
+                showItemDialog(dataList[position])
+
             }
 
             if (time == "") {
@@ -157,6 +183,7 @@ class ScheduleAdapter(private val context: Context, private var dataList: Mutabl
             binding.text.maxLines = 1
 
             binding.layout.isClickable = false
+            binding.text.isClickable = false
 
             binding.check.visibility = ViewGroup.GONE
             binding.time.visibility = ViewGroup.GONE
@@ -191,4 +218,57 @@ class ScheduleAdapter(private val context: Context, private var dataList: Mutabl
         return sharedPreferences.getInt(idString, 0)
     }
 
+    //자세히 보기 다이얼로그
+    private fun showItemDialog(dataList: ScheduleDb) {
+
+        // 다이얼로그 빌더를 사용해 다이얼로그 생성
+        val dialogView = LayoutInflater.from(context).inflate(R.layout.item_dialog_s, null)
+        val dialogBuilder = AlertDialog.Builder(context)
+            .setView(dialogView)
+
+        val dialog = dialogBuilder.create()
+
+        dialogView.findViewById<TextView>(R.id.title).text = dataList.title
+
+        if (dataList.memo != null) {
+            dialogView.findViewById<TextView>(R.id.memoText).text = dataList.memo
+        }
+
+        dialogView.findViewById<TextView>(R.id.time).text = when (dataList.time) {
+            1 -> formatDateKo(dataList.date)
+            else -> "없음"
+        }
+
+        dialogView.findViewById<TextView>(R.id.notify).text = when (dataList.notify) {
+            1 -> "하루 전"
+            2 -> "1시간 전"
+            3 -> "30분 전"
+            else -> "없음"
+        }
+
+        dialogView.findViewById<TextView>(R.id.auto).text = when (dataList.auto) {
+            1 -> "매주"
+            2 -> "매달"
+            3 -> "매년"
+            else -> "없음"
+        }
+
+        dialogView.findViewById<Button>(R.id.editButton).setOnClickListener {
+            dialog.dismiss()
+        }
+
+        dialogView.findViewById<Button>(R.id.deleteButton).setOnClickListener {
+            dialog.dismiss()
+        }
+
+        dialogView.findViewById<Button>(R.id.closeButton).setOnClickListener {
+            dialog.dismiss()
+        }
+
+        // 다이얼로그 표시
+        dialog.show()
+
+
+
+    }
 }

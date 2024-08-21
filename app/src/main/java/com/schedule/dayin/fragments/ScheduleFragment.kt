@@ -34,7 +34,6 @@ import com.schedule.dayin.MainActivity
 import com.schedule.dayin.R
 import com.schedule.dayin.data.mainD.MainDatabase
 import com.schedule.dayin.data.mainD.ScheduleDb
-import com.schedule.dayin.data.mainD.TimeData
 import com.schedule.dayin.data.mainD.repository.ScheduleRepository
 import com.schedule.dayin.databinding.FragmentSBinding
 import com.schedule.dayin.views.ScheduleAdapter
@@ -59,6 +58,8 @@ class ScheduleFragment : Fragment(), CoroutineScope {
     private var _binding: FragmentSBinding? = null
     private val binding get() = _binding!!
 
+    private lateinit var appController: AppController
+
     private var job = Job()
     private val uiScope = CoroutineScope(Dispatchers.Main)
 
@@ -74,7 +75,7 @@ class ScheduleFragment : Fragment(), CoroutineScope {
 
     private lateinit var adapter: ScheduleAdapter
 
-    private var dataList = mutableListOf<TimeData>()
+    private var dataList = mutableListOf<ScheduleDb>()
 
 
 
@@ -179,7 +180,7 @@ class ScheduleFragment : Fragment(), CoroutineScope {
 
 
         //database setting
-        val appController = requireActivity().application as AppController
+        appController = requireActivity().application as AppController
         mainDb = appController.mainDb
         scheduleRepository = ScheduleRepository(mainDb.scheduleDbDao())
 
@@ -286,7 +287,7 @@ class ScheduleFragment : Fragment(), CoroutineScope {
             Log.d("ScheduleData", "Date: ${day.date}, Loaded Data: $dataList")
             if (dataList.isNotEmpty()) {
                 if (container.scheduleRecyclerView.adapter == null) {
-                    adapter = ScheduleAdapter(requireContext(), dataList, clickCheck)
+                    adapter = ScheduleAdapter(requireContext(), dataList, clickCheck, appController)
                     container.scheduleRecyclerView.adapter = adapter
                     container.scheduleRecyclerView.layoutManager = LinearLayoutManager(context)
                 } else {
@@ -315,9 +316,9 @@ class ScheduleFragment : Fragment(), CoroutineScope {
     }
 
     //리사이클러 데이터 세팅
-    suspend fun loadScheduleDataForDay(day: CalendarDay): MutableList<TimeData> {
+    suspend fun loadScheduleDataForDay(day: CalendarDay): MutableList<ScheduleDb> {
         val date = day.date
-        val dataList = mutableListOf<TimeData>()
+        val dataList = mutableListOf<ScheduleDb>()
 
         val startDate = date.atTime(LocalTime.MIN)
         val endDate = date.atTime(LocalTime.MAX)
@@ -331,7 +332,7 @@ class ScheduleFragment : Fragment(), CoroutineScope {
                     startZoneTime.toInstant().toEpochMilli(),
                     endZoneTime.toInstant().toEpochMilli()
                 ).forEach { schedule ->
-                    dataList.add(TimeData(schedule.id, schedule.date, schedule.title, schedule.time, schedule.color))
+                    dataList.add(schedule)
                 }
             } catch (e: Exception) {
                 Log.e("ScheduleData", "Error collecting schedules", e)
@@ -375,7 +376,7 @@ class ScheduleFragment : Fragment(), CoroutineScope {
         uiScope.launch {
             dataList = loadScheduleDataForDay(day)
             if (dataList.isNotEmpty()) {
-                val adapterD = ScheduleAdapter(requireContext(), dataList, clickCheck)
+                val adapterD = ScheduleAdapter(requireContext(), dataList, clickCheck, appController)
                 recyclerViewInDialog.adapter = adapterD
                 recyclerViewInDialog.layoutManager = LinearLayoutManager(context)
             } else {

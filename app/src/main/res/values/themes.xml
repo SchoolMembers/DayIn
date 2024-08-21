@@ -49,4 +49,13 @@
         <item name="backgroundTint">@drawable/button_back</item>
         <item name="android:textColor">@drawable/button_text</item>"
     </style>
+
+    <!-- 체크 박스 테마 -->
+    <style name="Widget.App.CheckBox" parent="Widget.MaterialComponents.CompoundButton.CheckBox">
+        <item name="buttonTint">@drawable/check_tint</item>
+    </style>
+    <style name="Widget.App.CheckBox2" parent="Widget.MaterialComponents.CompoundButton.CheckBox">
+        <item name="buttonTint">@drawable/check_tint2</item>
+    </style>
+
 </resources>

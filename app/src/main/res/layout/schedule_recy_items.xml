@@ -19,7 +19,8 @@
             android:layout_marginTop="5dp"
             android:layout_marginEnd="5dp"
             android:layout_marginBottom="5dp"
-            android:layout_marginStart="8dp"/>
+            android:layout_marginStart="8dp"
+            style="@style/Widget.App.CheckBox"/>
         <TextView
             android:id="@+id/text"
             android:layout_width="0dp"

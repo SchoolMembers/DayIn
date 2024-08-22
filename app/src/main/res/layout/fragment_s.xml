@@ -8,6 +8,6 @@
     <com.kizitonwose.calendar.view.CalendarView
         android:id="@+id/calendarView"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         app:cv_dayViewResource="@layout/calendar_item_s" />
 </FrameLayout>

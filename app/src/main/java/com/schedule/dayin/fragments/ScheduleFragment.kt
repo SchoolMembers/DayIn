@@ -109,8 +109,6 @@ class ScheduleFragment : Fragment(), CoroutineScope {
     }
 
 
-    //셀 높이 조정
-    private var dataSize = 0
 
 
     //database
@@ -128,8 +126,6 @@ class ScheduleFragment : Fragment(), CoroutineScope {
     //메모
     private var memoText: String? = ""
 
-    // 주별 최대 높이를 저장할 맵
-    val weekMaxHeightMap = mutableMapOf<Int, Int>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -225,7 +221,6 @@ class ScheduleFragment : Fragment(), CoroutineScope {
                 barDateYear?.text = p1.yearMonth.format(DateTimeFormatter.ofPattern("yyyy년 MM월"))
                 Log.d("customTag", "ScheduleFragment onViewCreated called; barDateYear updated")
 
-                dataSize = 0
             }
         }
 
@@ -237,19 +232,27 @@ class ScheduleFragment : Fragment(), CoroutineScope {
         uiScope.launch {
             dataList = loadScheduleDataForDay(day)
 
-            // 몇 번째 주인지 구하기
-            val weekFields = WeekFields.of(Locale.getDefault())
-            val todayWeek = day.date.get(weekFields.weekOfMonth())
+            // 현재 월의 첫 날과 마지막 날
+            val firstDayOfMonth = LocalDate.of(day.date.year, day.date.monthValue, 1)
+            val lastDayOfMonth = firstDayOfMonth.withDayOfMonth(firstDayOfMonth.lengthOfMonth())
 
-            // 해당 주의 최대 높이 찾기
-            if (weekMaxHeightMap[todayWeek] == null) {
-                weekMaxHeightMap[todayWeek] = 300 // 기본 높이 설정
+            // 주 번호 계산
+            val weekFields = WeekFields.of(Locale.getDefault())
+            val startWeekOfMonth = firstDayOfMonth.get(weekFields.weekOfMonth())
+            val endWeekOfMonth = lastDayOfMonth.get(weekFields.weekOfMonth())
+
+            // 월의 주 수를 계산합니다.
+            val weekCount = endWeekOfMonth - startWeekOfMonth + 1
+
+            val newDataList: MutableList<ScheduleDb> = when (weekCount) {
+                in 1..4 -> dataList.take(4).toMutableList()
+                else -> dataList.take(3).toMutableList()
             }
 
             Log.d("ScheduleData", "Date: ${day.date}, Loaded Data: $dataList")
             if (dataList.isNotEmpty()) {
                 if (container.scheduleRecyclerView.adapter == null) {
-                    adapter = ScheduleAdapter(requireContext(), dataList, clickCheck, appController)
+                    adapter = ScheduleAdapter(requireContext(), newDataList, clickCheck, appController)
                     container.scheduleRecyclerView.adapter = adapter
                     container.scheduleRecyclerView.layoutManager = LinearLayoutManager(context)
                 } else {
@@ -257,21 +260,6 @@ class ScheduleFragment : Fragment(), CoroutineScope {
                 }
             } else {
                 container.scheduleRecyclerView.adapter = null
-            }
-
-            // 현재 날짜의 셀 높이 계산
-            var currentHeight = 300
-            if (dataList.size > 3) {
-                currentHeight = (dataList.size + 1) * 75
-            }
-
-            // 주별 최대 높이 갱신
-            if (currentHeight > weekMaxHeightMap[todayWeek]!!) {
-                weekMaxHeightMap[todayWeek] = currentHeight
-            }
-
-            withContext(Dispatchers.Main) {
-                container.setHeight(weekMaxHeightMap[todayWeek]!!)
             }
 
         }

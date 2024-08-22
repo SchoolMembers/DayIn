@@ -248,8 +248,15 @@ class ScheduleFragment : Fragment(), CoroutineScope {
                                 val itemViewHeight = container.scheduleRecyclerView.getChildAt(0)?.height ?: 0
                                 val recyclerViewHeight = container.scheduleRecyclerView.height
 
+                                val itemMargin = 5 // dp
+                                val itemMarginPx = TypedValue.applyDimension(
+                                    TypedValue.COMPLEX_UNIT_DIP,
+                                    itemMargin.toFloat(),
+                                    requireContext().resources.displayMetrics
+                                ).toInt()
+
                                 val maxVisibleItems = if (itemViewHeight != 0) {
-                                    recyclerViewHeight / itemViewHeight
+                                    recyclerViewHeight / (itemViewHeight + itemMarginPx)
                                 } else {
                                     0
                                 }

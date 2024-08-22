@@ -44,5 +44,6 @@
     <string name="yellow_color">노란색</string>
     <string name="purple_color">보라색</string>
     <string name="green_color">녹색</string>
-    <string name="text_type">글꼴</string>
+    <string name="text_type">가</string>
+    <string name="text_font">글꼴</string>
 </resources>

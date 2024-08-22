@@ -38,4 +38,7 @@
     <string name="star_cancel">이 날짜를 중요한 날에서 제외합니다</string>
     <string name="testMedium">이것은 테스트용 텍스트입니다.</string>
     <string name="testLong">이것은 테스트용 텍스트입니다. 이건 좀 길다란 텍스트 버전입니다.</string>
+    <string name="blue_color">파란색</string>
+    <string name="red_color">빨간색</string>
+    <string name="pink_color">핑크색</string>
 </resources>

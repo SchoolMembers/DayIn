@@ -40,5 +40,9 @@
     <string name="testLong">이것은 테스트용 텍스트입니다. 이건 좀 길다란 텍스트 버전입니다.</string>
     <string name="blue_color">파란색</string>
     <string name="red_color">빨간색</string>
-    <string name="pink_color">핑크색</string>
+    <string name="gray_color">회색</string>
+    <string name="yellow_color">노란색</string>
+    <string name="purple_color">보라색</string>
+    <string name="green_color">녹색</string>
+    <string name="text_type">글꼴</string>
 </resources>

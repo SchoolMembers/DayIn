@@ -1,5 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/gray_color"
+        android:title="@string/gray_color"
+        android:enabled="true"/>
+    <item
+        android:id="@+id/yellow_color"
+        android:title="@string/yellow_color"
+        android:enabled="true"/>
+    <item
+        android:id="@+id/purple_color"
+        android:title="@string/purple_color"
+        android:enabled="true"/>
     <item android:id="@+id/blue_color"
-        android:title="@string"
+        android:title="@string/blue_color"
+        android:enabled="true"/>
+    <item android:id="@+id/green_color"
+        android:title="@string/green_color"
+        android:enabled="true"/>
+    <item android:id="@+id/red_color"
+        android:title="@string/red_color"
+        android:enabled="true"/>
 </menu>

@@ -227,34 +227,39 @@ class ScheduleFragment : Fragment(), CoroutineScope {
     }
 
 
+
     //리사이클러 비동기 데이터 로그 함수
     fun dataLoad(container: DayViewContainer, day: CalendarDay) {
+
         uiScope.launch {
             dataList = loadScheduleDataForDay(day)
-
-            // 현재 월의 첫 날과 마지막 날
-            val firstDayOfMonth = LocalDate.of(day.date.year, day.date.monthValue, 1)
-            val lastDayOfMonth = firstDayOfMonth.withDayOfMonth(firstDayOfMonth.lengthOfMonth())
-
-            // 주 번호 계산
-            val weekFields = WeekFields.of(Locale.getDefault())
-            val startWeekOfMonth = firstDayOfMonth.get(weekFields.weekOfMonth())
-            val endWeekOfMonth = lastDayOfMonth.get(weekFields.weekOfMonth())
-
-            // 월의 주 수를 계산합니다.
-            val weekCount = endWeekOfMonth - startWeekOfMonth + 1
-
-            val newDataList: MutableList<ScheduleDb> = when (weekCount) {
-                in 1..4 -> dataList.take(4).toMutableList()
-                else -> dataList.take(3).toMutableList()
-            }
 
             Log.d("ScheduleData", "Date: ${day.date}, Loaded Data: $dataList")
             if (dataList.isNotEmpty()) {
                 if (container.scheduleRecyclerView.adapter == null) {
-                    adapter = ScheduleAdapter(requireContext(), newDataList, clickCheck, appController, day)
+                    adapter = ScheduleAdapter(requireContext(), dataList, clickCheck, appController, day)
                     container.scheduleRecyclerView.adapter = adapter
                     container.scheduleRecyclerView.layoutManager = LinearLayoutManager(context)
+
+                    //리사이클러뷰 데이터 재설정 (개수 제한)
+                    adapter.registerAdapterDataObserver(object : RecyclerView.AdapterDataObserver() {
+                        override fun onChanged() {
+                            container.scheduleRecyclerView.post {
+                                val itemViewHeight = container.scheduleRecyclerView.getChildAt(0)?.height ?: 0
+                                val recyclerViewHeight = container.scheduleRecyclerView.height
+
+                                val maxVisibleItems = if (itemViewHeight != 0) {
+                                    recyclerViewHeight / itemViewHeight
+                                } else {
+                                    0
+                                }
+
+                                // 데이터 제한
+                                val newDataList: MutableList<ScheduleDb> = dataList.take(maxVisibleItems).toMutableList()
+                                adapter.updateData(newDataList)
+                            }
+                        }
+                    })
                 } else {
                     (container.scheduleRecyclerView.adapter as ScheduleAdapter).updateData(dataList)
                 }

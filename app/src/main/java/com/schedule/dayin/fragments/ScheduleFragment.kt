@@ -161,7 +161,7 @@ class ScheduleFragment : Fragment(), CoroutineScope {
         val barDateYear = (activity as? MainActivity)?.findViewById<TextView>(R.id.barDateYear)
 
         //kizitonwose calendar
-        val calendarView = binding.calendarView
+
         val currentMonth = YearMonth.now()
         val firstMonth = currentMonth.minusMonths(100)
         val lastMonth = currentMonth.plusMonths(100)
@@ -172,9 +172,10 @@ class ScheduleFragment : Fragment(), CoroutineScope {
 
 
         //시작 월, 종료 월, 첫 주의 요일
+        val calendarView = binding.calendarView
         calendarView.setup(firstMonth, lastMonth, firstDayOfWeek)
         calendarView.scrollToMonth(currentMonth)
-        calendarView.daySize = DaySize.SeventhWidth
+        calendarView.daySize = DaySize.Rectangle
 
         Log.d("customTag", "ScheduleFragment onViewCreated called; day setup complete")
 
@@ -186,43 +187,7 @@ class ScheduleFragment : Fragment(), CoroutineScope {
 
         Log.d("customTag", "ScheduleFragment onViewCreated called; database setting complete")
 
-        // 주별 최대 높이를 계산하는 함수
-        fun calculateMaxHeightForMonth(month: CalendarMonth) {
-            month.weekDays.flatten().forEach { day ->
-                uiScope.launch {
-                    val dataList = loadScheduleDataForDay(day)
 
-                    // 몇 번째 주인지 구하기
-                    val weekFields = WeekFields.of(Locale.getDefault())
-                    val todayWeek = day.date.get(weekFields.weekOfMonth())
-
-                    // 해당 주의 최대 높이 찾기
-                    if (weekMaxHeightMap[todayWeek] == null) {
-                        weekMaxHeightMap[todayWeek] = 300 // 기본 높이 설정
-                    }
-
-                    // 현재 날짜의 셀 높이 계산
-                    var currentHeight = 300
-                    if (dataList.size > 3) {
-                        currentHeight = (dataList.size + 1) * 75
-                    }
-
-                    // 주별 최대 높이 갱신
-                    if (currentHeight > weekMaxHeightMap[todayWeek]!!) {
-                        weekMaxHeightMap[todayWeek] = currentHeight
-                    }
-
-                }
-            }
-        }
-
-        // 캘린더가 처음 로드될 때 셀 높이를 계산
-        calendarView.post {
-            val initialMonth = calendarView.findFirstVisibleMonth()
-            initialMonth?.let {
-                calculateMaxHeightForMonth(it)
-            }
-        }
 
         //캘린더의 각 날짜 뷰 정의
         calendarView.dayBinder = object : MonthDayBinder<DayViewContainer> {
@@ -261,9 +226,6 @@ class ScheduleFragment : Fragment(), CoroutineScope {
                 Log.d("customTag", "ScheduleFragment onViewCreated called; barDateYear updated")
 
                 dataSize = 0
-
-                weekMaxHeightMap.clear()
-                calculateMaxHeightForMonth(p1)
             }
         }
 
@@ -273,7 +235,7 @@ class ScheduleFragment : Fragment(), CoroutineScope {
     //리사이클러 비동기 데이터 로그 함수
     fun dataLoad(container: DayViewContainer, day: CalendarDay) {
         uiScope.launch {
-            val dataList = loadScheduleDataForDay(day)
+            dataList = loadScheduleDataForDay(day)
 
             // 몇 번째 주인지 구하기
             val weekFields = WeekFields.of(Locale.getDefault())
@@ -376,8 +338,10 @@ class ScheduleFragment : Fragment(), CoroutineScope {
         uiScope.launch {
             dataList = loadScheduleDataForDay(day)
             if (dataList.isNotEmpty()) {
-                val adapterD = ScheduleAdapter(requireContext(), dataList, clickCheck, appController)
-                recyclerViewInDialog.adapter = adapterD
+                adapter = ScheduleAdapter(requireContext(), dataList, clickCheck, appController) {
+                    dataLoad(currentDayViewContainer!!, day)
+                }
+                recyclerViewInDialog.adapter = adapter
                 recyclerViewInDialog.layoutManager = LinearLayoutManager(context)
             } else {
                 recyclerViewInDialog.adapter = null

@@ -38,7 +38,7 @@ import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 
-class ScheduleAdapter(private val context: Context, private var dataList: MutableList<ScheduleDb>, private val clickCheck: Boolean, private val appController: AppController): RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class ScheduleAdapter(private val context: Context, private var dataList: MutableList<ScheduleDb>, private val clickCheck: Boolean, private val appController: AppController, private val onDataChanged: (() -> Unit)? = null): RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     private val sharedPreferences: SharedPreferences by lazy {
         context.getSharedPreferences("pref", Activity.MODE_PRIVATE)
@@ -116,6 +116,7 @@ class ScheduleAdapter(private val context: Context, private var dataList: Mutabl
             1 -> {
                 binding.layout.background = ContextCompat.getDrawable(context, R.drawable.recy_items_back_dark_gray)
                 binding.text.setTextColor(ContextCompat.getColor(context, R.color.white))
+                binding.time.setTextColor(ContextCompat.getColor(context, R.color.white))
             }
             2 -> {
                 binding.layout.background = ContextCompat.getDrawable(context, R.drawable.recy_items_back_yellow)
@@ -163,7 +164,7 @@ class ScheduleAdapter(private val context: Context, private var dataList: Mutabl
 
                 Log.d("customTag", "ScheduleAdapter onBindViewHolder called; item clicked")
 
-                showItemDialog(dataList[position])
+                showItemDialog(dataList[position], position)
 
             }
 
@@ -219,7 +220,7 @@ class ScheduleAdapter(private val context: Context, private var dataList: Mutabl
     }
 
     //자세히 보기 다이얼로그
-    private fun showItemDialog(dataList: ScheduleDb) {
+    private fun showItemDialog(data: ScheduleDb, position: Int) {
 
         // 다이얼로그 빌더를 사용해 다이얼로그 생성
         val dialogView = LayoutInflater.from(context).inflate(R.layout.item_dialog_s, null)
@@ -228,47 +229,63 @@ class ScheduleAdapter(private val context: Context, private var dataList: Mutabl
 
         val dialog = dialogBuilder.create()
 
-        dialogView.findViewById<TextView>(R.id.title).text = dataList.title
+        dialogView.findViewById<TextView>(R.id.title).text = data.title
 
-        if (dataList.memo != null) {
-            dialogView.findViewById<TextView>(R.id.memoText).text = dataList.memo
+        if (data.memo != null) {
+            dialogView.findViewById<TextView>(R.id.memoText).text = data.memo
         }
 
-        dialogView.findViewById<TextView>(R.id.time).text = when (dataList.time) {
-            1 -> formatDateKo(dataList.date)
+        dialogView.findViewById<TextView>(R.id.time).text = when (data.time) {
+            1 -> formatDateKo(data.date)
             else -> "없음"
         }
 
-        dialogView.findViewById<TextView>(R.id.notify).text = when (dataList.notify) {
+        dialogView.findViewById<TextView>(R.id.notify).text = when (data.notify) {
             1 -> "하루 전"
             2 -> "1시간 전"
             3 -> "30분 전"
             else -> "없음"
         }
 
-        dialogView.findViewById<TextView>(R.id.auto).text = when (dataList.auto) {
+        dialogView.findViewById<TextView>(R.id.auto).text = when (data.auto) {
             1 -> "매주"
             2 -> "매달"
             3 -> "매년"
             else -> "없음"
         }
 
+        //수정
         dialogView.findViewById<Button>(R.id.editButton).setOnClickListener {
             dialog.dismiss()
         }
 
+        //삭제
         dialogView.findViewById<Button>(R.id.deleteButton).setOnClickListener {
-            dialog.dismiss()
+            uiScope.launch {
+                withContext(Dispatchers.IO) {
+                    scheduleRepository.deleteSche(data)
+                }
+                withContext(Dispatchers.Main) {
+
+                    dataList.removeAt(position)
+
+                    notifyItemRemoved(position)
+
+                    //캘린더 셀 콜백
+                    onDataChanged?.invoke()
+
+                    dialog.dismiss()
+                }
+            }
         }
 
+        //닫기
         dialogView.findViewById<Button>(R.id.closeButton).setOnClickListener {
             dialog.dismiss()
         }
 
         // 다이얼로그 표시
         dialog.show()
-
-
 
     }
 }

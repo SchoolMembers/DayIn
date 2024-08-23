@@ -1,9 +1,7 @@
 package com.schedule.dayin.data.mainD.repository
 
-import com.schedule.dayin.data.mainD.AutoMoney
 import com.schedule.dayin.data.mainD.MoneyAndCate
 import com.schedule.dayin.data.mainD.MoneyDb
-import com.schedule.dayin.data.mainD.MoneyName
 import com.schedule.dayin.data.mainD.dao.MoneyDbDao
 import kotlinx.coroutines.flow.Flow
 
@@ -21,6 +19,10 @@ class MoneyRepository(private val moneyDbDao: MoneyDbDao) {
         moneyDbDao.delete(money)
     }
 
+    suspend fun deleteMoneyByCateId(cateId: Long) {
+        moneyDbDao.deleteMoneyByCateId(cateId)
+    }
+
     fun allMoney(): Flow<List<MoneyAndCate>> {
         return moneyDbDao.getAllMoney()
     }
@@ -29,19 +31,23 @@ class MoneyRepository(private val moneyDbDao: MoneyDbDao) {
         return moneyDbDao.getItem(id)
     }
 
+    fun getUserCate(): Flow<List<MoneyAndCate>> {
+        return moneyDbDao.getUserCate()
+    }
+
     fun getDayMoney(date: String): Flow<List<MoneyAndCate>> {
         return moneyDbDao.getMoneyDay(date)
     }
 
-    fun getAutoMoney(): Flow<List<AutoMoney>> {
+    fun getAutoMoney(): Flow<List<MoneyAndCate>> {
         return moneyDbDao.getAutoMoney()
     }
 
-    fun getMoneyMonthData(date: List<String>, inEx: Int): Flow<List<MoneyName>> {
+    fun getMoneyMonthData(date: List<String>, inEx: Int): Flow<List<MoneyAndCate>> {
         return moneyDbDao.getMoneyMonth(date, inEx)
     }
 
-    fun getMoneyYearData(date: List<String>, inEx: Int): Flow<List<MoneyName>> {
+    fun getMoneyYearData(date: List<String>, inEx: Int): Flow<List<MoneyAndCate>> {
         return moneyDbDao.getMoneyYear(date, inEx)
     }
 }

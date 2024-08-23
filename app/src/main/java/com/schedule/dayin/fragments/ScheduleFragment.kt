@@ -734,14 +734,5 @@ class ScheduleFragment : Fragment(), CoroutineScope {
         val textView: TextView = view.findViewById(R.id.dayText)
         val click: LinearLayout = view.findViewById(R.id.clickLayout)
         val scheduleRecyclerView: RecyclerView = view.findViewById(R.id.scheduleRecyclerView)
-
-        //셀 크기 조절
-        fun setHeight(cellHeight: Int) {
-
-            val params = view.layoutParams
-            params.height = cellHeight
-            view.layoutParams = params
-
-        }
     }
 }

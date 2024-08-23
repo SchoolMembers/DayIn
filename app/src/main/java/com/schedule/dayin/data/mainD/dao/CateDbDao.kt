@@ -20,12 +20,18 @@ interface CateDbDao {
     @Delete
     suspend fun delete(cate: CateDb)
 
+    @Query("DELETE FROM cateDb WHERE cateId = :cateId")
+    suspend fun deleteCateById(cateId: Long)
+
     @Query("SELECT * FROM cateDb WHERE cateId = :cateId")
     fun getCateById(cateId: Long): Flow<CateDb>
 
     @Query("SELECT * FROM cateDb ORDER BY inEx, cateId ASC")
     fun getAllCate(): Flow<List<CateDb>>
 
-    @Query("SELECT * FROM cateDb WHERE inEx = :inEx ORDER BY cateId ASC")
+    @Query("SELECT * FROM cateDb WHERE inEx = :inEx ORDER BY cateId DESC")
     fun getCateByInEx(inEx: Int): Flow<List<CateDb>>
+
+    @Query("SELECT * FROM cateDb WHERE cateId >= 25 ORDER BY cateId ASC")
+    fun getUserCate(): Flow<List<CateDb>>
 }

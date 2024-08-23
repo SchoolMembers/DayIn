@@ -18,6 +18,11 @@ class CateRepository(private val cateDbDao: CateDbDao) {
         cateDbDao.delete(cate)
     }
 
+    suspend fun deleteCateById(cateId: Long) {
+        cateDbDao.deleteCateById(cateId)
+    }
+
+
     fun allCateItems(): Flow<List<CateDb>> {
         return cateDbDao.getAllCate()
     }
@@ -28,5 +33,10 @@ class CateRepository(private val cateDbDao: CateDbDao) {
 
     fun getCateByInEx(inEx: Int): Flow<List<CateDb>> {
         return cateDbDao.getCateByInEx(inEx)
+    }
+
+    fun getUserCate(): Flow<List<CateDb>> {
+        return cateDbDao.getUserCate()
+
     }
 }

@@ -75,14 +75,15 @@ class ScheduleAdapter(private val context: Context, private var dataList: Mutabl
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        val binding = (holder as ScheduleViewHolder).binding
 
         //아이템 홀딩 itemCount번까지만 하고 종료
         if (!clickCheck) {
-            if (position == itemCount - 1) {
+            if (position == itemCount) {
                 return
             }
         }
+
+        val binding = (holder as ScheduleViewHolder).binding
 
 
 

@@ -323,10 +323,31 @@ class ScheduleFragment : Fragment(), CoroutineScope {
         uiScope.launch {
             dataList = loadScheduleDataForDay(day)
 
+            val itemViewHeight = 27 // dp
+            val itemViewHeightPx = TypedValue.applyDimension(
+                TypedValue.COMPLEX_UNIT_DIP,
+                itemViewHeight.toFloat(),
+                requireContext().resources.displayMetrics
+            ).toInt()
+
+            val paddingMargin = TypedValue.applyDimension(
+                TypedValue.COMPLEX_UNIT_DIP,
+                37.toFloat(),
+                requireContext().resources.displayMetrics
+            ).toInt()
+
+            val recyclerViewHeight = container.view.height
+
+            val maxVisibleItems = if (itemViewHeightPx != 0) {
+                (recyclerViewHeight - paddingMargin) / itemViewHeightPx
+            } else {
+                0
+            }
+
             Log.d("ScheduleData", "Date: ${day.date}, Loaded Data: $dataList")
             if (dataList.isNotEmpty()) {
                 if (container.scheduleRecyclerView.adapter == null) {
-                    adapter = ScheduleAdapter(requireContext(), dataList, clickCheck, appController, day)
+                    adapter = ScheduleAdapter(requireContext(), dataList.take(maxVisibleItems).toMutableList(), clickCheck, appController, day)
                     container.scheduleRecyclerView.adapter = adapter
                     container.scheduleRecyclerView.layoutManager = LinearLayoutManager(context)
 
@@ -334,28 +355,7 @@ class ScheduleFragment : Fragment(), CoroutineScope {
                     adapter.registerAdapterDataObserver(object : RecyclerView.AdapterDataObserver() {
                         override fun onChanged() {
                             container.scheduleRecyclerView.post {
-                                val itemViewHeight = 27 // dp
-                                val itemViewHeightPx = TypedValue.applyDimension(
-                                    TypedValue.COMPLEX_UNIT_DIP,
-                                    itemViewHeight.toFloat(),
-                                    requireContext().resources.displayMetrics
-                                ).toInt()
 
-                                val paddingMargin = TypedValue.applyDimension(
-                                    TypedValue.COMPLEX_UNIT_DIP,
-                                    37.toFloat(),
-                                    requireContext().resources.displayMetrics
-                                ).toInt()
-
-                                val recyclerViewHeight = container.view.height
-
-                                val maxVisibleItems = if (itemViewHeightPx != 0) {
-                                    (recyclerViewHeight - paddingMargin) / itemViewHeightPx
-                                } else {
-                                    0
-                                }
-
-                                Log.d("debugHeight", "ScheduleFragment onViewCreated called; maxVisibleItems: $maxVisibleItems | recyclerViewHeight: $recyclerViewHeight")
 
                                 // 데이터 제한
                                 val newDataList: MutableList<ScheduleDb> = dataList.take(maxVisibleItems).toMutableList()

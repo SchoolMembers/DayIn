@@ -324,6 +324,8 @@ class ScheduleFragment : Fragment(), CoroutineScope {
         uiScope.launch {
             dataList = loadScheduleDataForDay(day)
 
+            clickCheck = false
+
             val itemViewHeight = 27 // dp
             val itemViewHeightPx = TypedValue.applyDimension(
                 TypedValue.COMPLEX_UNIT_DIP,
@@ -351,7 +353,7 @@ class ScheduleFragment : Fragment(), CoroutineScope {
                     container.scheduleRecyclerView.adapter = adapter
                     container.scheduleRecyclerView.layoutManager = LinearLayoutManager(context)
                 } else {
-                    (container.scheduleRecyclerView.adapter as ScheduleAdapter).updateData(dataList)
+                    (container.scheduleRecyclerView.adapter as ScheduleAdapter).updateData(dataList, maxVisibleItems)
                 }
             } else {
                 container.scheduleRecyclerView.adapter = null
@@ -669,6 +671,7 @@ class ScheduleFragment : Fragment(), CoroutineScope {
                 }
                 withContext(Dispatchers.Main) {
                     val container = loadContainer
+                    clickCheck = false
                     dataLoad(container!!, day)
                 }
             }

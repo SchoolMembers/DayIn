@@ -44,8 +44,8 @@ class ScheduleAdapter(private val context: Context, private var dataList: Mutabl
     private  var scheduleRepository = ScheduleRepository(mainDb.scheduleDbDao())
     private val uiScope = CoroutineScope(Dispatchers.Main)
 
-    fun updateData(newData: MutableList<ScheduleDb>) {
-        dataList = newData
+    fun updateData(newData: MutableList<ScheduleDb>, count: Int) {
+        dataList = newData.take(count).toMutableList()
         notifyDataSetChanged()
     }
 
@@ -78,7 +78,7 @@ class ScheduleAdapter(private val context: Context, private var dataList: Mutabl
 
         //아이템 홀딩 itemCount번까지만 하고 종료
         if (!clickCheck) {
-            if (position == itemCount) {
+            if (position >= itemCount - 1) {
                 return
             }
         }

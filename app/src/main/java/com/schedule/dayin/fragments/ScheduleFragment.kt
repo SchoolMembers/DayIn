@@ -124,8 +124,7 @@ class ScheduleFragment : Fragment(), CoroutineScope {
     //알림 설정 여부
     private var noti: Int = 0
 
-    //메모
-    private var memoText: String? = ""
+
 
     private var maxVisibleItems: Int = 0
 
@@ -539,6 +538,9 @@ class ScheduleFragment : Fragment(), CoroutineScope {
         //date 설정
         calendar = Calendar.getInstance()
         calendar.set(day.date.year, day.date.monthValue - 1, day.date.dayOfMonth) // 날짜 설정
+
+        //메모 텍스트
+        var memoText: String? = ""
 
         // 닫기 버튼 클릭 시 다이얼로그 닫기
         val closeButton = dialogView.findViewById<Button>(R.id.closeButton)

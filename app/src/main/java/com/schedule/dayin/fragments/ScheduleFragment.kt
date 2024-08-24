@@ -236,11 +236,17 @@ class ScheduleFragment : Fragment(), CoroutineScope {
 
             Log.d("ScheduleData", "Date: ${day.date}, Loaded Data: $dataList")
             if (dataList.isNotEmpty()) {
+
+                // TODO: 80 을 schedule_recy_items.xml 쪽 제일 높은 height > dp로 변경할것.
+                val i = container.scheduleRecyclerView.height / 80
+                if (dataList.size >= 2) {
+                    dataList = dataList.subList(0, i)
+                }
+
                 if (container.scheduleRecyclerView.adapter == null) {
                     adapter = ScheduleAdapter(requireContext(), dataList, clickCheck, appController, day)
                     container.scheduleRecyclerView.adapter = adapter
                     container.scheduleRecyclerView.layoutManager = LinearLayoutManager(context)
-
                     //리사이클러뷰 데이터 재설정 (개수 제한)
                     adapter.registerAdapterDataObserver(object : RecyclerView.AdapterDataObserver() {
                         override fun onChanged() {

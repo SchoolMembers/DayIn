@@ -336,7 +336,7 @@ class ScheduleFragment : Fragment(), CoroutineScope {
                 requireContext().resources.displayMetrics
             ).toInt()
 
-            val recyclerViewHeight = container.view.height - container.textView.height
+            val recyclerViewHeight = container.view.height
 
             val maxVisibleItems = if (itemViewHeightPx != 0) {
                 (recyclerViewHeight - paddingMargin) / itemViewHeightPx
@@ -344,7 +344,7 @@ class ScheduleFragment : Fragment(), CoroutineScope {
                 0
             }
 
-            Log.d("debug", "ScheduleFragment onViewCreated called; maxVisibleItems: $maxVisibleItems")
+            Log.d("debugHeight", "ScheduleFragment onViewCreated called; maxVisibleItems: $maxVisibleItems | recyclerViewHeight: $recyclerViewHeight")
 
             val newList = dataList.take(maxVisibleItems).toMutableList()
 

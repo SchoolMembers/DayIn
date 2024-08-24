@@ -1,13 +1,60 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white">
+    android:background="@color/white"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_gravity="center_vertical"
+        android:gravity="center_vertical">
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="3"
+            android:fontFamily="@font/okticon_regular"
+            android:text="@string/wallet"
+            android:textSize="12sp"
+            android:layout_marginStart="6dp"
+            android:textColor="@color/black"/>
+        <TextView
+            android:id="@+id/wallet"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="6"
+            android:fontFamily="@font/okticon_regular"
+            android:textSize="11sp"
+            android:text="10000000000000000"
+            android:textColor="@color/gray"
+            android:layout_marginEnd="13dp"/>
+        <TextView
+            android:id="@+id/plus"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="4"
+            android:fontFamily="@font/okticon_regular"
+            android:textSize="11sp"
+            android:text="+ 0"
+            android:textColor="@color/green3"
+            android:layout_marginEnd="13dp"/>
+        <TextView
+            android:id="@+id/minus"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="4"
+            android:fontFamily="@font/okticon_regular"
+            android:textSize="11sp"
+            android:text="- 0"
+            android:textColor="@color/red"/>
+    </LinearLayout>
 
     <com.kizitonwose.calendar.view.CalendarView
         android:id="@+id/calendarView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:cv_dayViewResource="@layout/calendar_item_m" />
-</FrameLayout>
+</LinearLayout>

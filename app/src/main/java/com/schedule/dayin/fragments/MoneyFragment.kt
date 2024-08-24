@@ -168,6 +168,95 @@ class MoneyFragment : Fragment() {
             }
         }
 
+        // barDateYear 클릭 리스너 설정
+        barDateYear?.setOnClickListener {
+            showYearMonthPicker(calendarView, currentMonth)
+        }
+
+    }
+
+    // 연도 및 월 선택 다이얼로그 보여주기
+    private fun showYearMonthPicker(calendarView: com.kizitonwose.calendar.view.CalendarView, currentMonth: YearMonth) {
+        // 다이얼로그 뷰 생성
+        val dialogView = layoutInflater.inflate(R.layout.dialog_year_month_picker, null)
+        val yearEdit: EditText = dialogView.findViewById(R.id.year)
+        val monthEdit: EditText = dialogView.findViewById(R.id.month)
+        val confirmButton: Button = dialogView.findViewById(R.id.confirm_button)
+
+        // 최소, 최대 날짜 계산
+        val minYearMonth = currentMonth.minusMonths(98)
+        val maxYearMonth = currentMonth.plusMonths(99)
+
+        // 다이얼로그 생성
+        val dialog = AlertDialog.Builder(requireContext())
+            .setView(dialogView)
+            .create()
+
+        //년
+        var yearText: String = "0"
+        yearEdit.hint = currentMonth.year.toString()
+        yearEdit.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                yearText = s?.toString() ?: "0"
+
+            }
+            override fun afterTextChanged(s: Editable?) {}
+        })
+
+        //월
+        var monText: String = "0"
+        monthEdit.hint = currentMonth.monthValue.toString()
+        monthEdit.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                monText = s?.toString() ?: "0"
+
+            }
+            override fun afterTextChanged(s: Editable?) {}
+        })
+
+        confirmButton.setOnClickListener {
+            //int 전환
+            val selectedYear = if (yearText == "") 0 else yearText.toInt()
+            val selectedMonth = if (monText == "") 0 else monText.toInt()
+
+            //아무 값도 입력하지 않았을 때
+            if (selectedYear == 0 || selectedMonth == 0) {
+                Toast.makeText(requireContext(), "연도와 월을 모두 입력해 주세요.", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+
+            //12 초과
+            if (selectedMonth > 12) {
+                Toast.makeText(requireContext(), "월은 12월 이하여야 합니다.", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+
+            // 등록할 날짜 세팅
+            val selectedYearMonth = YearMonth.of(selectedYear, selectedMonth)
+
+            Log.d("customTag", "Selected Year: $selectedYear, Selected Month: $selectedMonth")
+            Log.d("customTag", "maxMon: $maxYearMonth, minMon: $minYearMonth")
+
+
+            // 범위 초과 또는 미달 시 토스트 메시지 표시
+            if ((selectedYear <= minYearMonth.year && selectedMonth < minYearMonth.monthValue)  || (selectedYear >= maxYearMonth.year && selectedMonth > maxYearMonth.monthValue)) {
+                Toast.makeText(
+                    requireContext(),
+                    "선택할 수 있는 날짜 범위는 ${minYearMonth.year}년 ${minYearMonth.monthValue}월 ~ ${maxYearMonth.year}년 ${maxYearMonth.monthValue}월입니다.",
+                    Toast.LENGTH_SHORT
+                ).show()
+            } else {
+                // 선택한 연도와 월로 캘린더 스크롤
+                calendarView.scrollToMonth(selectedYearMonth)
+                dialog.dismiss()
+            }
+        }
+
+        dialog.show()
     }
 
     //날짜 셀 클릭 다이얼로그

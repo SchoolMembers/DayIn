@@ -317,54 +317,62 @@ class ScheduleFragment : Fragment(), CoroutineScope {
     }
 
 
-
     //리사이클러 비동기 데이터 로그 함수
     fun dataLoad(container: DayViewContainer, day: CalendarDay) {
+
         uiScope.launch {
             dataList = loadScheduleDataForDay(day)
 
-            val itemViewHeight = 27 // dp
-            val itemViewHeightPx = TypedValue.applyDimension(
-                TypedValue.COMPLEX_UNIT_DIP,
-                itemViewHeight.toFloat(),
-                requireContext().resources.displayMetrics
-            ).toInt()
-
-            val paddingMargin = TypedValue.applyDimension(
-                TypedValue.COMPLEX_UNIT_DIP,
-                37.toFloat(),
-                requireContext().resources.displayMetrics
-            ).toInt()
-
-            val recyclerViewHeight = container.view.height
-
-            val maxVisibleItems = if (itemViewHeightPx != 0) {
-                (recyclerViewHeight - paddingMargin) / itemViewHeightPx
-            } else {
-                0
-            }
-
-            Log.d("debugHeight", "ScheduleFragment onViewCreated called; maxVisibleItems: $maxVisibleItems | recyclerViewHeight: $recyclerViewHeight")
-
-            val newList = dataList.take(maxVisibleItems).toMutableList()
-
-            if (newList.isNotEmpty()) {
-                // 먼저 newDataList 설정
-
+            Log.d("ScheduleData", "Date: ${day.date}, Loaded Data: $dataList")
+            if (dataList.isNotEmpty()) {
                 if (container.scheduleRecyclerView.adapter == null) {
-                    // 어댑터를 생성할 때 newDataList를 사용하도록 설정
-                    adapter = ScheduleAdapter(requireContext(), newList, clickCheck, appController, day)
+                    adapter = ScheduleAdapter(requireContext(), dataList, clickCheck, appController, day)
                     container.scheduleRecyclerView.adapter = adapter
                     container.scheduleRecyclerView.layoutManager = LinearLayoutManager(context)
+
+                    //리사이클러뷰 데이터 재설정 (개수 제한)
+                    adapter.registerAdapterDataObserver(object : RecyclerView.AdapterDataObserver() {
+                        override fun onChanged() {
+                            container.scheduleRecyclerView.post {
+                                val itemViewHeight = 27 // dp
+                                val itemViewHeightPx = TypedValue.applyDimension(
+                                    TypedValue.COMPLEX_UNIT_DIP,
+                                    itemViewHeight.toFloat(),
+                                    requireContext().resources.displayMetrics
+                                ).toInt()
+
+                                val paddingMargin = TypedValue.applyDimension(
+                                    TypedValue.COMPLEX_UNIT_DIP,
+                                    37.toFloat(),
+                                    requireContext().resources.displayMetrics
+                                ).toInt()
+
+                                val recyclerViewHeight = container.view.height
+
+                                val maxVisibleItems = if (itemViewHeightPx != 0) {
+                                    (recyclerViewHeight - paddingMargin) / itemViewHeightPx
+                                } else {
+                                    0
+                                }
+
+                                Log.d("debugHeight", "ScheduleFragment onViewCreated called; maxVisibleItems: $maxVisibleItems | recyclerViewHeight: $recyclerViewHeight")
+
+                                // 데이터 제한
+                                val newDataList: MutableList<ScheduleDb> = dataList.take(maxVisibleItems).toMutableList()
+                                adapter.updateData(newDataList)
+                            }
+                        }
+                    })
                 } else {
-                    // 어댑터가 이미 있을 경우 새 데이터로 업데이트
-                    (container.scheduleRecyclerView.adapter as ScheduleAdapter).updateData(newList)
+                    (container.scheduleRecyclerView.adapter as ScheduleAdapter).updateData(dataList)
                 }
             } else {
                 container.scheduleRecyclerView.adapter = null
             }
+
         }
     }
+
 
 
     //리사이클러 데이터 세팅

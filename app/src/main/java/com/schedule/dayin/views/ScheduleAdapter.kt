@@ -80,7 +80,7 @@ class ScheduleAdapter(private val context: Context, private var dataList: Mutabl
 
         //아이템 홀딩 itemCount번까지만 하고 종료
         if (!clickCheck && position == itemCount) {
-            Log.d("debugHeight", "ScheduleAdapter onBindViewHolder called; itemCount: $itemCount hold stop line 83")
+            Log.d("debugHeight", "ScheduleAdapter onBindViewHolder called; itemCount: $itemCount hold stop line 83 | position: $position")
             return
         }
 

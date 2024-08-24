@@ -127,6 +127,8 @@ class ScheduleFragment : Fragment(), CoroutineScope {
     //메모
     private var memoText: String? = ""
 
+    private var maxVisibleItems: Int = 0
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -322,11 +324,6 @@ class ScheduleFragment : Fragment(), CoroutineScope {
         uiScope.launch {
             dataList = loadScheduleDataForDay(day)
 
-            // 데이터 가져온 후 로그 출력
-            Log.d("ScheduleData", "Date: ${day.date}, Loaded Data: $dataList")
-
-            // 뷰가 측정된 후에 높이 계산을 위해 post 사용
-
             val itemViewHeight = 27 // dp
             val itemViewHeightPx = TypedValue.applyDimension(
                 TypedValue.COMPLEX_UNIT_DIP,
@@ -342,7 +339,7 @@ class ScheduleFragment : Fragment(), CoroutineScope {
 
             val recyclerViewHeight = container.view.height
 
-            val maxVisibleItems = if (itemViewHeightPx != 0) {
+            maxVisibleItems = if (itemViewHeightPx != 0) {
                 (recyclerViewHeight - paddingMargin) / itemViewHeightPx
             } else {
                 0
@@ -350,20 +347,9 @@ class ScheduleFragment : Fragment(), CoroutineScope {
 
             if (dataList.isNotEmpty()) {
                 if (container.scheduleRecyclerView.adapter == null) {
-                    val initialData = dataList.take(maxVisibleItems).toMutableList()
-                    adapter = ScheduleAdapter(requireContext(), initialData, clickCheck, appController, day)
+                    adapter = ScheduleAdapter(requireContext(), dataList, clickCheck, appController, day, maxVisibleItems)
                     container.scheduleRecyclerView.adapter = adapter
                     container.scheduleRecyclerView.layoutManager = LinearLayoutManager(context)
-
-                    // 리사이클러뷰 데이터 재설정 (개수 제한)
-                    adapter.registerAdapterDataObserver(object : RecyclerView.AdapterDataObserver() {
-                        override fun onChanged() {
-                            container.scheduleRecyclerView.post {
-                                val newDataList: MutableList<ScheduleDb> = dataList.take(maxVisibleItems).toMutableList()
-                                adapter.updateData(newDataList)
-                            }
-                        }
-                    })
                 } else {
                     (container.scheduleRecyclerView.adapter as ScheduleAdapter).updateData(dataList)
                 }
@@ -437,7 +423,7 @@ class ScheduleFragment : Fragment(), CoroutineScope {
         uiScope.launch {
             dataList = loadScheduleDataForDay(day)
             if (dataList.isNotEmpty()) {
-                adapter = ScheduleAdapter(requireContext(), dataList, clickCheck, appController, day) {
+                adapter = ScheduleAdapter(requireContext(), dataList, clickCheck, appController, day, maxVisibleItems) {
                     dataLoad(currentDayViewContainer!!, day)
                 }
                 recyclerViewInDialog.adapter = adapter

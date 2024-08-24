@@ -34,7 +34,7 @@ import java.util.Calendar
 import java.util.Date
 import java.util.Locale
 
-class ScheduleAdapter(private val context: Context, private var dataList: MutableList<ScheduleDb>, private val clickCheck: Boolean, private val appController: AppController, private val day: CalendarDay, private val onDataChanged: (() -> Unit)? = null): RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class ScheduleAdapter(private val context: Context, private var dataList: MutableList<ScheduleDb>, private val clickCheck: Boolean, private val appController: AppController, private val day: CalendarDay, private val itemCount: Int, private val onDataChanged: (() -> Unit)? = null): RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     private val sharedPreferences: SharedPreferences by lazy {
         context.getSharedPreferences("pref", Activity.MODE_PRIVATE)
@@ -76,6 +76,13 @@ class ScheduleAdapter(private val context: Context, private var dataList: Mutabl
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         val binding = (holder as ScheduleViewHolder).binding
+
+        //아이템 홀딩 itemCount번까지만 하고 종료
+        if (!clickCheck) {
+            if (position == itemCount - 1) {
+                return
+            }
+        }
 
 
 

@@ -103,26 +103,20 @@ class MemoActivity : AppCompatActivity() {
 
     }
 
-    override fun onResume() {
-        super.onResume()
-        // 액티비티가 다시 포커스를 얻을 때 데이터 로드 및 UI 갱신
-        uiScope.launch {
-            dataList.clear() // 이전 데이터 삭제
-            loadData()
-        }
-    }
 
 
     //메모 데이터 불러오는 함수
-    private suspend fun loadData() {
-        withContext(Dispatchers.IO) {
-            memoRepository.getMemoTitles().collect { memoList ->
-                dataList.clear()
-                memoList.forEach { memo ->
-                    dataList.add(Triple(memo.id, memo.title, memo.des))
-                }
-                withContext(Dispatchers.Main) {
-                    adapter.notifyDataSetChanged()
+    private fun loadData() {
+        uiScope.launch {
+            withContext(Dispatchers.IO) {
+                memoRepository.getMemoTitles().collect { memoList ->
+                    dataList.clear()
+                    memoList.forEach { memo ->
+                        dataList.add(Triple(memo.id, memo.title, memo.des))
+                    }
+                    withContext(Dispatchers.Main) {
+                        adapter.notifyDataSetChanged()
+                    }
                 }
             }
         }

@@ -24,7 +24,7 @@ interface MemoDbDao {
     fun getAllMemo(): Flow<List<MemoDb>>
 
     @Query("SELECT * from memoDb WHERE id = :id")
-    fun getMemo(id: Long): Flow<MemoDb>
+    fun getMemo(id: Long): MemoDb
 
     @Query("SELECT * from memoDb ORDER BY id ASC")
     fun getMemoTitle(): Flow<List<MemoDb>>

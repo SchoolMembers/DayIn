@@ -10,6 +10,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.schedule.dayin.MemoEditActivity
+import com.schedule.dayin.MemoItemEditActivity
 import com.schedule.dayin.databinding.MemoItemBinding
 
 class MemoCustomAdapter(private val context: Context,  private val memoList: MutableList<Triple<Long, String, String>>, private val checkList: MutableList<Long>) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
@@ -34,7 +35,8 @@ class MemoCustomAdapter(private val context: Context,  private val memoList: Mut
             if (context is Activity) {
                 // 화면 전환 animation setting
                 val options = ActivityOptions.makeCustomAnimation(context, 0, 0)
-                val intent = Intent(context, MemoEditActivity::class.java)
+                val intent = Intent(context, MemoItemEditActivity::class.java)
+                intent.putExtra("id", memoList[position].first)
                 context.startActivity(intent, options.toBundle())
                 Log.d("customTag", "MemoCustomAdapter onCreate called; click Item: $position")
             } else {

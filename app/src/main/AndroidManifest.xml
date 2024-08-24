@@ -25,6 +25,9 @@
             android:name=".MemoActivity"
             android:exported="false" />
         <activity
+            android:name=".MemoItemEditActivity"
+            android:exported="false" />
+        <activity
             android:name=".MainActivity"
             android:exported="true"
             android:screenOrientation="portrait">

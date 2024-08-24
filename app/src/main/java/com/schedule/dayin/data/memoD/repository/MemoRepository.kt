@@ -22,7 +22,7 @@ class MemoRepository(private val memoDao: MemoDbDao) {
         return memoDao.getAllMemo()
     }
 
-    fun getMemoById(memoId: Long): Flow<MemoDb> {
+    fun getMemoById(memoId: Long): MemoDb {
         return memoDao.getMemo(memoId)
     }
 

@@ -351,12 +351,12 @@ class ScheduleFragment : Fragment(), CoroutineScope {
 
             if (dataList.isNotEmpty()) {
                 if (container.scheduleRecyclerView.adapter == null) {
-                    adapter = ScheduleAdapter(requireContext(), dataList.subList(0, maxVisibleItems), clickCheck, appController, day, maxVisibleItems)
+                    adapter = ScheduleAdapter(requireContext(), if (dataList.size > maxVisibleItems) dataList.subList(0, maxVisibleItems) else dataList, clickCheck, appController, day, maxVisibleItems)
                     container.scheduleRecyclerView.adapter = adapter
                     container.scheduleRecyclerView.layoutManager = LinearLayoutManager(context)
                     Log.d("debugHeight", "ScheduleFragment onViewCreated called; line 357 | dataList is not empty | container.scheduleRecyclerView.adapter set")
                 } else {
-                    (container.scheduleRecyclerView.adapter as ScheduleAdapter).updateData(dataList.subList(0, maxVisibleItems), maxVisibleItems)
+                    (container.scheduleRecyclerView.adapter as ScheduleAdapter).updateData(if (dataList.size > maxVisibleItems) dataList.subList(0, maxVisibleItems) else dataList, maxVisibleItems)
                     Log.d("debugHeight", "ScheduleFragment onViewCreated called; line 360 | dataList is not empty | container.scheduleRecyclerView.adapter updateData called -> ScheduleAdapter | maxVisibleItems: $maxVisibleItems")
                 }
             } else {

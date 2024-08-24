@@ -347,18 +347,21 @@ class ScheduleFragment : Fragment(), CoroutineScope {
                 0
             }
 
-            Log.d("debugHeight", "ScheduleFragment onViewCreated called; maxVisibleItems: $maxVisibleItems | recyclerViewHeight: $recyclerViewHeight")
+            Log.d("debugHeight", "ScheduleFragment onViewCreated called; dataLoad() line 350 | maxVisibleItems: $maxVisibleItems | recyclerViewHeight: $recyclerViewHeight")
 
             if (dataList.isNotEmpty()) {
                 if (container.scheduleRecyclerView.adapter == null) {
                     adapter = ScheduleAdapter(requireContext(), dataList, clickCheck, appController, day, maxVisibleItems)
                     container.scheduleRecyclerView.adapter = adapter
                     container.scheduleRecyclerView.layoutManager = LinearLayoutManager(context)
+                    Log.d("debugHeight", "ScheduleFragment onViewCreated called; line 357 | dataList is not empty | container.scheduleRecyclerView.adapter set")
                 } else {
                     (container.scheduleRecyclerView.adapter as ScheduleAdapter).updateData(dataList, maxVisibleItems)
+                    Log.d("debugHeight", "ScheduleFragment onViewCreated called; line 360 | dataList is not empty | container.scheduleRecyclerView.adapter updateData called -> ScheduleAdapter | maxVisibleItems: $maxVisibleItems")
                 }
             } else {
                 container.scheduleRecyclerView.adapter = null
+                Log.d("debugHeight", "ScheduleFragment onViewCreated called; line 364 | dataList is empty | container.scheduleRecyclerView.adapter = null")
             }
 
         }
@@ -429,6 +432,7 @@ class ScheduleFragment : Fragment(), CoroutineScope {
             if (dataList.isNotEmpty()) {
                 adapter = ScheduleAdapter(requireContext(), dataList, clickCheck, appController, day, maxVisibleItems) {
                     dataLoad(currentDayViewContainer!!, day)
+                    Log.d("debugHeight", "ScheduleFragment onViewCreated called; line 435 | Adapter callback")
                 }
                 recyclerViewInDialog.adapter = adapter
                 recyclerViewInDialog.layoutManager = LinearLayoutManager(context)

@@ -270,7 +270,7 @@ class ScheduleAdapter(private val context: Context, private var dataList: Mutabl
 
                     dataList.removeAt(position)
 
-                    notifyItemRemoved(position)
+                    notifyDataSetChanged()
 
                     //캘린더 셀 콜백
                     onDataChanged?.invoke()

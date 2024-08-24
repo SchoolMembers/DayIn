@@ -326,51 +326,51 @@ class ScheduleFragment : Fragment(), CoroutineScope {
             Log.d("ScheduleData", "Date: ${day.date}, Loaded Data: $dataList")
 
             // 뷰가 측정된 후에 높이 계산을 위해 post 사용
-            container.view.post {
-                val itemViewHeight = 27 // dp
-                val itemViewHeightPx = TypedValue.applyDimension(
-                    TypedValue.COMPLEX_UNIT_DIP,
-                    itemViewHeight.toFloat(),
-                    requireContext().resources.displayMetrics
-                ).toInt()
 
-                val paddingMargin = TypedValue.applyDimension(
-                    TypedValue.COMPLEX_UNIT_DIP,
-                    37.toFloat(),
-                    requireContext().resources.displayMetrics
-                ).toInt()
+            val itemViewHeight = 27 // dp
+            val itemViewHeightPx = TypedValue.applyDimension(
+                TypedValue.COMPLEX_UNIT_DIP,
+                itemViewHeight.toFloat(),
+                requireContext().resources.displayMetrics
+            ).toInt()
 
-                val recyclerViewHeight = container.view.height
+            val paddingMargin = TypedValue.applyDimension(
+                TypedValue.COMPLEX_UNIT_DIP,
+                37.toFloat(),
+                requireContext().resources.displayMetrics
+            ).toInt()
 
-                val maxVisibleItems = if (itemViewHeightPx != 0) {
-                    (recyclerViewHeight - paddingMargin) / itemViewHeightPx
-                } else {
-                    0
-                }
+            val recyclerViewHeight = container.view.height
 
-                if (dataList.isNotEmpty()) {
-                    if (container.scheduleRecyclerView.adapter == null) {
-                        val initialData = dataList.take(maxVisibleItems).toMutableList()
-                        adapter = ScheduleAdapter(requireContext(), initialData, clickCheck, appController, day)
-                        container.scheduleRecyclerView.adapter = adapter
-                        container.scheduleRecyclerView.layoutManager = LinearLayoutManager(context)
-
-                        // 리사이클러뷰 데이터 재설정 (개수 제한)
-                        adapter.registerAdapterDataObserver(object : RecyclerView.AdapterDataObserver() {
-                            override fun onChanged() {
-                                container.scheduleRecyclerView.post {
-                                    val newDataList: MutableList<ScheduleDb> = dataList.take(maxVisibleItems).toMutableList()
-                                    adapter.updateData(newDataList)
-                                }
-                            }
-                        })
-                    } else {
-                        (container.scheduleRecyclerView.adapter as ScheduleAdapter).updateData(dataList)
-                    }
-                } else {
-                    container.scheduleRecyclerView.adapter = null
-                }
+            val maxVisibleItems = if (itemViewHeightPx != 0) {
+                (recyclerViewHeight - paddingMargin) / itemViewHeightPx
+            } else {
+                0
             }
+
+            if (dataList.isNotEmpty()) {
+                if (container.scheduleRecyclerView.adapter == null) {
+                    val initialData = dataList.take(maxVisibleItems).toMutableList()
+                    adapter = ScheduleAdapter(requireContext(), initialData, clickCheck, appController, day)
+                    container.scheduleRecyclerView.adapter = adapter
+                    container.scheduleRecyclerView.layoutManager = LinearLayoutManager(context)
+
+                    // 리사이클러뷰 데이터 재설정 (개수 제한)
+                    adapter.registerAdapterDataObserver(object : RecyclerView.AdapterDataObserver() {
+                        override fun onChanged() {
+                            container.scheduleRecyclerView.post {
+                                val newDataList: MutableList<ScheduleDb> = dataList.take(maxVisibleItems).toMutableList()
+                                adapter.updateData(newDataList)
+                            }
+                        }
+                    })
+                } else {
+                    (container.scheduleRecyclerView.adapter as ScheduleAdapter).updateData(dataList)
+                }
+            } else {
+                container.scheduleRecyclerView.adapter = null
+            }
+
         }
     }
 

@@ -319,57 +319,58 @@ class ScheduleFragment : Fragment(), CoroutineScope {
 
     //리사이클러 비동기 데이터 로그 함수
     fun dataLoad(container: DayViewContainer, day: CalendarDay) {
-
         uiScope.launch {
             dataList = loadScheduleDataForDay(day)
 
-            val itemViewHeight = 27 // dp
-            val itemViewHeightPx = TypedValue.applyDimension(
-                TypedValue.COMPLEX_UNIT_DIP,
-                itemViewHeight.toFloat(),
-                requireContext().resources.displayMetrics
-            ).toInt()
-
-            val paddingMargin = TypedValue.applyDimension(
-                TypedValue.COMPLEX_UNIT_DIP,
-                37.toFloat(),
-                requireContext().resources.displayMetrics
-            ).toInt()
-
-            val recyclerViewHeight = container.view.height
-
-            val maxVisibleItems = if (itemViewHeightPx != 0) {
-                (recyclerViewHeight - paddingMargin) / itemViewHeightPx
-            } else {
-                0
-            }
-
+            // 데이터 가져온 후 로그 출력
             Log.d("ScheduleData", "Date: ${day.date}, Loaded Data: $dataList")
-            if (dataList.isNotEmpty()) {
-                if (container.scheduleRecyclerView.adapter == null) {
-                    adapter = ScheduleAdapter(requireContext(), dataList.take(maxVisibleItems).toMutableList(), clickCheck, appController, day)
-                    container.scheduleRecyclerView.adapter = adapter
-                    container.scheduleRecyclerView.layoutManager = LinearLayoutManager(context)
 
-                    //리사이클러뷰 데이터 재설정 (개수 제한)
-                    adapter.registerAdapterDataObserver(object : RecyclerView.AdapterDataObserver() {
-                        override fun onChanged() {
-                            container.scheduleRecyclerView.post {
+            // 뷰가 측정된 후에 높이 계산을 위해 post 사용
+            container.view.post {
+                val itemViewHeight = 27 // dp
+                val itemViewHeightPx = TypedValue.applyDimension(
+                    TypedValue.COMPLEX_UNIT_DIP,
+                    itemViewHeight.toFloat(),
+                    requireContext().resources.displayMetrics
+                ).toInt()
 
+                val paddingMargin = TypedValue.applyDimension(
+                    TypedValue.COMPLEX_UNIT_DIP,
+                    37.toFloat(),
+                    requireContext().resources.displayMetrics
+                ).toInt()
 
-                                // 데이터 제한
-                                val newDataList: MutableList<ScheduleDb> = dataList.take(maxVisibleItems).toMutableList()
-                                adapter.updateData(newDataList)
-                            }
-                        }
-                    })
+                val recyclerViewHeight = container.view.height
+
+                val maxVisibleItems = if (itemViewHeightPx != 0) {
+                    (recyclerViewHeight - paddingMargin) / itemViewHeightPx
                 } else {
-                    (container.scheduleRecyclerView.adapter as ScheduleAdapter).updateData(dataList)
+                    0
                 }
-            } else {
-                container.scheduleRecyclerView.adapter = null
-            }
 
+                if (dataList.isNotEmpty()) {
+                    if (container.scheduleRecyclerView.adapter == null) {
+                        val initialData = dataList.take(maxVisibleItems).toMutableList()
+                        adapter = ScheduleAdapter(requireContext(), initialData, clickCheck, appController, day)
+                        container.scheduleRecyclerView.adapter = adapter
+                        container.scheduleRecyclerView.layoutManager = LinearLayoutManager(context)
+
+                        // 리사이클러뷰 데이터 재설정 (개수 제한)
+                        adapter.registerAdapterDataObserver(object : RecyclerView.AdapterDataObserver() {
+                            override fun onChanged() {
+                                container.scheduleRecyclerView.post {
+                                    val newDataList: MutableList<ScheduleDb> = dataList.take(maxVisibleItems).toMutableList()
+                                    adapter.updateData(newDataList)
+                                }
+                            }
+                        })
+                    } else {
+                        (container.scheduleRecyclerView.adapter as ScheduleAdapter).updateData(dataList)
+                    }
+                } else {
+                    container.scheduleRecyclerView.adapter = null
+                }
+            }
         }
     }
 

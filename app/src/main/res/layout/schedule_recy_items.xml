@@ -10,8 +10,7 @@
     android:orientation="vertical">
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@drawable/recy_items_back">
+        android:layout_height="wrap_content">
         <CheckBox
             android:id="@+id/check"
             android:layout_width="20dp"
@@ -20,14 +19,16 @@
             android:layout_marginTop="5dp"
             android:layout_marginEnd="5dp"
             android:layout_marginBottom="5dp"
-            android:layout_marginStart="8dp"/>
+            android:layout_marginStart="8dp"
+            style="@style/Widget.App.CheckBox"/>
         <TextView
             android:id="@+id/text"
             android:layout_width="0dp"
             android:layout_height="24dp"
             android:layout_weight="9"
             android:maxLines="1"
-            android:textSize="14sp"
+            android:maxLength="20"
+            android:textSize="11sp"
             android:fontFamily="@font/okticon_regular"
             android:gravity="center"
             android:text="@string/testMedium"/>

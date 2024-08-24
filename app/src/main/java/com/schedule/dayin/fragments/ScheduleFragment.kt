@@ -49,7 +49,6 @@ import java.time.temporal.WeekFields
 import java.util.*
 import kotlin.coroutines.CoroutineContext
 import com.schedule.dayin.views.ItemDecoration
-import java.text.SimpleDateFormat
 import java.time.LocalTime
 import java.time.ZoneId
 
@@ -58,6 +57,8 @@ class ScheduleFragment : Fragment(), CoroutineScope {
 
     private var _binding: FragmentSBinding? = null
     private val binding get() = _binding!!
+
+    private lateinit var appController: AppController
 
     private var job = Job()
     private val uiScope = CoroutineScope(Dispatchers.Main)
@@ -74,7 +75,7 @@ class ScheduleFragment : Fragment(), CoroutineScope {
 
     private lateinit var adapter: ScheduleAdapter
 
-    private var dataList = mutableListOf<Triple<Long, String, String>>()
+    private var dataList = mutableListOf<ScheduleDb>()
 
 
 
@@ -108,11 +109,6 @@ class ScheduleFragment : Fragment(), CoroutineScope {
     }
 
 
-    //몇 번째 주?
-    private var weekOfMonth = 0
-    //셀 높이 조정
-    private var cellHeight = 300
-    private var dataSize = 0
 
 
     //database
@@ -122,7 +118,6 @@ class ScheduleFragment : Fragment(), CoroutineScope {
     private var calendar = Calendar.getInstance()
 
     //시간 등록
-    private var timeAmPmIndex = 0
     private var time = 0
 
     //알림 설정 여부
@@ -130,6 +125,7 @@ class ScheduleFragment : Fragment(), CoroutineScope {
 
     //메모
     private var memoText: String? = ""
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -161,7 +157,7 @@ class ScheduleFragment : Fragment(), CoroutineScope {
         val barDateYear = (activity as? MainActivity)?.findViewById<TextView>(R.id.barDateYear)
 
         //kizitonwose calendar
-        val calendarView = binding.calendarView
+
         val currentMonth = YearMonth.now()
         val firstMonth = currentMonth.minusMonths(100)
         val lastMonth = currentMonth.plusMonths(100)
@@ -172,19 +168,22 @@ class ScheduleFragment : Fragment(), CoroutineScope {
 
 
         //시작 월, 종료 월, 첫 주의 요일
+        val calendarView = binding.calendarView
         calendarView.setup(firstMonth, lastMonth, firstDayOfWeek)
         calendarView.scrollToMonth(currentMonth)
-        calendarView.daySize = DaySize.SeventhWidth
+        calendarView.daySize = DaySize.Rectangle
 
         Log.d("customTag", "ScheduleFragment onViewCreated called; day setup complete")
 
 
         //database setting
-        val appController = requireActivity().application as AppController
+        appController = requireActivity().application as AppController
         mainDb = appController.mainDb
         scheduleRepository = ScheduleRepository(mainDb.scheduleDbDao())
 
         Log.d("customTag", "ScheduleFragment onViewCreated called; database setting complete")
+
+
 
         //캘린더의 각 날짜 뷰 정의
         calendarView.dayBinder = object : MonthDayBinder<DayViewContainer> {
@@ -213,41 +212,150 @@ class ScheduleFragment : Fragment(), CoroutineScope {
             }
         }
 
+
+
+
         //스크롤 리스너 ( 월 스크롤 -> 연, 월 업데이트)
         calendarView.monthScrollListener = object : MonthScrollListener {
             override fun invoke(p1: CalendarMonth) {
                 barDateYear?.text = p1.yearMonth.format(DateTimeFormatter.ofPattern("yyyy년 MM월"))
                 Log.d("customTag", "ScheduleFragment onViewCreated called; barDateYear updated")
 
-                weekOfMonth = 0
-                cellHeight = 300
-                dataSize = 0
             }
+        }
+
+        // barDateYear 클릭 리스너 설정
+        barDateYear?.setOnClickListener {
+            showYearMonthPicker(calendarView, currentMonth)
         }
 
     }
 
+    // 연도 및 월 선택 다이얼로그 보여주기
+    private fun showYearMonthPicker(calendarView: com.kizitonwose.calendar.view.CalendarView, currentMonth: YearMonth) {
+        // 다이얼로그 뷰 생성
+        val dialogView = layoutInflater.inflate(R.layout.dialog_year_month_picker, null)
+        val yearEdit: EditText = dialogView.findViewById(R.id.year)
+        val monthEdit: EditText = dialogView.findViewById(R.id.month)
+        val confirmButton: Button = dialogView.findViewById(R.id.confirm_button)
+
+        // 최소, 최대 날짜 계산
+        val minYearMonth = currentMonth.minusMonths(98)
+        val maxYearMonth = currentMonth.plusMonths(99)
+
+        // 다이얼로그 생성
+        val dialog = AlertDialog.Builder(requireContext())
+            .setView(dialogView)
+            .create()
+
+        //년
+        var yearText: String = "0"
+        yearEdit.hint = currentMonth.year.toString()
+        yearEdit.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                yearText = s?.toString() ?: "0"
+
+            }
+            override fun afterTextChanged(s: Editable?) {}
+        })
+
+        //월
+        var monText: String = "0"
+        monthEdit.hint = currentMonth.monthValue.toString()
+        monthEdit.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                monText = s?.toString() ?: "0"
+
+            }
+            override fun afterTextChanged(s: Editable?) {}
+        })
+
+        confirmButton.setOnClickListener {
+            //int 전환
+            val selectedYear = if (yearText == "") 0 else yearText.toInt()
+            val selectedMonth = if (monText == "") 0 else monText.toInt()
+
+            //아무 값도 입력하지 않았을 때
+            if (selectedYear == 0 || selectedMonth == 0) {
+                Toast.makeText(requireContext(), "연도와 월을 모두 입력해 주세요.", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+
+            //12 초과
+            if (selectedMonth > 12) {
+                Toast.makeText(requireContext(), "월은 12월 이하여야 합니다.", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+
+            // 등록할 날짜 세팅
+            val selectedYearMonth = YearMonth.of(selectedYear, selectedMonth)
+
+            Log.d("customTag", "Selected Year: $selectedYear, Selected Month: $selectedMonth")
+            Log.d("customTag", "maxMon: $maxYearMonth, minMon: $minYearMonth")
+
+
+            // 범위 초과 또는 미달 시 토스트 메시지 표시
+            if ((selectedYear <= minYearMonth.year && selectedMonth < minYearMonth.monthValue)  || (selectedYear >= maxYearMonth.year && selectedMonth > maxYearMonth.monthValue)) {
+                Toast.makeText(
+                    requireContext(),
+                    "선택할 수 있는 날짜 범위는 ${minYearMonth.year}년 ${minYearMonth.monthValue}월 ~ ${maxYearMonth.year}년 ${maxYearMonth.monthValue}월입니다.",
+                    Toast.LENGTH_SHORT
+                ).show()
+            } else {
+                // 선택한 연도와 월로 캘린더 스크롤
+                calendarView.scrollToMonth(selectedYearMonth)
+                dialog.dismiss()
+            }
+        }
+
+        dialog.show()
+    }
+
+
+
     //리사이클러 비동기 데이터 로그 함수
     fun dataLoad(container: DayViewContainer, day: CalendarDay) {
+
         uiScope.launch {
-            val dataList = loadScheduleDataForDay(day)
-
-            // 몇 번째 주인지 구하기
-            val weekFields = WeekFields.of(Locale.getDefault())
-            val todayWeek = day.date.get(weekFields.weekOfMonth())
-
-            if (todayWeek != weekOfMonth) {
-                weekOfMonth = todayWeek
-                cellHeight = 300
-                dataSize = 0
-            }
+            dataList = loadScheduleDataForDay(day)
 
             Log.d("ScheduleData", "Date: ${day.date}, Loaded Data: $dataList")
             if (dataList.isNotEmpty()) {
                 if (container.scheduleRecyclerView.adapter == null) {
-                    adapter = ScheduleAdapter(requireContext(), dataList, clickCheck)
+                    adapter = ScheduleAdapter(requireContext(), dataList, clickCheck, appController, day)
                     container.scheduleRecyclerView.adapter = adapter
                     container.scheduleRecyclerView.layoutManager = LinearLayoutManager(context)
+
+                    //리사이클러뷰 데이터 재설정 (개수 제한)
+                    adapter.registerAdapterDataObserver(object : RecyclerView.AdapterDataObserver() {
+                        override fun onChanged() {
+                            container.scheduleRecyclerView.post {
+                                val itemViewHeight = container.scheduleRecyclerView.getChildAt(0)?.height ?: 0
+                                val recyclerViewHeight = container.scheduleRecyclerView.height
+
+                                val itemMargin = 5 // dp
+                                val itemMarginPx = TypedValue.applyDimension(
+                                    TypedValue.COMPLEX_UNIT_DIP,
+                                    itemMargin.toFloat(),
+                                    requireContext().resources.displayMetrics
+                                ).toInt()
+
+                                val maxVisibleItems = if (itemViewHeight != 0) {
+                                    recyclerViewHeight / (itemViewHeight + itemMarginPx)
+                                } else {
+                                    0
+                                }
+
+                                // 데이터 제한
+                                val newDataList: MutableList<ScheduleDb> = dataList.take(maxVisibleItems).toMutableList()
+                                adapter.updateData(newDataList)
+                            }
+                        }
+                    })
                 } else {
                     (container.scheduleRecyclerView.adapter as ScheduleAdapter).updateData(dataList)
                 }
@@ -255,25 +363,13 @@ class ScheduleFragment : Fragment(), CoroutineScope {
                 container.scheduleRecyclerView.adapter = null
             }
 
-            if (dataList.size > dataSize && todayWeek == weekOfMonth) {
-                dataSize = dataList.size
-                if (dataList.size > 3) {
-                    cellHeight = (dataSize + 1) * 75
-                }
-
-            }
-
-            withContext(Dispatchers.Main) {
-                container.setHeight(cellHeight)
-            }
-
         }
     }
 
     //리사이클러 데이터 세팅
-    suspend fun loadScheduleDataForDay(day: CalendarDay): MutableList<Triple<Long, String, String>> {
+    private suspend fun loadScheduleDataForDay(day: CalendarDay): MutableList<ScheduleDb> {
         val date = day.date
-        val dataList = mutableListOf<Triple<Long, String, String>>()
+        val dataList = mutableListOf<ScheduleDb>()
 
         val startDate = date.atTime(LocalTime.MIN)
         val endDate = date.atTime(LocalTime.MAX)
@@ -287,12 +383,7 @@ class ScheduleFragment : Fragment(), CoroutineScope {
                     startZoneTime.toInstant().toEpochMilli(),
                     endZoneTime.toInstant().toEpochMilli()
                 ).forEach { schedule ->
-                    val formattedTime = formatDate(schedule.date)
-                    if (schedule.time != 0) {
-                        dataList.add(Triple(schedule.id, schedule.title, formattedTime))
-                    } else {
-                        dataList.add(Triple(schedule.id, schedule.title, ""))
-                    }
+                    dataList.add(schedule)
                 }
             } catch (e: Exception) {
                 Log.e("ScheduleData", "Error collecting schedules", e)
@@ -302,13 +393,6 @@ class ScheduleFragment : Fragment(), CoroutineScope {
         Log.d("ScheduleData", "Date: $date, DataList: $dataList")
 
         return dataList
-    }
-
-    fun formatDate(date: Date?): String {
-        return date?.let {
-            val dateFormat = SimpleDateFormat("HH:mm", Locale.KOREAN)
-            dateFormat.format(it)
-        } ?: "" // null인 경우 빈 문자열 반환
     }
 
 
@@ -343,8 +427,10 @@ class ScheduleFragment : Fragment(), CoroutineScope {
         uiScope.launch {
             dataList = loadScheduleDataForDay(day)
             if (dataList.isNotEmpty()) {
-                val adapterD = ScheduleAdapter(requireContext(), dataList, clickCheck)
-                recyclerViewInDialog.adapter = adapterD
+                adapter = ScheduleAdapter(requireContext(), dataList, clickCheck, appController, day) {
+                    dataLoad(currentDayViewContainer!!, day)
+                }
+                recyclerViewInDialog.adapter = adapter
                 recyclerViewInDialog.layoutManager = LinearLayoutManager(context)
             } else {
                 recyclerViewInDialog.adapter = null
@@ -461,17 +547,70 @@ class ScheduleFragment : Fragment(), CoroutineScope {
 
         //제목 입력 저장
         val titleEditText = dialogView.findViewById<EditText>(R.id.titleText)
-        var titleText: String = ""
+        var titleText: String = "제목 없음"
 
         titleEditText.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                titleText = s?.toString() ?: ""
+                titleText = s?.toString() ?: "제목 없음"
                 Log.d("customTag", "ScheduleFragment onViewCreated called; titleText: $titleText")
             }
             override fun afterTextChanged(s: Editable?) {}
         })
+
+        //색상 설정 리스너
+        //colorDefault(lightGray) : 0 | colorGray : 1 | colorYellow : 2 | colorPurple : 3 | colorBlue : 4 | colorGreen 5
+        var color = 0
+        val colorButton0 = dialogView.findViewById<Button>(R.id.colorDefault)
+        colorButton0.setOnClickListener {
+            color = 0
+            Toast.makeText(context, "회색으로 설정되었습니다", Toast.LENGTH_SHORT).show()
+            Log.d("customTag", "ScheduleFragment onViewCreated called; color value updated lightGray")
+        }
+
+        val colorButton1 = dialogView.findViewById<Button>(R.id.colorGray)
+        colorButton1.setOnClickListener {
+            color = 1
+            Toast.makeText(context, "검정색으로 설정되었습니다", Toast.LENGTH_SHORT).show()
+            Log.d("customTag", "ScheduleFragment onViewCreated called; color value updated gray")
+        }
+
+        val colorButton2 = dialogView.findViewById<Button>(R.id.colorYellow)
+        colorButton2.setOnClickListener {
+            color = 2
+            Toast.makeText(context, "노란색으로 설정되었습니다", Toast.LENGTH_SHORT).show()
+            Log.d("customTag", "ScheduleFragment onViewCreated called; color value updated yellow")
+        }
+
+        val colorButton3 = dialogView.findViewById<Button>(R.id.colorPurple)
+        colorButton3.setOnClickListener {
+            color = 3
+            Toast.makeText(context, "보라색으로 설정되었습니다", Toast.LENGTH_SHORT).show()
+            Log.d("customTag", "ScheduleFragment onViewCreated called; color value updated purple")
+        }
+
+        val colorButton4 = dialogView.findViewById<Button>(R.id.colorBlue)
+        colorButton4.setOnClickListener {
+            color = 4
+            Toast.makeText(context, "파란색으로 설정되었습니다", Toast.LENGTH_SHORT).show()
+            Log.d("customTag", "ScheduleFragment onViewCreated called; color value updated blue")
+        }
+
+        val colorButton5 = dialogView.findViewById<Button>(R.id.colorGreen)
+        colorButton5.setOnClickListener {
+            color = 5
+            Toast.makeText(context, "초록색으로 설정되었습니다", Toast.LENGTH_SHORT).show()
+            Log.d("customTag", "ScheduleFragment onViewCreated called; color value updated green")
+        }
+
+        val colorButton6 = dialogView.findViewById<Button>(R.id.colorRed)
+        colorButton6.setOnClickListener {
+            color = 6
+            Toast.makeText(context, "빨간색으로 설정되었습니다", Toast.LENGTH_SHORT).show()
+            Log.d("customTag", "ScheduleFragment onViewCreated called; color value updated red")
+        }
+
 
         // autoToggle 리스너
         var auto = 0
@@ -497,6 +636,12 @@ class ScheduleFragment : Fragment(), CoroutineScope {
             Log.d("customTag", "ScheduleFragment onViewCreated called; infoButton1 clicked")
         }
 
+        //시간 등록 활성화 버튼
+        val timeSwitch = dialogView.findViewById<com.google.android.material.switchmaterial.SwitchMaterial>(R.id.timeSwitch)
+
+        val timeHourEditText = dialogView.findViewById<EditText>(R.id.timeHour)
+        val timeMinEditText = dialogView.findViewById<EditText>(R.id.timeMin)
+
 
         // 체크 버튼
         val checkButton = dialogView.findViewById<Button>(R.id.checkButton)
@@ -521,7 +666,8 @@ class ScheduleFragment : Fragment(), CoroutineScope {
                             notify = noti,
                             memo = memoText,
                             check = 0,
-                            time = time
+                            time = time,
+                            color = color
                         )
                     )
                 }
@@ -535,14 +681,11 @@ class ScheduleFragment : Fragment(), CoroutineScope {
         }
 
 
-        //시간 등록 활성화 버튼
-        val timeSwitch = dialogView.findViewById<com.google.android.material.switchmaterial.SwitchMaterial>(R.id.timeSwitch)
+        //시간 등록 활성화 이벤트
         val timeLayout = dialogView.findViewById<View>(R.id.timeLayout)
-        val timeAmPm = dialogView.findViewById<com.google.android.material.button.MaterialButtonToggleGroup>(R.id.timeAmPm)
-        val timeHourEditText = dialogView.findViewById<EditText>(R.id.timeHour)
-        val timeMinEditText = dialogView.findViewById<EditText>(R.id.timeMin)
 
-        var textWatcher: TextWatcher? = null
+
+        val textWatcher: TextWatcher? = null
 
         var timeHourText = 0
         var timeMinText = 0
@@ -565,21 +708,18 @@ class ScheduleFragment : Fragment(), CoroutineScope {
         }
 
         // 시간 EditText에 대한 공통 TextWatcher 생성 함수
-        fun createTextWatcher(isPm: Boolean, isHourEditText: Boolean) = object : TextWatcher {
+        fun createTextWatcher(isHourEditText: Boolean) = object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 val value = s?.toString()?.toIntOrNull() ?: 0
 
                 if (isHourEditText) {
-                    timeHourText = when {
-                        isPm && value in 1..11 -> value + 12
-                        isPm && value == 12 -> 12
-                        !isPm && value == 12 -> 0
-                        !isPm && value == 0 -> 0
+                    timeHourText =  when {
+                        value == 24 -> 0
                         else -> value
                     }
-                    updateTextField(timeHourEditText, timeHourText, 24, errorMessage)
+                    updateTextField(timeHourEditText, timeHourText, 25, errorMessage)
                 } else {
                     timeMinText = value
                     updateTextField(timeMinEditText, timeMinText, 60, errorMessage)
@@ -599,44 +739,20 @@ class ScheduleFragment : Fragment(), CoroutineScope {
             if (isChecked){
                 timeLayout.visibility = View.VISIBLE
                 time = 1
-                timeAmPmIndex = 0 //0은 am, 1은 pm
+
+                timeHourText = 0
+                timeMinText = 0
+
+                calendar.set(Calendar.HOUR_OF_DAY, 0)
+                calendar.set(Calendar.MINUTE, 0)
+
                 Log.d("customTag", "ScheduleFragment onViewCreated called; timeSwitch checked")
 
                 //시간 설정------------------------------------------------------------------------------------------
 
-                if (timeAmPmIndex == 0) {
-                    timeHourEditText.addTextChangedListener(createTextWatcher(isPm = false, isHourEditText = true))
-                    timeMinEditText.addTextChangedListener(createTextWatcher(isPm = false, isHourEditText = false))
-                } else {
-                    timeHourEditText.addTextChangedListener(createTextWatcher(isPm = true, isHourEditText = true))
-                    timeMinEditText.addTextChangedListener(createTextWatcher(isPm = true, isHourEditText = false))
-                }
+                timeHourEditText.addTextChangedListener(createTextWatcher(isHourEditText = true))
+                timeMinEditText.addTextChangedListener(createTextWatcher(isHourEditText = false))
 
-                timeAmPm.addOnButtonCheckedListener { group, checkedId, isChecked ->
-                    if (isChecked) {
-                        when (checkedId) {
-                            R.id.timeAm -> {
-                                Log.d("customTag", "ScheduleFragment onViewCreated called; timeAm clicked")
-                                timeAmPmIndex = 0
-                                if (timeHourText == 12) {
-                                    timeHourText = 0
-                                }
-                                timeHourEditText.addTextChangedListener(createTextWatcher(isPm = false, isHourEditText = true))
-                                timeMinEditText.addTextChangedListener(createTextWatcher(isPm = false, isHourEditText = false))
-                            }
-                            R.id.timePm -> {
-                                Log.d("customTag", "ScheduleFragment onViewCreated called; timePm clicked")
-                                timeAmPmIndex = 1
-                                if (timeHourText in 1..11) {
-                                    timeHourText += 12
-                                }
-                                timeHourEditText.addTextChangedListener(createTextWatcher(isPm = true, isHourEditText = true))
-                                timeMinEditText.addTextChangedListener(createTextWatcher(isPm = true, isHourEditText = false))
-                            }
-                        }
-                        calendar.set(Calendar.HOUR_OF_DAY, timeHourText)
-                    }
-                }
 
                 //알림 설정------------------------------------------------------------------------------------------
                 notifyToggle.addOnButtonCheckedListener { group, checkedId, isChecked ->
@@ -707,14 +823,5 @@ class ScheduleFragment : Fragment(), CoroutineScope {
         val textView: TextView = view.findViewById(R.id.dayText)
         val click: LinearLayout = view.findViewById(R.id.clickLayout)
         val scheduleRecyclerView: RecyclerView = view.findViewById(R.id.scheduleRecyclerView)
-
-        //셀 크기 조절
-        fun setHeight(cellHeight: Int) {
-
-            val params = view.layoutParams
-            params.height = cellHeight
-            view.layoutParams = params
-
-        }
     }
 }

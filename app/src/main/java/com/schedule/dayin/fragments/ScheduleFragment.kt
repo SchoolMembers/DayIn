@@ -347,6 +347,8 @@ class ScheduleFragment : Fragment(), CoroutineScope {
                 0
             }
 
+            Log.d("debugHeight", "ScheduleFragment onViewCreated called; maxVisibleItems: $maxVisibleItems | recyclerViewHeight: $recyclerViewHeight")
+
             if (dataList.isNotEmpty()) {
                 if (container.scheduleRecyclerView.adapter == null) {
                     adapter = ScheduleAdapter(requireContext(), dataList, clickCheck, appController, day, maxVisibleItems)

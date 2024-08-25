@@ -451,6 +451,18 @@ class MoneyFragment : Fragment() {
                 return@setOnClickListener
             }
 
+            try {
+                moneyText.toInt()
+            } catch (e: NumberFormatException) {
+                Toast.makeText(context, "금액은 숫자만 입력 가능합니다.", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+
+            if (moneyText.toInt() < 0) {
+                Toast.makeText(context, "금액은 0보다 커야 합니다.", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+
             if (cateId == -1L) {
                 Toast.makeText(context, "카테고리를 선택해주세요.", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
@@ -664,7 +676,7 @@ class MoneyFragment : Fragment() {
         uiScope.launch {
             userCateListBefore = cateRepository.getUserCate()
             userCateList = moneyRepository.getUserCate()
-            userCateList.collect { list ->
+            userCateListBefore.collect { list ->
                 if (list.isNotEmpty()) {
                     withContext(Dispatchers.Main) {
                         userCateAdapter = UserCateAdapter(requireContext(), userCateListBefore, userCateList, onDataChanged = { cateDel() })

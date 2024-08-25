@@ -340,7 +340,7 @@ class ScheduleFragment : Fragment(), CoroutineScope {
 
             val recyclerViewHeight = container.view.height
 
-            maxVisibleItems = if (itemViewHeightPx != 0) {
+            maxVisibleItems = if (recyclerViewHeight > 0) {
                 (recyclerViewHeight - paddingMargin) / itemViewHeightPx
             } else {
                 0

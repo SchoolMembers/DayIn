@@ -5,10 +5,12 @@ import android.os.Build
 import android.os.Bundle
 import android.text.Html
 import android.text.Spanned
+import android.view.View
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.isVisible
 import com.schedule.dayin.data.memoD.MemoDb
 import com.schedule.dayin.data.memoD.repository.MemoRepository
 import com.schedule.dayin.databinding.MemoEditActivityBinding
@@ -69,6 +71,28 @@ class MemoEditActivity : AppCompatActivity() {
         //닫기
         binding.closeButton.setOnClickListener {
             finish()
+        }
+
+        // 하단 텍스트뷰 클릭 이벤트
+        binding.color.setOnClickListener {
+            binding.colorMenu.visibility = View.VISIBLE
+            binding.color.setOnClickListener {
+                binding.colorMenu.visibility = View.GONE
+            }
+        }
+
+        binding.font.setOnClickListener {
+            binding.fontMenu.visibility = View.VISIBLE
+            binding.font.setOnClickListener {
+                binding.fontMenu.visibility = View.GONE
+            }
+        }
+
+        binding.style.setOnClickListener {
+            binding.styleMenu.visibility = View.VISIBLE
+            binding.style.setOnClickListener {
+                binding.styleMenu.visibility = View.GONE
+            }
         }
 
         // 예제 HTML 텍스트

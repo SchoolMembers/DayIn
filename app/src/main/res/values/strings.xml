@@ -68,4 +68,8 @@
     <string name="wallet">나의 지갑</string>
     <string name="monYearPickerBar">날짜 선택</string>
     <string name="monYearPicker">0000년 00월</string>
+    <string name="fontText">글꼴</string>
+    <string name="colorText">색상</string>
+    <string name="styleText">스타일</string>
+    <string name="defaultText">가</string>
 </resources>

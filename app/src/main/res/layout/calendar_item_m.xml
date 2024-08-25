@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/moneyContainer"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -23,15 +24,66 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <!-- 하단에 소비/지출 표시할 RecyclerView -->
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/moneyRecyclerView"
+    <FrameLayout
+        android:id="@+id/minusLayout"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:layout_marginTop="2dp"
+        android:layout_height="40dp"
+        android:layout_marginTop="30dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/dayText"/>
+        app:layout_constraintTop_toBottomOf="@id/dayText"
+        android:visibility="gone">
+        <TextView
+            android:id="@+id/minus"
+            android:layout_width="30dp"
+            android:layout_height="40dp"
+            android:textSize="15sp"
+            android:text="-"
+            android:fontFamily="@font/okticon_regular"
+            android:gravity="center"
+            android:textColor="@color/red" />
+        <TextView
+            android:id="@+id/dayMinus"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:textSize="15sp"
+            android:text="1000000000"
+            android:fontFamily="@font/okticon_regular"
+            android:gravity="center"
+            android:textColor="@color/red" />
+    </FrameLayout>
+
+    <FrameLayout
+        android:id="@+id/plusLayout"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_marginTop="30dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/minusLayout"
+        android:visibility="gone">
+
+        <TextView
+            android:id="@+id/plus"
+            android:layout_width="30dp"
+            android:layout_height="40dp"
+            android:fontFamily="@font/okticon_regular"
+            android:gravity="center"
+            android:text="+"
+            android:textColor="@color/green3"
+            android:textSize="15sp"/>
+
+        <TextView
+            android:id="@+id/dayPlus"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:fontFamily="@font/okticon_regular"
+            android:gravity="center"
+            android:text="1000000000"
+            android:textColor="@color/green3"
+            android:textSize="15sp" />
+    </FrameLayout>
+
 
     <LinearLayout
         android:id="@+id/clickLayout"
@@ -41,6 +93,6 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"/>
+        app:layout_constraintTop_toTopOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

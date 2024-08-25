@@ -9,6 +9,7 @@ import androidx.room.Transaction
 import androidx.room.Update
 import com.schedule.dayin.data.mainD.MoneyAndCate
 import com.schedule.dayin.data.mainD.MoneyDb
+import com.schedule.dayin.data.mainD.ScheduleDb
 import kotlinx.coroutines.flow.Flow
 
 @Dao
@@ -38,8 +39,8 @@ interface MoneyDbDao {
 
     //특정 날짜의 데이터들(날짜칸 클릭했을 때 세팅)
     @Transaction
-    @Query("SELECT * FROM moneyDb JOIN cateDb ON moneyDb.cateId = cateDb.cateId WHERE date(date) = date(:date) ORDER BY inEx, money ASC")
-    fun getMoneyDay(date: String): Flow<List<MoneyAndCate>>
+    @Query("SELECT * FROM moneyDb JOIN cateDb ON moneyDb.cateId = cateDb.cateId WHERE  :startDate <= date and date <= :endDate ORDER BY inEx, id ASC")
+    fun getMoneyDay(startDate: Long, endDate: Long): List<MoneyAndCate>
 
     //사용자 지정 카테고리 데이터들
     @Transaction

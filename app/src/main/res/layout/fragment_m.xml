@@ -32,7 +32,7 @@
             android:textColor="@color/gray"
             android:layout_marginEnd="13dp"/>
         <TextView
-            android:id="@+id/plus"
+            android:id="@+id/plusTotal"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="4"
@@ -42,7 +42,7 @@
             android:textColor="@color/green3"
             android:layout_marginEnd="13dp"/>
         <TextView
-            android:id="@+id/minus"
+            android:id="@+id/minusTotal"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="4"

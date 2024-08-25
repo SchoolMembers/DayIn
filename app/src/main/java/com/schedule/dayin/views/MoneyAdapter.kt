@@ -3,6 +3,7 @@ package com.schedule.dayin.views
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.kizitonwose.calendar.core.CalendarDay
 import com.schedule.dayin.AppController
 import com.schedule.dayin.data.mainD.MoneyAndCate
 import com.schedule.dayin.data.mainD.repository.MoneyRepository
@@ -10,7 +11,7 @@ import com.schedule.dayin.databinding.MoneyRecyItemsBinding
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 
-class MoneyAdapter(private var dataList: MutableList<MoneyAndCate>, private val appController: AppController): RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class MoneyAdapter(private var dataList: MutableList<MoneyAndCate>, private val appController: AppController, private val day: CalendarDay): RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
 
     private var mainDb = appController.mainDb

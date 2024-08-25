@@ -625,15 +625,16 @@ class ScheduleAdapter(private val context: Context, private var dataList: Mutabl
 
         //메모
         val memo = dialogView.findViewById<EditText>(R.id.memoText)
+        var memoText: String? = ""
         if (data.memo != null) {
             memo.setText(data.memo)
+            memoText = data.memo
         }
-        var memoText: String? = ""
         memo.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                memoText = s?.toString() ?: ""
+                memoText = s?.toString() ?: data.memo
                 Log.d("customTag", "ScheduleFragment onViewCreated called; memoText: $memoText")
             }
             override fun afterTextChanged(s: Editable?) {}

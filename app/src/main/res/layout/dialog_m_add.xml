@@ -62,18 +62,21 @@
                 android:textSize="18sp"
                 android:layout_marginStart="15dp"
                 android:layout_marginTop="15dp" />
+
             <EditText
                 android:id="@+id/moneyText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:fontFamily="@font/okticon_regular"
-                android:maxLines="1"
-                android:textSize="14sp"
                 android:layout_marginStart="15dp"
                 android:layout_marginTop="4dp"
                 android:layout_marginEnd="15dp"
+                android:fontFamily="@font/okticon_regular"
+                android:hint="@string/moneyHint"
                 android:inputType="text"
-                android:hint="@string/moneyHint"/>
+                android:maxLines="1"
+                android:maxLength="18"
+                android:textSize="14sp" />
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">

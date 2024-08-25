@@ -12,7 +12,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 
-class CateAdapter(private var cateList: Flow<List<CateDb>>, private val onDataChanged: (() -> Unit)? = null): RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class CateAdapter(private var cateList: Flow<List<CateDb>>, private var choice: Long? = null, private val onDataChanged: (() -> Unit)? = null): RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     private val uiScope = CoroutineScope(Dispatchers.Main)
 
@@ -45,6 +45,15 @@ class CateAdapter(private var cateList: Flow<List<CateDb>>, private val onDataCh
         }
 
         val layout = binding.layout
+
+        //머니 데이터 수정 시
+        if (choice != null) {
+            if (currentList[position].cateId == choice) {
+                choice = null
+                selectedCate = holder.adapterPosition
+            }
+
+        }
 
         //카테고리 선택?
         if (position == selectedCate) {

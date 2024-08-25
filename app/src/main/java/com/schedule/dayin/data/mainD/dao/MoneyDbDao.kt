@@ -32,6 +32,11 @@ interface MoneyDbDao {
     @Query("SELECT * FROM moneyDb JOIN cateDb ON moneyDb.cateId = cateDb.cateId WHERE id = :id")
     fun getItem(id: Long): Flow<MoneyAndCate>
 
+    //id값과 일치하는 데이터 모든 정보(특정 기록 세부사항 수정)
+    @Transaction
+    @Query("SELECT * FROM moneyDb WHERE id = :id")
+    fun getOnlyMoney(id: Long): MoneyDb
+
     //date값 기준 오름차순 정렬 모든 데이터(처음 달력에 세팅할 때)
     @Transaction
     @Query("SELECT * FROM moneyDb JOIN cateDb ON moneyDb.cateId = cateDb.cateId ORDER BY date, inEx, money ASC")
@@ -54,8 +59,12 @@ interface MoneyDbDao {
 
     //특정 월의 데이터 (소비패턴에서 사용)
     @Transaction
-    @Query("SELECT * FROM moneyDb JOIN cateDb ON moneyDb.cateId = cateDb.cateId WHERE (inEx = :inEx) AND (strftime('%m', moneyDb.date) IN (:date))")
-    fun getMoneyMonth(date: List<String>, inEx: Int): Flow<List<MoneyAndCate>>
+    @Query("SELECT * FROM moneyDb JOIN cateDb ON moneyDb.cateId = cateDb.cateId WHERE (inEx = :inEx) AND (strftime('%m', moneyDb.date) IN (:mon)) And (strftime('%Y', moneyDb.date) = :year)")
+    fun getMoneyMonth(year: String, mon: String, inEx: Int): Flow<List<MoneyAndCate>>
+
+    @Transaction
+    @Query("SELECT * FROM moneyDb JOIN cateDb ON moneyDb.cateId = cateDb.cateId WHERE (:startDate <= date and date <= :endDate) AND inEx = :inEx")
+    fun onlyMoneyMonth(startDate: Long, endDate: Long, inEx: Int): List<MoneyDb>
 
     //특정 년의 데이터 (소비패턴에서 사용)
     @Transaction

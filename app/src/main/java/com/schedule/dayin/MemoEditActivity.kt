@@ -173,7 +173,7 @@ class MemoEditActivity : AppCompatActivity() {
         }
 
         // 예제 HTML 텍스트
-        val htmlText = "This is <font color=#0000FF>blue</font> and <i>italic</i>."
+        val htmlText = binding.des.text.toString()
 
         // HTML 텍스트를 Spanned로 변환하여 EditText에 설정
         binding.des.setText(htmlText.toSpanned())

@@ -55,7 +55,7 @@ interface MoneyDbDao {
     //자동 등록된 데이터들 (자동 모아보기에서 사용)
     @Transaction
     @Query("SELECT * FROM moneyDb JOIN cateDb ON moneyDb.cateId = cateDb.cateId WHERE auto <> 0 ORDER BY inEx, title, money ASC")
-    fun getAutoMoney(): Flow<List<MoneyAndCate>>
+    fun getAutoMoney(): List<MoneyAndCate>
 
     //특정 월의 데이터 (소비패턴에서 사용)
     @Transaction

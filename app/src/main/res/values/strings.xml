@@ -69,4 +69,6 @@
     <string name="monYearPickerBar">날짜 선택</string>
     <string name="monYearPicker">0000년 00월</string>
     <string name="cate">카테고리</string>
+    <string name="cateManage">소비 분석 관리</string>
+    <string name="autoManage">고정 지출</string>
 </resources>

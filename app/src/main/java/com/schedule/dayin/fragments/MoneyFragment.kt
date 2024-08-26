@@ -250,7 +250,7 @@ class MoneyFragment : Fragment() {
     }
 
     // 특정 월의 첫 번째 날과 마지막 날을 밀리초 단위로 반환하는 함수
-    fun getMonthRangeMillis(yearMonth: YearMonth): Pair<Long, Long> {
+    private fun getMonthRangeMillis(yearMonth: YearMonth): Pair<Long, Long> {
         // 첫 번째 날과 마지막 날 계산
         val firstDay = LocalDate.of(yearMonth.year, yearMonth.month, 1)
         val lastDay = firstDay.withDayOfMonth(firstDay.lengthOfMonth())

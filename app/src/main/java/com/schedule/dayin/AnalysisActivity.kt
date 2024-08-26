@@ -73,7 +73,7 @@ class AnalysisActivity: AppCompatActivity() {
         pagerAdapter = AnalPagerAdapter(this, currentMonth)
 
         binding.viewpager.adapter = pagerAdapter
-        binding.viewpager.setCurrentItem(pagerAdapter.startingPosition, true)
+        binding.viewpager.setCurrentItem(pagerAdapter.startingPosition, false)
 
         //페이지 전환 함수
         binding.viewpager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {

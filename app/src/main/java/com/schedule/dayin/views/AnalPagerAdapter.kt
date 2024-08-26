@@ -8,11 +8,11 @@ import java.time.LocalDate
 class AnalPagerAdapter(activity: AnalysisActivity, private val startDate: LocalDate): FragmentStateAdapter(activity) {
 
     //시작 페이지 Int타입 Max / 2
-    val startingPosition = Int.MAX_VALUE / 2
+    val startingPosition = 150
 
     //페이지 수 get 함수
     override fun getItemCount(): Int {
-        return Int.MAX_VALUE
+        return 300
     }
 
     //페이지 생성 함수

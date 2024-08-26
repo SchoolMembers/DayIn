@@ -59,8 +59,8 @@ interface MoneyDbDao {
 
     //특정 월의 데이터 (소비패턴에서 사용)
     @Transaction
-    @Query("SELECT * FROM moneyDb JOIN cateDb ON moneyDb.cateId = cateDb.cateId WHERE (inEx = :inEx) AND (strftime('%m', moneyDb.date) IN (:mon)) And (strftime('%Y', moneyDb.date) = :year)")
-    fun getMoneyMonth(year: String, mon: String, inEx: Int): Flow<List<MoneyAndCate>>
+    @Query("SELECT * FROM moneyDb JOIN cateDb ON moneyDb.cateId = cateDb.cateId WHERE (:startDate <= date and date <= :endDate) AND inEx = 0 ORDER BY cateDb.cateId ASC")
+    fun getMoneyMonth(startDate: Long, endDate: Long): List<MoneyAndCate>
 
     @Transaction
     @Query("SELECT * FROM moneyDb JOIN cateDb ON moneyDb.cateId = cateDb.cateId WHERE (:startDate <= date and date <= :endDate) AND inEx = :inEx")

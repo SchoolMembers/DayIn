@@ -47,8 +47,8 @@ class MoneyRepository(private val moneyDbDao: MoneyDbDao) {
         return moneyDbDao.getAutoMoney()
     }
 
-    fun getMoneyMonthData(year: String, mon: String, inEx: Int): Flow<List<MoneyAndCate>> {
-        return moneyDbDao.getMoneyMonth(year, mon, inEx)
+    fun getMoneyMonthData(startDate: Long, endDate: Long): List<MoneyAndCate> {
+        return moneyDbDao.getMoneyMonth(startDate, endDate)
     }
 
     fun onlyMoneyMonthData(startDate: Long, endDate: Long, inEx: Int): List<MoneyDb> {

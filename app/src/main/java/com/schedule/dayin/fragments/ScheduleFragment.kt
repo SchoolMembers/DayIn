@@ -4,6 +4,7 @@ import android.app.Activity
 import android.app.AlertDialog
 import android.content.SharedPreferences
 import android.graphics.Color
+import android.icu.lang.UCharacter.GraphemeClusterBreak.L
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -49,8 +50,11 @@ import java.time.temporal.WeekFields
 import java.util.*
 import kotlin.coroutines.CoroutineContext
 import com.schedule.dayin.views.ItemDecoration
+import java.time.DayOfWeek
 import java.time.LocalTime
 import java.time.ZoneId
+import java.time.temporal.ChronoUnit
+import java.time.temporal.TemporalAdjusters
 
 
 class ScheduleFragment : Fragment(), CoroutineScope {
@@ -123,8 +127,9 @@ class ScheduleFragment : Fragment(), CoroutineScope {
     //알림 설정 여부
     private var noti: Int = 0
 
-    //메모
-    private var memoText: String? = ""
+    private var fragmentHeight : Int = 0
+
+    private var maxVisibleItems: Int = 0
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -139,6 +144,10 @@ class ScheduleFragment : Fragment(), CoroutineScope {
     ): View? {
         _binding = FragmentSBinding.inflate(inflater, container, false)
         Log.d("customTag", "ScheduleFragment onCreateView called")
+
+        binding.root.post {
+            fragmentHeight = binding.root.measuredHeight
+        }
 
         return binding.root
     }
@@ -315,56 +324,74 @@ class ScheduleFragment : Fragment(), CoroutineScope {
         dialog.show()
     }
 
+    private fun getWeeksInMonth(date: LocalDate): Int {
+        val yearMonth = YearMonth.from(date)
 
+        // 해당 월의 첫번째와 마지막 날을 구합니다.
+        val firstDayOfMonth = yearMonth.atDay(1)
+        val lastDayOfMonth = yearMonth.atEndOfMonth()
+
+        // 첫날이 속한 주의 시작(일요일)을 구합니다.
+        val firstSunday = firstDayOfMonth.with(TemporalAdjusters.previousOrSame(DayOfWeek.SUNDAY))
+
+        // 마지막 날이 속한 주의 마지막을 구합니다.
+        val lastSaturday = lastDayOfMonth.with(TemporalAdjusters.nextOrSame(DayOfWeek.SATURDAY))
+
+        // 첫째 일요일부터 마지막 토요일까지 주를 세기
+        val weeks = ChronoUnit.WEEKS.between(firstSunday, lastSaturday) + 1
+
+        return weeks.toInt()
+    }
 
     //리사이클러 비동기 데이터 로그 함수
     fun dataLoad(container: DayViewContainer, day: CalendarDay) {
-
         uiScope.launch {
             dataList = loadScheduleDataForDay(day)
 
-            Log.d("ScheduleData", "Date: ${day.date}, Loaded Data: $dataList")
+            clickCheck = false
+
+            val itemViewHeight = 27 // dp
+            val itemViewHeightPx = TypedValue.applyDimension(
+                TypedValue.COMPLEX_UNIT_DIP,
+                itemViewHeight.toFloat(),
+                requireContext().resources.displayMetrics
+            ).toInt()
+
+            val paddingMargin = TypedValue.applyDimension(
+                TypedValue.COMPLEX_UNIT_DIP,
+                37.toFloat(),
+                requireContext().resources.displayMetrics
+            ).toInt()
+
+            val recyclerViewHeight = fragmentHeight / getWeeksInMonth(day.date)
+
+            maxVisibleItems = if (recyclerViewHeight > 0) {
+                (recyclerViewHeight - paddingMargin) / itemViewHeightPx
+            } else {
+                0
+            }
+
+            Log.d("debugHeight", "ScheduleFragment onViewCreated called; dataLoad() line 350 | maxVisibleItems: $maxVisibleItems | recyclerViewHeight: $recyclerViewHeight")
+
             if (dataList.isNotEmpty()) {
                 if (container.scheduleRecyclerView.adapter == null) {
-                    adapter = ScheduleAdapter(requireContext(), dataList, clickCheck, appController, day)
+                    adapter = ScheduleAdapter(requireContext(), if (dataList.size > maxVisibleItems) dataList.subList(0, maxVisibleItems) else dataList, clickCheck, appController, day, maxVisibleItems)
                     container.scheduleRecyclerView.adapter = adapter
                     container.scheduleRecyclerView.layoutManager = LinearLayoutManager(context)
-
-                    //리사이클러뷰 데이터 재설정 (개수 제한)
-                    adapter.registerAdapterDataObserver(object : RecyclerView.AdapterDataObserver() {
-                        override fun onChanged() {
-                            container.scheduleRecyclerView.post {
-                                val itemViewHeight = container.scheduleRecyclerView.getChildAt(0)?.height ?: 0
-                                val recyclerViewHeight = container.scheduleRecyclerView.height
-
-                                val itemMargin = 5 // dp
-                                val itemMarginPx = TypedValue.applyDimension(
-                                    TypedValue.COMPLEX_UNIT_DIP,
-                                    itemMargin.toFloat(),
-                                    requireContext().resources.displayMetrics
-                                ).toInt()
-
-                                val maxVisibleItems = if (itemViewHeight != 0) {
-                                    recyclerViewHeight / (itemViewHeight + itemMarginPx)
-                                } else {
-                                    0
-                                }
-
-                                // 데이터 제한
-                                val newDataList: MutableList<ScheduleDb> = dataList.take(maxVisibleItems).toMutableList()
-                                adapter.updateData(newDataList)
-                            }
-                        }
-                    })
+                    Log.d("debugHeight", "ScheduleFragment onViewCreated called; line 357 | dataList is not empty | container.scheduleRecyclerView.adapter set")
                 } else {
-                    (container.scheduleRecyclerView.adapter as ScheduleAdapter).updateData(dataList)
+                    (container.scheduleRecyclerView.adapter as ScheduleAdapter).updateData(if (dataList.size > maxVisibleItems) dataList.subList(0, maxVisibleItems) else dataList, maxVisibleItems)
+                    Log.d("debugHeight", "ScheduleFragment onViewCreated called; line 360 | dataList is not empty | container.scheduleRecyclerView.adapter updateData called -> ScheduleAdapter | maxVisibleItems: $maxVisibleItems")
                 }
             } else {
                 container.scheduleRecyclerView.adapter = null
+                Log.d("debugHeight", "ScheduleFragment onViewCreated called; line 364 | dataList is empty | container.scheduleRecyclerView.adapter = null")
             }
 
         }
     }
+
+
 
     //리사이클러 데이터 세팅
     private suspend fun loadScheduleDataForDay(day: CalendarDay): MutableList<ScheduleDb> {
@@ -427,8 +454,9 @@ class ScheduleFragment : Fragment(), CoroutineScope {
         uiScope.launch {
             dataList = loadScheduleDataForDay(day)
             if (dataList.isNotEmpty()) {
-                adapter = ScheduleAdapter(requireContext(), dataList, clickCheck, appController, day) {
+                adapter = ScheduleAdapter(requireContext(), dataList, clickCheck, appController, day, maxVisibleItems) {
                     dataLoad(currentDayViewContainer!!, day)
+                    Log.d("debugHeight", "ScheduleFragment onViewCreated called; line 435 | Adapter callback")
                 }
                 recyclerViewInDialog.adapter = adapter
                 recyclerViewInDialog.layoutManager = LinearLayoutManager(context)
@@ -535,6 +563,9 @@ class ScheduleFragment : Fragment(), CoroutineScope {
         //date 설정
         calendar = Calendar.getInstance()
         calendar.set(day.date.year, day.date.monthValue - 1, day.date.dayOfMonth) // 날짜 설정
+
+        //메모 텍스트
+        var memoText: String? = ""
 
         // 닫기 버튼 클릭 시 다이얼로그 닫기
         val closeButton = dialogView.findViewById<Button>(R.id.closeButton)
@@ -673,6 +704,7 @@ class ScheduleFragment : Fragment(), CoroutineScope {
                 }
                 withContext(Dispatchers.Main) {
                     val container = loadContainer
+                    clickCheck = false
                     dataLoad(container!!, day)
                 }
             }

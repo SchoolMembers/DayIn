@@ -24,7 +24,7 @@ interface CateDbDao {
     suspend fun deleteCateById(cateId: Long)
 
     @Query("SELECT * FROM cateDb WHERE cateId = :cateId")
-    fun getCateById(cateId: Long): Flow<CateDb>
+    fun getCateById(cateId: Long): CateDb
 
     @Query("SELECT * FROM cateDb ORDER BY inEx, cateId ASC")
     fun getAllCate(): Flow<List<CateDb>>

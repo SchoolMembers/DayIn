@@ -76,6 +76,7 @@ class MemoActivity : AppCompatActivity() {
         //bottom navigation click event
         val memoIntent = Intent(this, MemoActivity::class.java)
         val homeIntent = Intent(this, MainActivity::class.java)
+        val analysisIntent = Intent(this, AnalysisActivity::class.java)
 
         binding.bottomNavigation.setOnItemSelectedListener {
             when(it.itemId){
@@ -87,6 +88,11 @@ class MemoActivity : AppCompatActivity() {
                 R.id.barMemo -> {
                     startActivity(memoIntent, options.toBundle())
                     Log.d("customTag", "MemoActivity onCreate called; click memo button")
+                    true
+                }
+                R.id.barMoney -> {
+                    startActivity(analysisIntent, options.toBundle())
+                    Log.d("customTag", "MemoActivity onCreate called; click analysis button")
                     true
                 }
                 else -> false

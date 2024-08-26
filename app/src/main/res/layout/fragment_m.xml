@@ -13,10 +13,10 @@
         android:layout_gravity="center_vertical"
         android:gravity="center_vertical">
         <TextView
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="3"
             android:fontFamily="@font/okticon_regular"
+            android:layout_marginEnd="8dp"
             android:text="@string/wallet"
             android:textSize="12sp"
             android:layout_marginStart="6dp"
@@ -28,26 +28,30 @@
             android:layout_weight="6"
             android:fontFamily="@font/okticon_regular"
             android:textSize="11sp"
-            android:text="10000000000000000"
-            android:textColor="@color/gray"
-            android:layout_marginEnd="13dp"/>
+            android:maxLines="1"
+            android:ellipsize="end"
+            android:text="0"
+            android:textColor="@color/gray" />
         <TextView
-            android:id="@+id/plus"
+            android:id="@+id/plusTotal"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="4"
+            android:layout_weight="5"
             android:fontFamily="@font/okticon_regular"
             android:textSize="11sp"
+            android:maxLines="1"
+            android:ellipsize="end"
             android:text="+ 0"
-            android:textColor="@color/green3"
-            android:layout_marginEnd="13dp"/>
+            android:textColor="@color/green3" />
         <TextView
-            android:id="@+id/minus"
+            android:id="@+id/minusTotal"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="4"
+            android:layout_weight="5"
             android:fontFamily="@font/okticon_regular"
             android:textSize="11sp"
+            android:maxLines="1"
+            android:ellipsize="end"
             android:text="- 0"
             android:textColor="@color/red"/>
     </LinearLayout>

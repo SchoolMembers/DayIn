@@ -31,20 +31,28 @@ class MoneyRepository(private val moneyDbDao: MoneyDbDao) {
         return moneyDbDao.getItem(id)
     }
 
+    fun onlyMoney(id: Long): MoneyDb {
+        return moneyDbDao.getOnlyMoney(id)
+    }
+
     fun getUserCate(): Flow<List<MoneyAndCate>> {
         return moneyDbDao.getUserCate()
     }
 
-    fun getDayMoney(date: String): Flow<List<MoneyAndCate>> {
-        return moneyDbDao.getMoneyDay(date)
+    fun getDayMoney(startDate: Long, endDate: Long): List<MoneyAndCate> {
+        return moneyDbDao.getMoneyDay(startDate, endDate)
     }
 
-    fun getAutoMoney(): Flow<List<MoneyAndCate>> {
+    fun getAutoMoney(): List<MoneyAndCate> {
         return moneyDbDao.getAutoMoney()
     }
 
-    fun getMoneyMonthData(date: List<String>, inEx: Int): Flow<List<MoneyAndCate>> {
-        return moneyDbDao.getMoneyMonth(date, inEx)
+    fun getMoneyMonthData(startDate: Long, endDate: Long): List<MoneyAndCate> {
+        return moneyDbDao.getMoneyMonth(startDate, endDate)
+    }
+
+    fun onlyMoneyMonthData(startDate: Long, endDate: Long, inEx: Int): List<MoneyDb> {
+        return moneyDbDao.onlyMoneyMonth(startDate, endDate, inEx)
     }
 
     fun getMoneyYearData(date: List<String>, inEx: Int): Flow<List<MoneyAndCate>> {

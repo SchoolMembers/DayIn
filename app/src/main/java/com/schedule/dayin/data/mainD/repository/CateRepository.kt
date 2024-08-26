@@ -27,7 +27,7 @@ class CateRepository(private val cateDbDao: CateDbDao) {
         return cateDbDao.getAllCate()
     }
 
-    fun getCateById(cateId: Long): Flow<CateDb> {
+    fun getCateById(cateId: Long): CateDb {
         return cateDbDao.getCateById(cateId)
     }
 

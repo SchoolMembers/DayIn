@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/white">
+
+    <LinearLayout
+        android:id="@+id/topBar"
+        android:layout_width="match_parent"
+        android:layout_height="40dp">
+        <View
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="5"
+            android:layout_marginStart="15dp" />
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="30dp"
+            android:layout_weight="0.6"
+            android:layout_gravity="center"
+            android:layout_marginEnd="15dp"/>
+
+        <android.widget.Button
+            android:id="@+id/infoButton"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_gravity="center"
+            android:background="@drawable/info_icon"
+            android:layout_marginEnd="15dp"/>
+
+        <android.widget.Button
+            android:id="@+id/closeButton"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_gravity="center"
+            android:background="@drawable/close_icon"
+            android:layout_marginEnd="15dp"/>
+    </LinearLayout>
+
+    <View
+        android:id="@id/line"
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:background="@color/darkGray" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="400dp"
+        android:minHeight="400dp"
+        android:layout_margin="10dp">
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/autoRecyclerView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/white"/>
+    </ScrollView>
+
+
+</LinearLayout>

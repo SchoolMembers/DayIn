@@ -34,7 +34,7 @@ import java.util.Calendar
 import java.util.Date
 import java.util.Locale
 
-class ScheduleAdapter(private val context: Context, private var dataList: MutableList<ScheduleDb>, private val clickCheck: Boolean, private val appController: AppController, private val day: CalendarDay, private val onDataChanged: (() -> Unit)? = null): RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class ScheduleAdapter(private val context: Context, private var dataList: MutableList<ScheduleDb>, private val clickCheck: Boolean, private val appController: AppController, private val day: CalendarDay, private var itemCount: Int, private val onDataChanged: (() -> Unit)? = null): RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     private val sharedPreferences: SharedPreferences by lazy {
         context.getSharedPreferences("pref", Activity.MODE_PRIVATE)
@@ -44,8 +44,10 @@ class ScheduleAdapter(private val context: Context, private var dataList: Mutabl
     private  var scheduleRepository = ScheduleRepository(mainDb.scheduleDbDao())
     private val uiScope = CoroutineScope(Dispatchers.Main)
 
-    fun updateData(newData: MutableList<ScheduleDb>) {
+    fun updateData(newData: MutableList<ScheduleDb>, count: Int) {
+        itemCount = count
         dataList = newData
+        Log.d("debugHeight", "ScheduleAdapter onBindViewHolder called; itemCount: $itemCount updateData() line 50")
         notifyDataSetChanged()
     }
 
@@ -75,7 +77,19 @@ class ScheduleAdapter(private val context: Context, private var dataList: Mutabl
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
+
         val binding = (holder as ScheduleViewHolder).binding
+
+        //아이템 홀딩 itemCount번까지만 하고 종료
+        if (!clickCheck && position >= itemCount) {
+            Log.d("debugHeight", "ScheduleAdapter onBindViewHolder called; itemCount: $itemCount hold stop line 83 | position: $position")
+            binding.layout.visibility = View.GONE
+        } else {
+            // 아이템을 정상적으로 바인딩
+            binding.layout.visibility = View.VISIBLE
+        }
+
+
 
 
 
@@ -108,6 +122,7 @@ class ScheduleAdapter(private val context: Context, private var dataList: Mutabl
             0 -> {
                 binding.layout.background = ContextCompat.getDrawable(context, R.drawable.recy_items_back_light_gray)
                 binding.text.setTextColor(ContextCompat.getColor(context, R.color.black))
+                binding.time.setTextColor(ContextCompat.getColor(context, R.color.black))
             }
             1 -> {
                 binding.layout.background = ContextCompat.getDrawable(context, R.drawable.recy_items_back_dark_gray)
@@ -117,22 +132,27 @@ class ScheduleAdapter(private val context: Context, private var dataList: Mutabl
             2 -> {
                 binding.layout.background = ContextCompat.getDrawable(context, R.drawable.recy_items_back_yellow)
                 binding.text.setTextColor(ContextCompat.getColor(context, R.color.black))
+                binding.time.setTextColor(ContextCompat.getColor(context, R.color.black))
             }
             3 -> {
                 binding.layout.background = ContextCompat.getDrawable(context, R.drawable.recy_items_back_purple)
                 binding.text.setTextColor(ContextCompat.getColor(context, R.color.black))
+                binding.time.setTextColor(ContextCompat.getColor(context, R.color.black))
             }
             4 -> {
                 binding.layout.background = ContextCompat.getDrawable(context, R.drawable.recy_items_back_blue)
                 binding.text.setTextColor(ContextCompat.getColor(context, R.color.black))
+                binding.time.setTextColor(ContextCompat.getColor(context, R.color.black))
             }
             5 -> {
                 binding.layout.background = ContextCompat.getDrawable(context, R.drawable.recy_items_back_green)
                 binding.text.setTextColor(ContextCompat.getColor(context, R.color.black))
+                binding.time.setTextColor(ContextCompat.getColor(context, R.color.black))
             }
             6 -> {
                 binding.layout.background = ContextCompat.getDrawable(context, R.drawable.recy_items_back_red)
                 binding.text.setTextColor(ContextCompat.getColor(context, R.color.black))
+                binding.time.setTextColor(ContextCompat.getColor(context, R.color.black))
             }
         }
 
@@ -270,7 +290,7 @@ class ScheduleAdapter(private val context: Context, private var dataList: Mutabl
 
                     dataList.removeAt(position)
 
-                    notifyItemRemoved(position)
+                    notifyDataSetChanged()
 
                     //캘린더 셀 콜백
                     onDataChanged?.invoke()
@@ -611,15 +631,16 @@ class ScheduleAdapter(private val context: Context, private var dataList: Mutabl
 
         //메모
         val memo = dialogView.findViewById<EditText>(R.id.memoText)
+        var memoText: String? = ""
         if (data.memo != null) {
             memo.setText(data.memo)
+            memoText = data.memo
         }
-        var memoText: String? = ""
         memo.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                memoText = s?.toString() ?: ""
+                memoText = s?.toString() ?: data.memo
                 Log.d("customTag", "ScheduleFragment onViewCreated called; memoText: $memoText")
             }
             override fun afterTextChanged(s: Editable?) {}

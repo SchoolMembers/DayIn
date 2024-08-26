@@ -1,5 +1,6 @@
 package com.schedule.dayin.fragments
 
+import android.app.Activity
 import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
@@ -24,8 +25,10 @@ import com.kizitonwose.calendar.view.DaySize
 import com.kizitonwose.calendar.view.MonthDayBinder
 import com.kizitonwose.calendar.view.MonthScrollListener
 import android.app.AlertDialog
+import android.content.SharedPreferences
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.TypedValue
 import android.widget.Button
 import android.widget.EditText
 import android.widget.LinearLayout
@@ -33,28 +36,38 @@ import android.widget.Toast
 import androidx.core.content.res.ResourcesCompat
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.kakao.sdk.friend.m.t
 import com.schedule.dayin.AppController
 import com.schedule.dayin.data.mainD.CateDb
 import com.schedule.dayin.data.mainD.MainDatabase
 import com.schedule.dayin.data.mainD.MoneyAndCate
 import com.schedule.dayin.data.mainD.MoneyDb
+import com.schedule.dayin.data.mainD.ScheduleDb
 import com.schedule.dayin.data.mainD.repository.CateRepository
 import com.schedule.dayin.data.mainD.repository.MoneyRepository
+import com.schedule.dayin.fragments.ScheduleFragment.DayViewContainer
 import com.schedule.dayin.views.CateAdapter
+import com.schedule.dayin.views.MoneyAdapter
+import com.schedule.dayin.views.ScheduleAdapter
 import com.schedule.dayin.views.UserCateAdapter
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.count
 import kotlinx.coroutines.flow.emptyFlow
+import kotlinx.coroutines.flow.forEach
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.time.LocalDate
+import java.time.LocalTime
+import java.time.ZoneId
 
 class MoneyFragment : Fragment() {
 
     private var _binding: FragmentMBinding? = null
     private val binding get() = _binding!!
 
-    var currentDayViewContainer: DayViewContainer? = null
+    private lateinit var currentDayViewContainer: DayViewContainer
 
     private lateinit var appController : AppController
     private lateinit var mainDb: MainDatabase
@@ -87,6 +100,13 @@ class MoneyFragment : Fragment() {
     private var userCateList: Flow<List<MoneyAndCate>> = emptyFlow()
 
     private var userCateListBefore: Flow<List<CateDb>> = emptyFlow()
+
+    //돈 데이터
+    private lateinit var adapter: MoneyAdapter
+
+    private lateinit var setDay: CalendarMonth
+
+
 
     //프래그먼트 뷰를 생성하고 초기화. 프래그먼트의 레이아웃 인플레이트 -> 뷰 반환
     override fun onCreateView(
@@ -143,6 +163,10 @@ class MoneyFragment : Fragment() {
                     container.textView.setTextColor(Color.GRAY)
                 }
 
+                uiScope.launch {
+                    loadMoneyData(container, day)
+                }
+
                 container.view.setOnClickListener {
                     currentDayViewContainer = container
                     showDateDialog(day)
@@ -160,11 +184,14 @@ class MoneyFragment : Fragment() {
             }
         }
 
+
         //스크롤 리스너 ( 월 스크롤 -> 연, 월 업데이트)
         calendarView.monthScrollListener = object : MonthScrollListener {
             override fun invoke(p1: CalendarMonth) {
                 barDateYear?.text = p1.yearMonth.format(DateTimeFormatter.ofPattern("yyyy년 MM월"))
-                Log.d("customTag", "MoneyFragment onViewCreated called; barDateYear updated")
+                Log.d("monScroll", "MoneyFragment onViewCreated called; barDateYear updated")
+                setDay = p1
+                setMoneyTotals()
             }
         }
 
@@ -173,6 +200,137 @@ class MoneyFragment : Fragment() {
             showYearMonthPicker(calendarView, currentMonth)
         }
 
+    }
+
+    //지갑, 지출, 수입 총합
+    private fun setMoneyTotals() {
+        val yearMonth = setDay.yearMonth
+        val (firstDayMillis, lastDayMillis) = getMonthRangeMillis(yearMonth)
+
+
+        uiScope.launch {
+
+            var minusMoney: Long = 0
+            var plusMoney: Long = 0
+
+            withContext(Dispatchers.IO) {
+
+                val minusMoneyList = moneyRepository.onlyMoneyMonthData(firstDayMillis, lastDayMillis, 0)
+                val plusMoneyList = moneyRepository.onlyMoneyMonthData(firstDayMillis, lastDayMillis, 1)
+
+                Log.d("monScroll", "minusMoneyList: $minusMoneyList")
+                Log.d("monScroll", "plusMoneyList: $plusMoneyList")
+
+                // Collect minusMoney
+                minusMoneyList.forEach { money ->
+                    minusMoney -= money.money
+                    Log.d("monScroll", "minusMoney collected: $minusMoney")
+                }
+
+                // Collect plusMoney
+                plusMoneyList.forEach { money ->
+                    plusMoney += money.money
+                    Log.d("monScroll", "plusMoney collected: $plusMoney")
+                }
+            }
+
+            val totalMoney = plusMoney + minusMoney
+
+            withContext(Dispatchers.Main) {
+                Log.d("monScroll", "Updating wallet: $totalMoney, minusTotal: $minusMoney, plusTotal: $plusMoney")
+                binding.wallet.text = if (totalMoney < 0) "- ${-totalMoney}" else totalMoney.toString()
+                if (minusMoney < 0) {
+                    binding.minusTotal.text = "- ${-minusMoney}"
+                } else {
+                    binding.minusTotal.text = "- ${minusMoney}"
+                }
+                binding.plusTotal.text = "+ ${plusMoney}"
+            }
+        }
+    }
+
+    // 특정 월의 첫 번째 날과 마지막 날을 밀리초 단위로 반환하는 함수
+    private fun getMonthRangeMillis(yearMonth: YearMonth): Pair<Long, Long> {
+        // 첫 번째 날과 마지막 날 계산
+        val firstDay = LocalDate.of(yearMonth.year, yearMonth.month, 1)
+        val lastDay = firstDay.withDayOfMonth(firstDay.lengthOfMonth())
+
+        // UTC 기준으로 변환
+        val zoneId = ZoneId.of("UTC")
+
+        // LocalDate를 Date로 변환
+        val firstDayMillis = Date.from(firstDay.atStartOfDay(zoneId).toInstant()).time
+        val lastDayMillis = Date.from(lastDay.atTime(23, 59, 59, 999).atZone(zoneId).toInstant()).time
+
+        return Pair(firstDayMillis, lastDayMillis)
+    }
+
+    //리사이클러 데이터 세팅
+    private suspend fun loadMoneyData(container: DayViewContainer, day: CalendarDay): MutableList<MoneyAndCate> {
+        val date = day.date
+        val dataList = mutableListOf<MoneyAndCate>()
+
+        val startDate = date.atTime(LocalTime.MIN)
+        val endDate = date.atTime(LocalTime.MAX)
+
+        val startZoneTime = startDate.atZone(ZoneId.systemDefault())
+        val endZoneTime = endDate.atZone(ZoneId.systemDefault())
+
+        withContext(Dispatchers.IO) {
+            try {
+                moneyRepository.getDayMoney(
+                    startZoneTime.toInstant().toEpochMilli(),
+                    endZoneTime.toInstant().toEpochMilli()
+                ).forEach { money ->
+                    dataList.add(money)
+                }
+            } catch (e: Exception) {
+            }
+        }
+
+
+        var plus = 0L
+        var minus = 0L
+
+        val plusList: MutableList<Long> = mutableListOf()
+        val minusList: MutableList<Long> = mutableListOf()
+
+        //날짜 돈 뷰 처리
+        uiScope.launch {
+            dataList.forEach {
+                if (it.cateDb.inEx == 0) {
+                    minusList.add(it.moneyDb.money)
+                } else {
+                    plusList.add(it.moneyDb.money)
+                }
+            }
+            plus = plusList.sum()
+            minus = minusList.sum()
+
+            withContext(Dispatchers.Main) {
+                if (plusList.isNotEmpty()) {
+                    container.plusText.text = plus.toString()
+                    container.plusLayout.visibility = View.VISIBLE
+                    container.plusP.visibility = View.VISIBLE
+                } else {
+                    container.plusLayout.visibility = View.GONE
+                    container.plusP.visibility = View.GONE
+                }
+
+                if (minusList.isNotEmpty()) {
+                    container.minusText.text = minus.toString()
+                    container.minusLayout.visibility = View.VISIBLE
+                    container.minusP.visibility = View.VISIBLE
+                } else {
+                    container.minusLayout.visibility = View.GONE
+                    container.minusP.visibility = View.GONE
+                }
+
+                Log.d("customTag", "MoneyFragment onViewCreated called; day data updated | plus: $plus, minus: $minus")
+            }
+        }
+
+        return dataList
     }
 
     // 연도 및 월 선택 다이얼로그 보여주기
@@ -266,8 +424,30 @@ class MoneyFragment : Fragment() {
         val dialogBuilder = AlertDialog.Builder(requireContext()).setView(dialogView)
         val dialog = dialogBuilder.create()
 
+        val recyclerView = dialogView.findViewById<RecyclerView>(R.id.moneyRecyclerView)
+
         //날짜 설정
         setupDialog(dialogView, day)
+        //데이터
+        uiScope.launch {
+            val dataList = loadMoneyData(currentDayViewContainer, day)
+
+            if (dataList.isNotEmpty()) {
+                adapter = MoneyAdapter(requireContext(), dataList, appController, day) {
+                    uiScope.launch {
+                        loadMoneyData(currentDayViewContainer, day)
+                        setMoneyTotals()
+                    }
+                }
+                recyclerView.adapter = adapter
+                recyclerView.layoutManager = LinearLayoutManager(context)
+
+            } else {
+                recyclerView.adapter = null
+
+            }
+        }
+
 
         //닫기 버튼
         val closeButton = dialogView.findViewById<TextView>(R.id.closeButton)
@@ -329,13 +509,19 @@ class MoneyFragment : Fragment() {
                 moneyText = s?.toString() ?: ""
                 Log.d("customTag", "MoneyFragment onViewCreated called; moneyText: $moneyText")
 
-                if (moneyText == "" || moneyText == "0") {
-                    checkButton.isEnabled = false
-                    checkButton.background = ResourcesCompat.getDrawable(resources, R.drawable.false_check_icon, null)
-                } else {
-                    checkButton.isEnabled = true
-                    checkButton.background = ResourcesCompat.getDrawable(resources, R.drawable.save_icon, null)
+                try {
+                    if (moneyText == "" || moneyText.toLong() == 0L) {
+                        checkButton.isEnabled = false
+                        checkButton.background = ResourcesCompat.getDrawable(resources, R.drawable.false_check_icon, null)
+                    } else {
+                        checkButton.isEnabled = true
+                        checkButton.background = ResourcesCompat.getDrawable(resources, R.drawable.save_icon, null)
+                    }
+                } catch (e: NumberFormatException) {
+                    Toast.makeText(context, "금액은 숫자만 입력 가능합니다.", Toast.LENGTH_SHORT).show()
+                    moneyTitle.setText("")
                 }
+
             }
             override fun afterTextChanged(s: Editable?) {}
         })
@@ -451,6 +637,18 @@ class MoneyFragment : Fragment() {
                 return@setOnClickListener
             }
 
+            try {
+                moneyText.toLong()
+            } catch (e: NumberFormatException) {
+                Toast.makeText(context, "금액은 숫자만 입력 가능합니다.", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+
+            if (moneyText.toLong() < 0) {
+                Toast.makeText(context, "금액은 0보다 커야 합니다.", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+
             if (cateId == -1L) {
                 Toast.makeText(context, "카테고리를 선택해주세요.", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
@@ -465,13 +663,18 @@ class MoneyFragment : Fragment() {
                 withContext(Dispatchers.IO) {
                     moneyRepository.insertMoney(MoneyDb(
                         date = moneyDate,
-                        money = moneyText.toInt(),
+                        money = moneyText.toLong(),
                         auto = auto,
                         memo = memoText,
                         title = autoText,
                         cateId = cateId
                     ))
                     cateId = -1
+                }
+
+                withContext(Dispatchers.Main) {
+                    loadMoneyData(currentDayViewContainer, day)
+                    setMoneyTotals()
                 }
             }
         }
@@ -664,7 +867,7 @@ class MoneyFragment : Fragment() {
         uiScope.launch {
             userCateListBefore = cateRepository.getUserCate()
             userCateList = moneyRepository.getUserCate()
-            userCateList.collect { list ->
+            userCateListBefore.collect { list ->
                 if (list.isNotEmpty()) {
                     withContext(Dispatchers.Main) {
                         userCateAdapter = UserCateAdapter(requireContext(), userCateListBefore, userCateList, onDataChanged = { cateDel() })
@@ -711,6 +914,11 @@ class MoneyFragment : Fragment() {
     class DayViewContainer(view: View) : ViewContainer(view) {
         val textView: TextView = view.findViewById(R.id.dayText)
         val click: View = view.findViewById(R.id.clickLayout)
-        val moneyRecyclerView: RecyclerView = view.findViewById(R.id.moneyRecyclerView)
+        val minusLayout: View = view.findViewById(R.id.minusLayout)
+        val plusLayout: View = view.findViewById(R.id.plusLayout)
+        val minusText: TextView = view.findViewById(R.id.dayMinus)
+        val plusText: TextView = view.findViewById(R.id.dayPlus)
+        val plusP: TextView = view.findViewById(R.id.plus)
+        val minusP: TextView = view.findViewById(R.id.minus)
     }
 }

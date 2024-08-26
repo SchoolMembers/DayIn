@@ -9,6 +9,7 @@ import androidx.room.Transaction
 import androidx.room.Update
 import com.schedule.dayin.data.mainD.MoneyAndCate
 import com.schedule.dayin.data.mainD.MoneyDb
+import com.schedule.dayin.data.mainD.ScheduleDb
 import kotlinx.coroutines.flow.Flow
 
 @Dao
@@ -31,6 +32,11 @@ interface MoneyDbDao {
     @Query("SELECT * FROM moneyDb JOIN cateDb ON moneyDb.cateId = cateDb.cateId WHERE id = :id")
     fun getItem(id: Long): Flow<MoneyAndCate>
 
+    //id값과 일치하는 데이터 모든 정보(특정 기록 세부사항 수정)
+    @Transaction
+    @Query("SELECT * FROM moneyDb WHERE id = :id")
+    fun getOnlyMoney(id: Long): MoneyDb
+
     //date값 기준 오름차순 정렬 모든 데이터(처음 달력에 세팅할 때)
     @Transaction
     @Query("SELECT * FROM moneyDb JOIN cateDb ON moneyDb.cateId = cateDb.cateId ORDER BY date, inEx, money ASC")
@@ -38,8 +44,8 @@ interface MoneyDbDao {
 
     //특정 날짜의 데이터들(날짜칸 클릭했을 때 세팅)
     @Transaction
-    @Query("SELECT * FROM moneyDb JOIN cateDb ON moneyDb.cateId = cateDb.cateId WHERE date(date) = date(:date) ORDER BY inEx, money ASC")
-    fun getMoneyDay(date: String): Flow<List<MoneyAndCate>>
+    @Query("SELECT * FROM moneyDb JOIN cateDb ON moneyDb.cateId = cateDb.cateId WHERE  :startDate <= date and date <= :endDate ORDER BY inEx, id ASC")
+    fun getMoneyDay(startDate: Long, endDate: Long): List<MoneyAndCate>
 
     //사용자 지정 카테고리 데이터들
     @Transaction
@@ -49,12 +55,16 @@ interface MoneyDbDao {
     //자동 등록된 데이터들 (자동 모아보기에서 사용)
     @Transaction
     @Query("SELECT * FROM moneyDb JOIN cateDb ON moneyDb.cateId = cateDb.cateId WHERE auto <> 0 ORDER BY inEx, title, money ASC")
-    fun getAutoMoney(): Flow<List<MoneyAndCate>>
+    fun getAutoMoney(): List<MoneyAndCate>
 
     //특정 월의 데이터 (소비패턴에서 사용)
     @Transaction
-    @Query("SELECT * FROM moneyDb JOIN cateDb ON moneyDb.cateId = cateDb.cateId WHERE (inEx = :inEx) AND (strftime('%m', moneyDb.date) IN (:date))")
-    fun getMoneyMonth(date: List<String>, inEx: Int): Flow<List<MoneyAndCate>>
+    @Query("SELECT * FROM moneyDb JOIN cateDb ON moneyDb.cateId = cateDb.cateId WHERE (:startDate <= date and date <= :endDate) AND inEx = 0 ORDER BY cateDb.cateId ASC")
+    fun getMoneyMonth(startDate: Long, endDate: Long): List<MoneyAndCate>
+
+    @Transaction
+    @Query("SELECT * FROM moneyDb JOIN cateDb ON moneyDb.cateId = cateDb.cateId WHERE (:startDate <= date and date <= :endDate) AND inEx = :inEx")
+    fun onlyMoneyMonth(startDate: Long, endDate: Long, inEx: Int): List<MoneyDb>
 
     //특정 년의 데이터 (소비패턴에서 사용)
     @Transaction

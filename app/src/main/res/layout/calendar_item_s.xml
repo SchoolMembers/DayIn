@@ -7,17 +7,18 @@
     android:layout_height="match_parent"
     android:padding="8dp"
     android:gravity="center|top"
-    android:background="@color/white">
+    android:background="@color/white"
+    android:layout_margin="0dp">
 
     <!-- 상단에 날짜 표시 -->
     <TextView
         android:id="@+id/dayText"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="16dp"
         android:gravity="center|top"
         android:text="1"
         android:textColor="@android:color/black"
-        android:textSize="15sp"
+        android:textSize="15dp"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -29,7 +30,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:layout_marginTop="2dp"
+        android:layout_marginTop="5dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/dayText" />

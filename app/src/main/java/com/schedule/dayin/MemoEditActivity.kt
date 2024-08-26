@@ -40,7 +40,7 @@ class MemoEditActivity : AppCompatActivity() {
         }
 
         // 하단 바 인셋 처리
-        ViewCompat.setOnApplyWindowInsetsListener(binding.bottomBar) { view, insets ->
+        ViewCompat.setOnApplyWindowInsetsListener(binding.des) { view, insets ->
             val systemBarsInsets = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             view.setPadding(0, 0, 0, systemBarsInsets.bottom)
             insets

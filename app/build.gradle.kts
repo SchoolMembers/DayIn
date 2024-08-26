@@ -67,6 +67,6 @@ dependencies {
 
     implementation("com.github.PhilJay:MPAndroidChart:v3.1.0")
 
-    implementation("com.github.appsfeature:html-editor:x.y")
+    implementation("com.github.appsfeature:html-editor:1.1")
 
 }

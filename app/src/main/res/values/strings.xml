@@ -67,6 +67,7 @@
     <string name="cancel">취소</string>
     <string name="wallet">이번 달 합계</string>
     <string name="monYearPickerBar">날짜 선택</string>
+    <string name="monYearPicker">0000년 00월</string>
     <string name="fontText">글꼴</string>
     <string name="colorText">색상</string>
     <string name="styleText">스타일</string>

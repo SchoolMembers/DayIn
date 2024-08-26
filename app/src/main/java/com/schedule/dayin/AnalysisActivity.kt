@@ -19,17 +19,22 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.viewpager2.widget.ViewPager2
 import com.schedule.dayin.data.mainD.MainDatabase
 import com.schedule.dayin.data.mainD.MoneyAndCate
 import com.schedule.dayin.data.mainD.MoneyDb
 import com.schedule.dayin.data.mainD.repository.MoneyRepository
 import com.schedule.dayin.databinding.AnalysisActivityBinding
+import com.schedule.dayin.views.AnalPagerAdapter
 import com.schedule.dayin.views.AutoAnalAdapter
 import com.schedule.dayin.views.ItemDecoration
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.time.LocalDate
+import java.time.YearMonth
+import java.time.format.DateTimeFormatter
 
 class AnalysisActivity: AppCompatActivity() {
 
@@ -45,6 +50,9 @@ class AnalysisActivity: AppCompatActivity() {
     private lateinit var moneyRepository: MoneyRepository
     private val uiScope = CoroutineScope(Dispatchers.Main)
 
+    //뷰페이저
+    private lateinit var pagerAdapter: AnalPagerAdapter
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -55,6 +63,27 @@ class AnalysisActivity: AppCompatActivity() {
         appController = this.application as AppController
         mainDb = appController.mainDb
         moneyRepository = MoneyRepository(mainDb.moneyDbDao())
+
+        //날짜 표시
+        val barDate = binding.monYear
+        val currentMonth = LocalDate.now()
+        barDate.text = currentMonth.format(DateTimeFormatter.ofPattern("yyyy년 MM월"))
+
+        //뷰페이저
+        pagerAdapter = AnalPagerAdapter(this, currentMonth)
+
+        binding.viewpager.adapter = pagerAdapter
+        binding.viewpager.setCurrentItem(pagerAdapter.startingPosition, true)
+
+        //페이지 전환 함수
+        binding.viewpager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
+            override fun onPageSelected(position: Int) {
+                super.onPageSelected(position)
+                val offset = position - pagerAdapter.startingPosition
+                val selectedDate = currentMonth.plusMonths(offset.toLong())
+                barDate.text = selectedDate.format(DateTimeFormatter.ofPattern("yyyy년 MM월"))
+            }
+        })
 
         // 상단 바 인셋 처리
         ViewCompat.setOnApplyWindowInsetsListener(binding.mainTopBar) { v, insets ->
@@ -112,6 +141,8 @@ class AnalysisActivity: AppCompatActivity() {
                 Log.d("customTag", "AnalysisActivity onCreate called; autoManage = true")
             }
         }
+
+        //소비 분석 관리 클릭 리스너
     }
 
     //고정 지출 다이얼로그

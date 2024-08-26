@@ -74,25 +74,41 @@ class MemoEditActivity : AppCompatActivity() {
         }
 
         // 하단 텍스트뷰 클릭 이벤트
+
+        var menuVisible = false
+
         binding.color.setOnClickListener {
-            binding.colorMenu.visibility = View.VISIBLE
-            binding.color.setOnClickListener {
+            if (!menuVisible) {
+                binding.colorMenu.visibility = View.VISIBLE
+                menuVisible = true
+            } else {
                 binding.colorMenu.visibility = View.GONE
+                menuVisible = false
             }
         }
 
         binding.font.setOnClickListener {
-            binding.fontMenu.visibility = View.VISIBLE
-            binding.font.setOnClickListener {
+            if (!menuVisible) {
+                binding.fontMenu.visibility = View.VISIBLE
+                menuVisible = true
+            } else {
                 binding.fontMenu.visibility = View.GONE
+                menuVisible = false
             }
         }
 
         binding.style.setOnClickListener {
-            binding.styleMenu.visibility = View.VISIBLE
-            binding.style.setOnClickListener {
+            if (!menuVisible) {
+                binding.styleMenu.visibility = View.VISIBLE
+                menuVisible = true
+            } else {
                 binding.styleMenu.visibility = View.GONE
+                menuVisible = false
             }
+        }
+
+        binding.checkButton.setOnClickListener {
+            // Implement the necessary logic for checkButton
         }
 
         // 예제 HTML 텍스트

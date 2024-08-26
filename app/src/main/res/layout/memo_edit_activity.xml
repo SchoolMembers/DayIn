@@ -185,6 +185,7 @@
                 android:visibility="gone">
 
                 <TextView
+                    android:id="@+id/font_one"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
@@ -195,6 +196,7 @@
                     android:textColor="@color/gray" />
 
                 <TextView
+                    android:id="@+id/font_two"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
@@ -205,6 +207,7 @@
                     android:textColor="@color/gray" />
 
                 <TextView
+                    android:id="@+id/font_three"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
@@ -215,6 +218,7 @@
                     android:textColor="@color/gray" />
 
                 <TextView
+                    android:id="@+id/font_four"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
@@ -225,6 +229,7 @@
                     android:textColor="@color/gray" />
 
                 <TextView
+                    android:id="@+id/font_five"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
@@ -235,6 +240,7 @@
                     android:textColor="@color/gray" />
 
                 <TextView
+                    android:id="@+id/font_six"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
@@ -245,6 +251,7 @@
                     android:textColor="@color/gray" />
 
                 <TextView
+                    android:id="@+id/font_seven"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
@@ -275,6 +282,7 @@
                 android:visibility="gone">
 
                 <TextView
+                    android:id="@+id/style_one"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
@@ -286,6 +294,7 @@
                     android:textColor="@color/gray" />
 
                 <TextView
+                    android:id="@+id/style_two"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="1"

@@ -107,8 +107,69 @@ class MemoEditActivity : AppCompatActivity() {
             }
         }
 
-        binding.checkButton.setOnClickListener {
-            // Implement the necessary logic for checkButton
+        // 하단 숨겨진 버튼 클릭 이벤트
+        binding.colorDefault.setOnClickListener {
+
+        }
+
+        binding.colorGray.setOnClickListener {
+
+        }
+
+        binding.colorYellow.setOnClickListener {
+
+        }
+
+        binding.colorPurple.setOnClickListener {
+
+        }
+
+        binding.colorBlue.setOnClickListener {
+
+        }
+
+        binding.colorGreen.setOnClickListener {
+
+        }
+
+        binding.colorRed.setOnClickListener {
+
+        }
+
+        binding.fontOne.setOnClickListener {
+
+        }
+
+        binding.fontTwo.setOnClickListener {
+
+        }
+
+        binding.fontThree.setOnClickListener {
+
+        }
+
+        binding.fontFour.setOnClickListener {
+
+        }
+
+        binding.fontFive.setOnClickListener {
+
+        }
+
+        binding.fontSix.setOnClickListener {
+
+        }
+
+        binding.fontSeven.setOnClickListener {
+
+        }
+
+        binding.styleOne.setOnClickListener {
+
+        }
+
+        binding.styleTwo.setOnClickListener {
+
         }
 
         // 예제 HTML 텍스트

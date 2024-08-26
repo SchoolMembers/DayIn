@@ -122,6 +122,7 @@ class ScheduleAdapter(private val context: Context, private var dataList: Mutabl
             0 -> {
                 binding.layout.background = ContextCompat.getDrawable(context, R.drawable.recy_items_back_light_gray)
                 binding.text.setTextColor(ContextCompat.getColor(context, R.color.black))
+                binding.time.setTextColor(ContextCompat.getColor(context, R.color.black))
             }
             1 -> {
                 binding.layout.background = ContextCompat.getDrawable(context, R.drawable.recy_items_back_dark_gray)
@@ -131,22 +132,27 @@ class ScheduleAdapter(private val context: Context, private var dataList: Mutabl
             2 -> {
                 binding.layout.background = ContextCompat.getDrawable(context, R.drawable.recy_items_back_yellow)
                 binding.text.setTextColor(ContextCompat.getColor(context, R.color.black))
+                binding.time.setTextColor(ContextCompat.getColor(context, R.color.black))
             }
             3 -> {
                 binding.layout.background = ContextCompat.getDrawable(context, R.drawable.recy_items_back_purple)
                 binding.text.setTextColor(ContextCompat.getColor(context, R.color.black))
+                binding.time.setTextColor(ContextCompat.getColor(context, R.color.black))
             }
             4 -> {
                 binding.layout.background = ContextCompat.getDrawable(context, R.drawable.recy_items_back_blue)
                 binding.text.setTextColor(ContextCompat.getColor(context, R.color.black))
+                binding.time.setTextColor(ContextCompat.getColor(context, R.color.black))
             }
             5 -> {
                 binding.layout.background = ContextCompat.getDrawable(context, R.drawable.recy_items_back_green)
                 binding.text.setTextColor(ContextCompat.getColor(context, R.color.black))
+                binding.time.setTextColor(ContextCompat.getColor(context, R.color.black))
             }
             6 -> {
                 binding.layout.background = ContextCompat.getDrawable(context, R.drawable.recy_items_back_red)
                 binding.text.setTextColor(ContextCompat.getColor(context, R.color.black))
+                binding.time.setTextColor(ContextCompat.getColor(context, R.color.black))
             }
         }
 

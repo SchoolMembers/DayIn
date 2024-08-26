@@ -50,7 +50,8 @@
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="400dp"
-        android:minHeight="400dp">
+        android:minHeight="400dp"
+        android:layout_margin="10dp">
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/autoRecyclerView"
             android:layout_width="match_parent"

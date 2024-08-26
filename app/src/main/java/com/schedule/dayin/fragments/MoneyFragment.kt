@@ -202,6 +202,7 @@ class MoneyFragment : Fragment() {
 
     }
 
+    //지갑, 지출, 수입 총합
     private fun setMoneyTotals() {
         val yearMonth = setDay.yearMonth
         val (firstDayMillis, lastDayMillis) = getMonthRangeMillis(yearMonth)

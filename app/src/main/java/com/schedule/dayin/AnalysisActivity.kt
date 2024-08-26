@@ -6,8 +6,10 @@ import android.content.Intent
 import android.os.Build.VERSION_CODES.P
 import android.os.Bundle
 import android.util.Log
+import android.util.TypedValue
 import android.view.LayoutInflater
 import android.widget.Button
+import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AlertDialog
@@ -15,10 +17,15 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.schedule.dayin.data.mainD.MainDatabase
 import com.schedule.dayin.data.mainD.MoneyAndCate
 import com.schedule.dayin.data.mainD.MoneyDb
 import com.schedule.dayin.data.mainD.repository.MoneyRepository
 import com.schedule.dayin.databinding.AnalysisActivityBinding
+import com.schedule.dayin.views.AutoAnalAdapter
+import com.schedule.dayin.views.ItemDecoration
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -30,11 +37,12 @@ class AnalysisActivity: AppCompatActivity() {
 
     //텍스트 버튼 클릭 초기화
     private var autoManage = false
+    private lateinit var autoTextView: TextView
 
     //데이터
-    private val appController = application as AppController
-    private var mainDb = appController.mainDb
-    private var moneyRepository = MoneyRepository(mainDb.moneyDbDao())
+    private lateinit var appController: AppController
+    private lateinit var mainDb: MainDatabase
+    private lateinit var moneyRepository: MoneyRepository
     private val uiScope = CoroutineScope(Dispatchers.Main)
 
 
@@ -43,6 +51,10 @@ class AnalysisActivity: AppCompatActivity() {
         enableEdgeToEdge()
         binding = AnalysisActivityBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        appController = this.application as AppController
+        mainDb = appController.mainDb
+        moneyRepository = MoneyRepository(mainDb.moneyDbDao())
 
         // 상단 바 인셋 처리
         ViewCompat.setOnApplyWindowInsetsListener(binding.mainTopBar) { v, insets ->
@@ -91,11 +103,12 @@ class AnalysisActivity: AppCompatActivity() {
         }
 
         //고정 지출 클릭 리스너
-        val autoTextView = binding.autoManage
+        autoTextView = binding.autoManage
         autoTextView.setOnClickListener {
             if (!autoManage) {
                 autoTextView.setTextColor(ContextCompat.getColor(this, R.color.black))
                 autoManage = true
+                showAutoDialog()
                 Log.d("customTag", "AnalysisActivity onCreate called; autoManage = true")
             }
         }
@@ -117,19 +130,53 @@ class AnalysisActivity: AppCompatActivity() {
         val close = dialogView.findViewById<Button>(R.id.closeButton)
         close.setOnClickListener {
             dialog.dismiss()
+            autoManage = false
+            autoTextView.setTextColor(ContextCompat.getColor(this, R.color.gray))
         }
+
+        //리사이클러 뷰 데코레이션 지정
+        val verticalSpaceHeight = TypedValue.applyDimension(
+            TypedValue.COMPLEX_UNIT_DIP, 2f, resources.displayMetrics
+        ).toInt()
+
+        val autoRecyclerView = dialogView.findViewById<RecyclerView>(R.id.autoRecyclerView)
+        autoRecyclerView.layoutManager = LinearLayoutManager(this)
+
+        autoDataLoad(autoRecyclerView)
+
+        autoRecyclerView.addItemDecoration(ItemDecoration(verticalSpaceHeight))
+
+
+
+
+
+
+        dialog.setOnDismissListener {
+            autoManage = false
+            autoTextView.setTextColor(ContextCompat.getColor(this, R.color.gray))
+        }
+
+        dialog.show()
     }
 
     //고정 지출 데이터 불러오는 함수
-    private fun autoDataLoad(): MutableList<MoneyAndCate> {
-        var autoList= mutableListOf<MoneyAndCate>()
+    private fun autoDataLoad(autoRecyclerView: RecyclerView) {
+        val autoList= mutableListOf<MoneyAndCate>()
+
+        var title = ""
 
         uiScope.launch {
             try {
                 withContext(Dispatchers.IO) {
                     moneyRepository.getAutoMoney().forEach { money ->
-                        autoList.add(money)
+                        if (title != money.moneyDb.title) {
+                            title = money.moneyDb.title!!
+                            autoList.add(money)
+                        }
                     }
+                }
+                withContext(Dispatchers.Main){
+                    autoRecyclerView.adapter = AutoAnalAdapter(autoList)
                 }
             } catch (e: Exception) {
                 Log.e("AutoData", "Error collecting auto data", e)
@@ -138,7 +185,6 @@ class AnalysisActivity: AppCompatActivity() {
 
         }
 
-        return autoList
     }
 
 }

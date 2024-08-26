@@ -508,13 +508,19 @@ class MoneyFragment : Fragment() {
                 moneyText = s?.toString() ?: ""
                 Log.d("customTag", "MoneyFragment onViewCreated called; moneyText: $moneyText")
 
-                if (moneyText == "" || moneyText.toLong() == 0L) {
-                    checkButton.isEnabled = false
-                    checkButton.background = ResourcesCompat.getDrawable(resources, R.drawable.false_check_icon, null)
-                } else {
-                    checkButton.isEnabled = true
-                    checkButton.background = ResourcesCompat.getDrawable(resources, R.drawable.save_icon, null)
+                try {
+                    if (moneyText == "" || moneyText.toLong() == 0L) {
+                        checkButton.isEnabled = false
+                        checkButton.background = ResourcesCompat.getDrawable(resources, R.drawable.false_check_icon, null)
+                    } else {
+                        checkButton.isEnabled = true
+                        checkButton.background = ResourcesCompat.getDrawable(resources, R.drawable.save_icon, null)
+                    }
+                } catch (e: NumberFormatException) {
+                    Toast.makeText(context, "금액은 숫자만 입력 가능합니다.", Toast.LENGTH_SHORT).show()
+                    moneyTitle.setText("")
                 }
+
             }
             override fun afterTextChanged(s: Editable?) {}
         })

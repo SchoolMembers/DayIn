@@ -196,12 +196,17 @@ class MoneyAdapter(private val context: Context,  private var dataList: MutableL
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 moneyText = s?.toString() ?: ""
 
-                if (moneyText == "" || moneyText.toLong() == 0L) {
-                    checkButton.isEnabled = false
-                    checkButton.background = ResourcesCompat.getDrawable(context.resources, R.drawable.false_check_icon, null)
-                } else {
-                    checkButton.isEnabled = true
-                    checkButton.background = ResourcesCompat.getDrawable(context.resources, R.drawable.save_icon, null)
+                try {
+                    if (moneyText == "" || moneyText.toLong() == 0L) {
+                        checkButton.isEnabled = false
+                        checkButton.background = ResourcesCompat.getDrawable(context.resources, R.drawable.false_check_icon, null)
+                    } else {
+                        checkButton.isEnabled = true
+                        checkButton.background = ResourcesCompat.getDrawable(context.resources, R.drawable.save_icon, null)
+                    }
+                } catch (e: NumberFormatException) {
+                    Toast.makeText(context, "금액은 숫자만 입력 가능합니다.", Toast.LENGTH_SHORT).show()
+                    moneyTitle.setText("")
                 }
             }
             override fun afterTextChanged(s: Editable?) {}

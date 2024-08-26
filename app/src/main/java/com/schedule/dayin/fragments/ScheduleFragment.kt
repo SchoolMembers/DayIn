@@ -50,8 +50,11 @@ import java.time.temporal.WeekFields
 import java.util.*
 import kotlin.coroutines.CoroutineContext
 import com.schedule.dayin.views.ItemDecoration
+import java.time.DayOfWeek
 import java.time.LocalTime
 import java.time.ZoneId
+import java.time.temporal.ChronoUnit
+import java.time.temporal.TemporalAdjusters
 
 
 class ScheduleFragment : Fragment(), CoroutineScope {
@@ -124,7 +127,7 @@ class ScheduleFragment : Fragment(), CoroutineScope {
     //알림 설정 여부
     private var noti: Int = 0
 
-
+    private var fragmentHeight : Int = 0
 
     private var maxVisibleItems: Int = 0
 
@@ -141,6 +144,10 @@ class ScheduleFragment : Fragment(), CoroutineScope {
     ): View? {
         _binding = FragmentSBinding.inflate(inflater, container, false)
         Log.d("customTag", "ScheduleFragment onCreateView called")
+
+        binding.root.post {
+            fragmentHeight = binding.root.measuredHeight
+        }
 
         return binding.root
     }
@@ -317,6 +324,24 @@ class ScheduleFragment : Fragment(), CoroutineScope {
         dialog.show()
     }
 
+    private fun getWeeksInMonth(date: LocalDate): Int {
+        val yearMonth = YearMonth.from(date)
+
+        // 해당 월의 첫번째와 마지막 날을 구합니다.
+        val firstDayOfMonth = yearMonth.atDay(1)
+        val lastDayOfMonth = yearMonth.atEndOfMonth()
+
+        // 첫날이 속한 주의 시작(일요일)을 구합니다.
+        val firstSunday = firstDayOfMonth.with(TemporalAdjusters.previousOrSame(DayOfWeek.SUNDAY))
+
+        // 마지막 날이 속한 주의 마지막을 구합니다.
+        val lastSaturday = lastDayOfMonth.with(TemporalAdjusters.nextOrSame(DayOfWeek.SATURDAY))
+
+        // 첫째 일요일부터 마지막 토요일까지 주를 세기
+        val weeks = ChronoUnit.WEEKS.between(firstSunday, lastSaturday) + 1
+
+        return weeks.toInt()
+    }
 
     //리사이클러 비동기 데이터 로그 함수
     fun dataLoad(container: DayViewContainer, day: CalendarDay) {
@@ -338,7 +363,7 @@ class ScheduleFragment : Fragment(), CoroutineScope {
                 requireContext().resources.displayMetrics
             ).toInt()
 
-            val recyclerViewHeight = container.view.height
+            val recyclerViewHeight = fragmentHeight / getWeeksInMonth(day.date)
 
             maxVisibleItems = if (recyclerViewHeight > 0) {
                 (recyclerViewHeight - paddingMargin) / itemViewHeightPx

@@ -1,35 +1,47 @@
 package com.schedule.dayin
 
+import android.app.Activity
 import android.app.ActivityOptions
 import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.os.Build.VERSION_CODES.P
 import android.os.Bundle
 import android.util.Log
 import android.util.TypedValue
 import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import android.widget.Button
+import android.widget.ScrollView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
+import com.schedule.dayin.data.mainD.CateDb
 import com.schedule.dayin.data.mainD.MainDatabase
 import com.schedule.dayin.data.mainD.MoneyAndCate
 import com.schedule.dayin.data.mainD.MoneyDb
+import com.schedule.dayin.data.mainD.repository.CateRepository
 import com.schedule.dayin.data.mainD.repository.MoneyRepository
 import com.schedule.dayin.databinding.AnalysisActivityBinding
+import com.schedule.dayin.views.AnalManageAdapter
 import com.schedule.dayin.views.AnalPagerAdapter
+import com.schedule.dayin.views.AnalUserCateAdapter
 import com.schedule.dayin.views.AutoAnalAdapter
 import com.schedule.dayin.views.ItemDecoration
+import com.schedule.dayin.views.UserCateAdapter
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.time.LocalDate
@@ -48,10 +60,22 @@ class AnalysisActivity: AppCompatActivity() {
     private lateinit var appController: AppController
     private lateinit var mainDb: MainDatabase
     private lateinit var moneyRepository: MoneyRepository
+    private lateinit var cateRepository: CateRepository
     private val uiScope = CoroutineScope(Dispatchers.Main)
 
     //뷰페이저
     private lateinit var pagerAdapter: AnalPagerAdapter
+
+    //데이터 동기화
+    private lateinit var recyclerViews: List<RecyclerView>
+    private lateinit var dialogViewAnal: View
+
+    // 0: 식비 1: 패션/미용 2: 음료/주류 3: 교통 4: 의료/건강 5: 주거 6: 교육 7: 여가 8: 생활 9: 기타
+    private fun loadCategory(category: Long): Long {
+        val cateString = category.toString()
+        val pref: SharedPreferences = this.getSharedPreferences("anal", Activity.MODE_PRIVATE)
+        return pref.getLong(cateString, -1L)
+    }
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -63,6 +87,7 @@ class AnalysisActivity: AppCompatActivity() {
         appController = this.application as AppController
         mainDb = appController.mainDb
         moneyRepository = MoneyRepository(mainDb.moneyDbDao())
+        cateRepository = CateRepository(mainDb.cateDao())
 
         //날짜 표시
         val barDate = binding.monYear
@@ -143,7 +168,144 @@ class AnalysisActivity: AppCompatActivity() {
         }
 
         //소비 분석 관리 클릭 리스너
+
+        binding.cateManage.setOnClickListener {
+            binding.cateManage.setTextColor(ContextCompat.getColor(this, R.color.black))
+            cateDialog()
+        }
     }
+
+    //소비 분석 관리 다이얼로그
+    private fun cateDialog() {
+        dialogViewAnal = LayoutInflater.from(this).inflate(R.layout.dialog_anal_cate, null)
+        val dialogBuilder = AlertDialog.Builder(this).setView(dialogViewAnal)
+        val dialog = dialogBuilder.create()
+
+
+        Log.d("customTag", "AnalysisActivity onCreate called; cateDialog called")
+
+        //닫기 버튼 클릭 리스너
+        val close = dialogViewAnal.findViewById<Button>(R.id.closeButton)
+        close.setOnClickListener {
+            binding.cateManage.setTextColor(ContextCompat.getColor(this, R.color.gray))
+            dialog.dismiss()
+        }
+
+
+        //추가 버튼 리스너
+        val addButton = dialogViewAnal.findViewById<Button>(R.id.addButton)
+        addButton.setOnClickListener {
+            showCateDialog {
+                cateAnalDataLoad(dialogViewAnal, dialog) // 데이터 콜백
+            }
+        }
+
+        //다이얼로그가 닫히면
+        dialog.setOnDismissListener {
+            binding.cateManage.setTextColor(ContextCompat.getColor(this, R.color.gray))
+        }
+        cateAnalDataLoad(dialogViewAnal, dialog)
+    }
+
+    //소비 분석 관리 다이얼로그 데이터 로드
+    private fun cateAnalDataLoad(dialogView: View, dialog: AlertDialog) {
+        recyclerViews = listOf(
+            R.id.recyclerView0,
+            R.id.recyclerView1,
+            R.id.recyclerView2,
+            R.id.recyclerView3,
+            R.id.recyclerView4,
+            R.id.recyclerView5,
+            R.id.recyclerView6,
+            R.id.recyclerView7,
+            R.id.recyclerView8,
+            R.id.recyclerView9
+        ).map { id -> dialogView.findViewById(id) }
+
+        recyclerViews.forEach { it.layoutManager = LinearLayoutManager(this) }
+
+        val cateLists = List(10) { mutableListOf<CateDb>() }
+
+        uiScope.launch {
+            val cateAll: Flow<List<CateDb>>
+            withContext(Dispatchers.IO) {
+                cateAll = cateRepository.getCateByInEx(0)
+            }
+
+            cateAll.collect { cateList ->
+                cateList.forEach { cate ->
+                    val analKey = loadCategory(cate.cateId)
+                    cateLists.getOrNull(analKey.toInt())?.add(cate)
+                }
+
+                withContext(Dispatchers.Main) {
+                    recyclerViews.forEachIndexed { index, recyclerView ->
+                        recyclerView.adapter = AnalManageAdapter(cateLists[index])
+                    }
+                    dialog.show()
+                }
+            }
+        }
+    }
+
+    //카테고리 인덱스 추가 다이얼로그
+    private fun showCateDialog(onDataChanged: (View) -> Unit) {
+        val dialogView = LayoutInflater.from(this).inflate(R.layout.analysis_user_cate, null)
+        val dialogBuilder = AlertDialog.Builder(this).setView(dialogView)
+        val dialog = dialogBuilder.create()
+
+        Log.d("customTag", "AnalysisActivity onCreate called; showCateDialog called")
+
+        //닫기 버튼
+        val close = dialogView.findViewById<Button>(R.id.closeButton)
+        close.setOnClickListener {
+            dialog.dismiss()
+        }
+
+        val recyclerViews = dialogView.findViewById<RecyclerView>(R.id.addRecyclerView)
+        recyclerViews.layoutManager = LinearLayoutManager(this)
+
+        //리사이클러 뷰 데코레이션 지정
+        val verticalSpaceHeight = TypedValue.applyDimension(
+            TypedValue.COMPLEX_UNIT_DIP, 5f, resources.displayMetrics
+        ).toInt()
+        recyclerViews.addItemDecoration(ItemDecoration(verticalSpaceHeight))
+
+        uiScope.launch {
+            val userCate = userCateLoad()
+            Log.d("customTag", "AnalysisActivity onCreate called; userCate: $userCate")
+            withContext(Dispatchers.Main) {
+                val adapter: AnalUserCateAdapter
+                if (userCate.isNotEmpty()) {
+                    adapter = AnalUserCateAdapter(this@AnalysisActivity, userCate) {
+                        onDataChanged(dialogViewAnal)
+                    }
+                    recyclerViews.adapter = adapter
+                    Log.d("customTag", "AnalysisActivity onCreate called; adapter: $adapter")
+                } else {
+                    dialogView.findViewById<ScrollView>(R.id.recyLayout).visibility = View.GONE
+                    dialogView.findViewById<TextView>(R.id.noLayout).visibility = View.VISIBLE
+                }
+                dialog.show()
+            }
+
+
+        }
+    }
+
+    private suspend fun userCateLoad(): List<CateDb> {
+        return withContext(Dispatchers.IO) {
+            try {
+                val userCate = cateRepository.getUserCateInex(0)
+                Log.d("customTag", "AnalysisActivity userCateLoad called; userCate: $userCate")
+                userCate
+            } catch (e: Exception) {
+                Log.e("customTag", "Error retrieving user categories", e)
+                emptyList()
+            }
+        }
+    }
+
 
     //고정 지출 다이얼로그
     private fun showAutoDialog() {

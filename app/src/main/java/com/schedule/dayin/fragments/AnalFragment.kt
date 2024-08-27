@@ -63,7 +63,7 @@ class AnalFragment: Fragment() {
     private lateinit var entries: ArrayList<PieEntry>
 
     //카테고리 분류 저장
-    fun saveCategory(category: Long, index: Long) {
+    private fun saveCategory(category: Long, index: Long) {
         val cateString = category.toString()
         val pref: SharedPreferences = requireContext().getSharedPreferences("anal", Activity.MODE_PRIVATE)
         val editor: SharedPreferences.Editor = pref.edit()
@@ -72,22 +72,14 @@ class AnalFragment: Fragment() {
     }
 
     // 0: 식비 1: 패션/미용 2: 음료/주류 3: 교통 4: 의료/건강 5: 주거 6: 교육 7: 여가 8: 생활 9: 기타
-    fun loadCategory(category: Long): Long {
+    private fun loadCategory(category: Long): Long {
         val cateString = category.toString()
         val pref: SharedPreferences = requireContext().getSharedPreferences("anal", Activity.MODE_PRIVATE)
         return pref.getLong(cateString, -1L)
     }
 
-    fun removeCategory(category: Long) {
-        val cateString = category.toString()
-        val pref: SharedPreferences = requireContext().getSharedPreferences("anal", Activity.MODE_PRIVATE)
-        val editor: SharedPreferences.Editor = pref.edit()
-        editor.remove(cateString)
-        editor.apply()
-    }
-
     //값이 일치하는 모든 키 불러오기
-    fun getKeysByValue(targetValue: Long): List<String> {
+    private fun getKeysByValue(targetValue: Long): List<String> {
         val pref: SharedPreferences = requireContext().getSharedPreferences("anal", Activity.MODE_PRIVATE)
         val keysWithMatchingValue = mutableListOf<String>()
 
@@ -142,9 +134,7 @@ class AnalFragment: Fragment() {
                     val analcate = loadCategory(cate.cateId)
                     //카테고리 기초 세팅
                     if (analcate == -1L) {
-                        if (cate.cateId >= 25) {
-                            saveCategory(cate.cateId, 9)
-                        } else if (cate.name == "기타" || cate.name == "경조사/선물") {
+                        if (cate.name == "기타" || cate.name == "경조사/선물") {
                             saveCategory(cate.cateId, 9)
                         } else if (cate.name == "식비") {
                             saveCategory(cate.cateId, 0)
@@ -248,7 +238,8 @@ class AnalFragment: Fragment() {
 
         //키가 없으면
         if (cateIndexKeys.isEmpty()) {
-
+            dialogView.findViewById<TextView>(R.id.noRecy).visibility = View.VISIBLE
+            dialogView.findViewById<ScrollView>(R.id.recyLayout).visibility = View.GONE
         } else {
             val moneyDatas = mutableListOf<MoneyAndCate>()
 
@@ -338,10 +329,6 @@ class AnalFragment: Fragment() {
 
                     when (cateIndex) {
                         in 0L..9L -> moneys[cateIndex.toInt()] += money.second
-                        else -> {
-                            moneys[9] += money.second
-                            saveCategory(money.first, 9)
-                        }
                     }
                 }
             }

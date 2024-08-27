@@ -1,6 +1,8 @@
 package com.schedule.dayin.views
 
+import android.app.Activity
 import android.content.Context
+import android.content.SharedPreferences
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -26,6 +28,7 @@ class UserCateAdapter(private val context: Context, private var userCateList: Fl
     private var lastCateId: Long = -1L
 
     private var count = 0
+
 
     init {
         //사용자 카테고리 리스트

@@ -1,18 +1,28 @@
 package com.schedule.dayin.fragments
 
 import android.app.Activity
+import android.app.AlertDialog
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
+import android.widget.LinearLayout
+import android.widget.ScrollView
+import android.widget.TextView
 import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.github.mikephil.charting.charts.PieChart
 import com.github.mikephil.charting.components.Legend
+import com.github.mikephil.charting.data.Entry
 import com.github.mikephil.charting.data.PieData
 import com.github.mikephil.charting.data.PieDataSet
 import com.github.mikephil.charting.data.PieEntry
+import com.github.mikephil.charting.highlight.Highlight
+import com.github.mikephil.charting.listener.OnChartValueSelectedListener
 import com.schedule.dayin.AppController
 import com.schedule.dayin.R
 import com.schedule.dayin.data.mainD.CateDb
@@ -22,11 +32,13 @@ import com.schedule.dayin.data.mainD.MoneyDb
 import com.schedule.dayin.data.mainD.repository.CateRepository
 import com.schedule.dayin.data.mainD.repository.MoneyRepository
 import com.schedule.dayin.databinding.AnalysisViewpagerBinding
+import com.schedule.dayin.views.AnalCateAdapter
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import org.w3c.dom.Text
 import java.time.LocalDate
 import java.time.YearMonth
 import java.time.ZoneId
@@ -47,6 +59,8 @@ class AnalFragment: Fragment() {
     private lateinit var moneyRepository: MoneyRepository
     private val uiScope = CoroutineScope(Dispatchers.Main)
     private lateinit var cateRepository: CateRepository
+
+    private lateinit var entries: ArrayList<PieEntry>
 
     //카테고리 분류 저장
     fun saveCategory(category: Long, index: Long) {
@@ -70,6 +84,26 @@ class AnalFragment: Fragment() {
         val editor: SharedPreferences.Editor = pref.edit()
         editor.remove(cateString)
         editor.apply()
+    }
+
+    //값이 일치하는 모든 키 불러오기
+    fun getKeysByValue(targetValue: Long): List<String> {
+        val pref: SharedPreferences = requireContext().getSharedPreferences("anal", Activity.MODE_PRIVATE)
+        val keysWithMatchingValue = mutableListOf<String>()
+
+        // 모든 항목 불러오기
+        val allEntries = pref.all
+
+        // 값이 일치하는 키 찾기
+        for ((key, value) in allEntries) {
+            if (value is Long && value == targetValue) {
+                keysWithMatchingValue.add(key)
+            }
+        }
+
+        Log.d("customTag", "keysWithMatchingValue: $keysWithMatchingValue")
+
+        return keysWithMatchingValue
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -137,13 +171,127 @@ class AnalFragment: Fragment() {
             }
         }
 
+        pieChart = binding.pieChart
+
+        //파이 차트 클릭 리스너
+        pieChart.setOnChartValueSelectedListener(object : OnChartValueSelectedListener {
+            override fun onValueSelected(e: Entry?, h: Highlight?) {
+                if (e is PieEntry) {
+                    val index = entries.indexOf(e)
+                    if (index != -1) {
+                        categoryDialog(index.toLong())
+                    }
+                }
+            }
+
+            override fun onNothingSelected() {
+            }
+        })
+
+        //커스텀 범례 클릭 리스너
+        binding.cate0.setOnClickListener {
+            categoryDialog(0L)
+        }
+
+        binding.cate1.setOnClickListener {
+            categoryDialog(1L)
+        }
+
+        binding.cate2.setOnClickListener {
+            categoryDialog(2L)
+        }
+
+        binding.cate3.setOnClickListener {
+            categoryDialog(3L)
+        }
+
+        binding.cate4.setOnClickListener {
+            categoryDialog(4L)
+        }
+
+        binding.cate5.setOnClickListener {
+            categoryDialog(5L)
+        }
+
+        binding.cate6.setOnClickListener {
+            categoryDialog(6L)
+        }
+
+        binding.cate7.setOnClickListener {
+            categoryDialog(7L)
+        }
+
+        binding.cate8.setOnClickListener {
+            categoryDialog(8L)
+        }
+
+        binding.cate9.setOnClickListener {
+            categoryDialog(9L)
+        }
+
+    }
+
+    //카테고리 또는 파이 차트 클릭 다이얼로그
+    private fun categoryDialog(cateIndex: Long) {
+        val dialogView = LayoutInflater.from(context).inflate(R.layout.analysis_cate_dialog, null)
+        val dialogBuilder = AlertDialog.Builder(requireContext()).setView(dialogView)
+        val dialog = dialogBuilder.create()
+
+        Log.d("customTag", "cateIndex: $cateIndex")
+
+        //인덱스에 맞는 데이터 불러오기
+        val cateIndexKeys = getKeysByValue(cateIndex)
+
+        //리사이클러 뷰
+        val recyclerView = dialogView.findViewById<RecyclerView>(R.id.analRecyclerView)
+        recyclerView.layoutManager = LinearLayoutManager(context)
+
+        //키가 없으면
+        if (cateIndexKeys.isEmpty()) {
+
+        } else {
+            val moneyDatas = mutableListOf<MoneyAndCate>()
+
+            val (firstDayMillis, lastDayMillis) = getMonthRangeMillis(date)
+
+
+            uiScope.launch {
+
+                withContext(Dispatchers.IO) {
+                    cateIndexKeys.forEach { key ->
+                        moneyRepository.getAnalCate(firstDayMillis, lastDayMillis, key.toLong()).forEach { money ->
+                            moneyDatas.add(money)
+                        }
+                    }
+                }
+
+                Log.d("customTag", "moneyDatas: $moneyDatas")
+
+                withContext(Dispatchers.Main) {
+                    dialogView.findViewById<TextView>(R.id.cateText).text = getCategoryLabel(cateIndex.toInt())
+                    if (moneyDatas.isEmpty()) {
+                        dialogView.findViewById<TextView>(R.id.noRecy).visibility = View.VISIBLE
+                        dialogView.findViewById<ScrollView>(R.id.recyLayout).visibility = View.GONE
+                    } else {
+                        recyclerView.adapter = AnalCateAdapter(moneyDatas)
+                    }
+                }
+            }
+
+            //닫기 버튼
+            dialogView.findViewById<Button>(R.id.closeButton).setOnClickListener {
+                dialog.dismiss()
+            }
+        }
+
+
+        dialog.show()
+
     }
 
     // Pie 차트 세팅
     private fun setupPieChart() {
         val (firstDayMillis, lastDayMillis) = getMonthRangeMillis(date)
-
-        pieChart = binding.pieChart
 
         uiScope.launch {
             val moneyList = withContext(Dispatchers.IO) {
@@ -200,7 +348,23 @@ class AnalFragment: Fragment() {
 
             // Pie 차트 업데이트
             withContext(Dispatchers.Main) {
-                val entries = ArrayList<PieEntry>()
+
+                moneys.forEachIndexed { index, money ->
+                    when (index) {
+                        0 -> binding.index0.text = money.toString()
+                        1 -> binding.index1.text = money.toString()
+                        2 -> binding.index2.text = money.toString()
+                        3 -> binding.index3.text = money.toString()
+                        4 -> binding.index4.text = money.toString()
+                        5 -> binding.index5.text = money.toString()
+                        6 -> binding.index6.text = money.toString()
+                        7 -> binding.index7.text = money.toString()
+                        8 -> binding.index8.text = money.toString()
+                        9 -> binding.index9.text = money.toString()
+                    }
+                }
+
+                entries = ArrayList()
                 moneys.forEachIndexed { index, money ->
                     Log.d("PieChartData", "Category $index: $money")
                     entries.add(PieEntry(money.toFloat(), getCategoryLabel(index)))

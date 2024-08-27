@@ -58,4 +58,8 @@ class MoneyRepository(private val moneyDbDao: MoneyDbDao) {
     fun getMoneyYearData(date: List<String>, inEx: Int): Flow<List<MoneyAndCate>> {
         return moneyDbDao.getMoneyYear(date, inEx)
     }
+
+    fun getAnalCate(startDate: Long, endDate: Long, index: Long): List<MoneyAndCate> {
+        return moneyDbDao.getAnalCate(startDate, endDate, index)
+    }
 }

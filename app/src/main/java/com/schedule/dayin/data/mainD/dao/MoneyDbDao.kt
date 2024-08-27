@@ -66,6 +66,11 @@ interface MoneyDbDao {
     @Query("SELECT * FROM moneyDb JOIN cateDb ON moneyDb.cateId = cateDb.cateId WHERE (:startDate <= date and date <= :endDate) AND inEx = :inEx")
     fun onlyMoneyMonth(startDate: Long, endDate: Long, inEx: Int): List<MoneyDb>
 
+    //특정 월의 키 분류 인덱스 값과 맞는 데이터
+    @Transaction
+    @Query("SELECT * FROM moneyDb JOIN cateDb ON moneyDb.cateId = cateDb.cateId WHERE (:startDate <= date and date <= :endDate) AND moneyDb.cateId = :index ORDER BY id ASC")
+    fun getAnalCate(startDate: Long, endDate: Long, index: Long): List<MoneyAndCate>
+
     //특정 년의 데이터 (소비패턴에서 사용)
     @Transaction
     @Query("SELECT * FROM moneyDb JOIN cateDb ON moneyDb.cateId = cateDb.cateId WHERE (inEx = :inEx) AND (strftime('%Y', moneyDb.date ) = :date)")

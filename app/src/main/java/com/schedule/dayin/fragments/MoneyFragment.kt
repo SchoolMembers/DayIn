@@ -1,6 +1,5 @@
 package com.schedule.dayin.fragments
 
-import android.app.Activity
 import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
@@ -25,10 +24,8 @@ import com.kizitonwose.calendar.view.DaySize
 import com.kizitonwose.calendar.view.MonthDayBinder
 import com.kizitonwose.calendar.view.MonthScrollListener
 import android.app.AlertDialog
-import android.content.SharedPreferences
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.TypedValue
 import android.widget.Button
 import android.widget.EditText
 import android.widget.LinearLayout
@@ -36,26 +33,20 @@ import android.widget.Toast
 import androidx.core.content.res.ResourcesCompat
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.kakao.sdk.friend.m.t
 import com.schedule.dayin.AppController
 import com.schedule.dayin.data.mainD.CateDb
 import com.schedule.dayin.data.mainD.MainDatabase
 import com.schedule.dayin.data.mainD.MoneyAndCate
 import com.schedule.dayin.data.mainD.MoneyDb
-import com.schedule.dayin.data.mainD.ScheduleDb
 import com.schedule.dayin.data.mainD.repository.CateRepository
 import com.schedule.dayin.data.mainD.repository.MoneyRepository
-import com.schedule.dayin.fragments.ScheduleFragment.DayViewContainer
 import com.schedule.dayin.views.CateAdapter
 import com.schedule.dayin.views.MoneyAdapter
-import com.schedule.dayin.views.ScheduleAdapter
 import com.schedule.dayin.views.UserCateAdapter
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.count
 import kotlinx.coroutines.flow.emptyFlow
-import kotlinx.coroutines.flow.forEach
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.time.LocalDate
@@ -654,12 +645,31 @@ class MoneyFragment : Fragment() {
                 return@setOnClickListener
             }
 
+
+
             //데이터베이스에 저장
             Log.d("customTag", "MoneyFragment onViewCreated called; checkButton clicked")
-            dialog.dismiss()
+
             val moneyDate = calendar.time
 
+            var autoMoney: List<MoneyAndCate>
             uiScope.launch {
+                //이미 같은 자동 등록이 되어있으면
+                autoMoney = withContext(Dispatchers.IO) {
+                    moneyRepository.getAutoMoney()
+                }
+
+                if (autoMoney.isNotEmpty()) {
+                    autoMoney.forEach {
+                        if (autoText == it.moneyDb.title) {
+                            Toast.makeText(context, "이미 같은 제목의 자동 등록이 있습니다.", Toast.LENGTH_SHORT).show()
+                            return@launch
+                        }
+                    }
+                }
+
+                dialog.dismiss()
+
                 withContext(Dispatchers.IO) {
                     moneyRepository.insertMoney(MoneyDb(
                         date = moneyDate,

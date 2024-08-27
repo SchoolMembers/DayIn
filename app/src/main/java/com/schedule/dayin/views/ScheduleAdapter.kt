@@ -336,9 +336,18 @@ class ScheduleAdapter(private val context: Context, private var dataList: Mutabl
             Log.d("customTag", "ScheduleAdapter onViewCreated called; dialog closed")
         }
 
+        //자동 등록 항목일 시 경고 문구
+        if (data.auto != 0) {
+            dialogView.findViewById<TextView>(R.id.autoEdit).visibility = View.VISIBLE
+        }
+
         //제목
         val titleEditText = dialogView.findViewById<EditText>(R.id.titleText)
         titleEditText.setText(data.title)
+
+        if (data.auto != 0) {
+            titleEditText.isEnabled = false
+        }
 
         var titleText: String = data.title
 
@@ -366,6 +375,10 @@ class ScheduleAdapter(private val context: Context, private var dataList: Mutabl
             2 -> autoToggle.check(R.id.autoMon)
             3 -> autoToggle.check(R.id.autoYear)
             else -> autoToggle.check(R.id.autoDefault)
+        }
+
+        if (data.auto != 0) {
+            autoToggle.isEnabled = false
         }
 
         autoToggle.addOnButtonCheckedListener { group, checkedId, isChecked ->

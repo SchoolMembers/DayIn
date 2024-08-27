@@ -26,7 +26,7 @@ class ScheduleRepository(private val scheduleDbDao: ScheduleDbDao) {
         return scheduleDbDao.getSche(id)
     }
 
-    fun getAutoSchedules(): Flow<List<ScheduleDb>> {
+    fun getAutoSchedules(): List<ScheduleDb> {
         return scheduleDbDao.getAutoSche()
     }
 

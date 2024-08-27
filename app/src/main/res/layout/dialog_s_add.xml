@@ -55,6 +55,17 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
             <TextView
+                android:id="@+id/autoEdit"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:fontFamily="@font/okticon_regular"
+                android:text="자동 등록 일정은 제목 및 자동 등록을 수정할 수 없습니다."
+                android:textSize="13sp"
+                android:textColor="@color/gray"
+                android:layout_marginTop="15dp"
+                android:visibility="gone"/>
+            <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/okticon_regular"

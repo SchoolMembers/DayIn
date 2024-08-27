@@ -105,6 +105,10 @@ class MoneyAdapter(private val context: Context,  private var dataList: MutableL
 
         dialogView.findViewById<TextView>(R.id.money).text = data.moneyDb.money.toString() + " 원"
 
+        if (data.moneyDb.auto != 0 ) {
+            dialogView.findViewById<TextView>(R.id.autoCheck).visibility = View.VISIBLE
+        }
+
 
         if (data.cateDb.inEx == 0){
             dialogView.findViewById<TextView>(R.id.mp).text = "지출"
@@ -145,6 +149,10 @@ class MoneyAdapter(private val context: Context,  private var dataList: MutableL
 
         //수정
         dialogView.findViewById<TextView>(R.id.editButton).setOnClickListener {
+            if (data.moneyDb.auto != 0) {
+                Toast.makeText(context, "자동 등록된 항목은 수정할 수 없습니다.", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
             dialog.dismiss()
             showEditDialog(data, day)
         }

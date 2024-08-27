@@ -135,14 +135,27 @@
                 android:id="@+id/autoTitle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="20dp"
                 android:textSize="15sp"
                 android:text="@string/autoDefault"
                 android:background="@drawable/time_back"
                 android:fontFamily="@font/okticon_regular"
                 android:padding="8dp"
+                android:layout_marginBottom="10dp"
                 android:textAlignment="viewStart"
                 android:gravity="top|start"/>
+            <TextView
+                android:id="@+id/autoCheck"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="13sp"
+                android:gravity="center"
+                android:layout_gravity="center_horizontal"
+                android:text="자동 등록 항목 전체 삭제는 메뉴에서 할 수 있습니다."
+                android:fontFamily="@font/okticon_regular"
+                android:paddingStart="8dp"
+                android:textColor="@color/gray"
+                android:layout_marginBottom="20dp"
+                android:visibility="invisible"/>
         </LinearLayout>
     </ScrollView>
 

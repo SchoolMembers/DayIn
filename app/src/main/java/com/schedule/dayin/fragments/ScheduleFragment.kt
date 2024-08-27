@@ -677,13 +677,29 @@ class ScheduleFragment : Fragment(), CoroutineScope {
         // 체크 버튼
         val checkButton = dialogView.findViewById<Button>(R.id.checkButton)
         checkButton.setOnClickListener {
-            dialog.dismiss()
-            Log.d("customTag", "ScheduleFragment onViewCreated called; check button clicked")
-            val scheduleDate = calendar.time
 
-
-            //데이터 저장(일정 추가)
+            //이미 같은 자동 등록이 되어있으면
+            var autoSchedule: List<ScheduleDb>
             uiScope.launch {
+                autoSchedule = withContext(Dispatchers.IO) {
+                    scheduleRepository.getAutoSchedules()
+                }
+
+                if (autoSchedule.isNotEmpty()) {
+                    autoSchedule.forEach {
+                        if (auto == it.auto && titleText == it.title) {
+                            Toast.makeText(context, "이미 자동 등록이 되어 있는 항목입니다.", Toast.LENGTH_SHORT).show()
+                            return@launch
+                        }
+                    }
+                }
+
+                dialog.dismiss()
+                Log.d("customTag", "ScheduleFragment onViewCreated called; check button clicked")
+                val scheduleDate = calendar.time
+
+
+                //데이터 저장(일정 추가)
                 withContext(Dispatchers.IO) {
                     if (memoText == "") {
                         memoText = null
@@ -707,9 +723,10 @@ class ScheduleFragment : Fragment(), CoroutineScope {
                     clickCheck = false
                     dataLoad(container!!, day)
                 }
+
+                Log.d("customTag", "ScheduleFragment onViewCreated called; data saved")
             }
 
-            Log.d("customTag", "ScheduleFragment onViewCreated called; data saved")
         }
 
 

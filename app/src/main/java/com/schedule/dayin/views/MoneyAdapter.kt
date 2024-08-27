@@ -154,7 +154,7 @@ class MoneyAdapter(private val context: Context,  private var dataList: MutableL
                 return@setOnClickListener
             }
             dialog.dismiss()
-            showEditDialog(data, day)
+            showEditDialog(data, day, position)
         }
 
         dialog.show()
@@ -162,7 +162,7 @@ class MoneyAdapter(private val context: Context,  private var dataList: MutableL
     }
 
     //수정 다이얼로그
-    private fun showEditDialog(data: MoneyAndCate, day: CalendarDay) {
+    private fun showEditDialog(data: MoneyAndCate, day: CalendarDay, position: Int) {
         val dialogView = LayoutInflater.from(context).inflate(R.layout.dialog_m_add, null)
         val dialogBuilder = android.app.AlertDialog.Builder(context).setView(dialogView)
         val dialog = dialogBuilder.create()
@@ -257,7 +257,7 @@ class MoneyAdapter(private val context: Context,  private var dataList: MutableL
         //카테고리 제거 버튼
         val cateDelete = dialogView.findViewById<Button>(R.id.cateMinus)
         cateDelete.setOnClickListener {
-            deleteCateDialog(data)
+            deleteCateDialog(data, dialog, position)
         }
 
         //자동 등록
@@ -495,7 +495,7 @@ class MoneyAdapter(private val context: Context,  private var dataList: MutableL
     }
 
     //카테고리 삭제 다이얼로그
-    private fun deleteCateDialog(data: MoneyAndCate) {
+    private fun deleteCateDialog(data: MoneyAndCate, editDialog: android.app.AlertDialog, position: Int) {
         val dialogView = LayoutInflater.from(context).inflate(R.layout.dialog_c_del, null)
         val dialogBuilder = android.app.AlertDialog.Builder(context).setView(dialogView)
         val delDialog = dialogBuilder.create()
@@ -517,7 +517,7 @@ class MoneyAdapter(private val context: Context,  private var dataList: MutableL
                 Toast.makeText(context, "삭제할 카테고리를 선택해주세요.", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             } else {
-                delReCheck(selectedCategories, delDialog, data)
+                delReCheck(selectedCategories, delDialog, data, editDialog, position)
             }
         }
 
@@ -532,7 +532,7 @@ class MoneyAdapter(private val context: Context,  private var dataList: MutableL
     }
 
     //삭제 다시 확인
-    private fun delReCheck(selectedCategories: List<CateDb>, delDialog: android.app.AlertDialog, data: MoneyAndCate) {
+    private fun delReCheck(selectedCategories: List<CateDb>, delDialog: android.app.AlertDialog, data: MoneyAndCate, editDialog: android.app.AlertDialog, position: Int) {
         val dialogView = LayoutInflater.from(context).inflate(R.layout.dialog_c_del_re, null)
         val dialogBuilder = android.app.AlertDialog.Builder(context).setView(dialogView)
         val dialog = dialogBuilder.create()
@@ -558,8 +558,14 @@ class MoneyAdapter(private val context: Context,  private var dataList: MutableL
                     dialog.dismiss()
                     delCates = null
 
+                    dataList.removeAt(position)
+
+                    notifyDataSetChanged()
+                    onDataChanged?.invoke()
+
                     //카테고리 삭제 선택 다이얼로그도 종료
                     delDialog.dismiss()
+                    editDialog.dismiss()
                 }
             }
         }

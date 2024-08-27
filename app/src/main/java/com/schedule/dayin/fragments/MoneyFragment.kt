@@ -97,6 +97,8 @@ class MoneyFragment : Fragment() {
 
     private lateinit var setDay: CalendarMonth
 
+    private lateinit var calendarView: com.kizitonwose.calendar.view.CalendarView
+
 
 
     //프래그먼트 뷰를 생성하고 초기화. 프래그먼트의 레이아웃 인플레이트 -> 뷰 반환
@@ -128,7 +130,7 @@ class MoneyFragment : Fragment() {
         val barDateYear = (activity as? MainActivity)?.findViewById<TextView>(R.id.barDateYear)
 
         //kizitonwose calendar
-        val calendarView = binding.calendarView
+        calendarView = binding.calendarView
         val currentMonth = YearMonth.now()
         val firstMonth = currentMonth.minusMonths(100)
         val lastMonth = currentMonth.plusMonths(100)
@@ -191,6 +193,10 @@ class MoneyFragment : Fragment() {
             showYearMonthPicker(calendarView, currentMonth)
         }
 
+    }
+    // 전체 캘린더 새로고침
+    private fun updateCalendarView() {
+        calendarView.notifyCalendarChanged()
     }
 
     //지갑, 지출, 수입 총합
@@ -426,8 +432,8 @@ class MoneyFragment : Fragment() {
             if (dataList.isNotEmpty()) {
                 adapter = MoneyAdapter(requireContext(), dataList, appController, day) {
                     uiScope.launch {
-                        loadMoneyData(currentDayViewContainer, day)
                         setMoneyTotals()
+                        updateCalendarView()
                     }
                 }
                 recyclerView.adapter = adapter
@@ -854,6 +860,8 @@ class MoneyFragment : Fragment() {
                 }
                 withContext(Dispatchers.Main) {
                     loadCate(inEx, cateRecyclerView)
+                    setMoneyTotals()
+                    updateCalendarView()
                     dialog.dismiss()
                     delCates = null
 

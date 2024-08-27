@@ -279,6 +279,8 @@ class AnalysisActivity: AppCompatActivity() {
                 if (userCate.isNotEmpty()) {
                     adapter = AnalUserCateAdapter(this@AnalysisActivity, userCate) {
                         onDataChanged(dialogViewAnal)
+                        updateData()
+
                     }
                     recyclerViews.adapter = adapter
                     Log.d("customTag", "AnalysisActivity onCreate called; adapter: $adapter")
@@ -291,6 +293,9 @@ class AnalysisActivity: AppCompatActivity() {
 
 
         }
+    }
+    private fun updateData() {
+        pagerAdapter.updateData()
     }
 
     private suspend fun userCateLoad(): List<CateDb> {

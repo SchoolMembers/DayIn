@@ -9,14 +9,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
-import android.widget.LinearLayout
 import android.widget.ScrollView
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.github.mikephil.charting.charts.PieChart
-import com.github.mikephil.charting.components.Legend
 import com.github.mikephil.charting.data.Entry
 import com.github.mikephil.charting.data.PieData
 import com.github.mikephil.charting.data.PieDataSet
@@ -28,7 +26,6 @@ import com.schedule.dayin.R
 import com.schedule.dayin.data.mainD.CateDb
 import com.schedule.dayin.data.mainD.MainDatabase
 import com.schedule.dayin.data.mainD.MoneyAndCate
-import com.schedule.dayin.data.mainD.MoneyDb
 import com.schedule.dayin.data.mainD.repository.CateRepository
 import com.schedule.dayin.data.mainD.repository.MoneyRepository
 import com.schedule.dayin.databinding.AnalysisViewpagerBinding
@@ -38,11 +35,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import org.w3c.dom.Text
 import java.time.LocalDate
-import java.time.YearMonth
 import java.time.ZoneId
-import java.time.format.DateTimeFormatter
 import java.util.Date
 
 class AnalFragment: Fragment() {
@@ -61,6 +55,15 @@ class AnalFragment: Fragment() {
     private lateinit var cateRepository: CateRepository
 
     private lateinit var entries: ArrayList<PieEntry>
+
+    // 데이터 업데이트 메서드
+    fun updateData() {
+        if (isAdded) {
+            uiScope.launch {
+                setupPieChart()
+            }
+        }
+    }
 
     //카테고리 분류 저장
     private fun saveCategory(category: Long, index: Long) {
@@ -157,11 +160,11 @@ class AnalFragment: Fragment() {
                         }
                     }
                 }
-                setupPieChart()
+
+                updateData()
             }
         }
-
-        pieChart = binding.pieChart
+        setupUi()
 
         //파이 차트 클릭 리스너
         pieChart.setOnChartValueSelectedListener(object : OnChartValueSelectedListener {
@@ -219,6 +222,9 @@ class AnalFragment: Fragment() {
             categoryDialog(9L)
         }
 
+    }
+    private fun setupUi() {
+        pieChart = binding.pieChart
     }
 
     //카테고리 또는 파이 차트 클릭 다이얼로그

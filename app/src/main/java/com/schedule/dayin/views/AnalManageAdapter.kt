@@ -5,8 +5,6 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.schedule.dayin.data.mainD.CateDb
 import com.schedule.dayin.databinding.AnalysisManageItemsBinding
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 
 
 class AnalManageAdapter(private var cateList: MutableList<CateDb>): RecyclerView.Adapter<RecyclerView.ViewHolder>() {

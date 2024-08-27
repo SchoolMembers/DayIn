@@ -201,6 +201,7 @@ class AnalUserCateAdapter(private val context: Context, private var userCateList
         //제거
         dialogView.findViewById<TextView>(R.id.remove).setOnClickListener {
             removeCategory(cateId)
+            Toast.makeText(context, "파이 그래프의 범주에서 제거되었습니다.", Toast.LENGTH_SHORT).show()
             updateData()
             dialog.dismiss()
         }

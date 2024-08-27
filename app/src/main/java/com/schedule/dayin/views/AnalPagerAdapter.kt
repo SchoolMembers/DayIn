@@ -9,6 +9,7 @@ class AnalPagerAdapter(activity: AnalysisActivity, private val startDate: LocalD
 
     //시작 페이지 Int타입 Max / 2
     val startingPosition = 150
+    private val fragments = mutableMapOf<Int, AnalFragment>()
 
     //페이지 수 get 함수
     override fun getItemCount(): Int {
@@ -19,6 +20,14 @@ class AnalPagerAdapter(activity: AnalysisActivity, private val startDate: LocalD
     override fun createFragment(position: Int): AnalFragment {
         val offset = position - startingPosition
         val date = startDate.plusMonths(offset.toLong())
-        return AnalFragment.newInstance(date)
+        val fragment = AnalFragment.newInstance(date)
+        fragments[position] = fragment
+        return fragment
+    }
+
+    fun updateData() {
+        fragments.forEach { (_, fragment) ->
+            fragment.updateData()
+        }
     }
 }

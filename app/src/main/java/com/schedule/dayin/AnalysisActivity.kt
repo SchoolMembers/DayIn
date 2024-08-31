@@ -250,8 +250,8 @@ class AnalysisActivity: AppCompatActivity() {
             Log.d("customTag", "maxMon: $maxYearMonth, minMon: $minYearMonth")
 
             // 범위 초과 또는 미달 시 토스트 메시지 표시
-            if ((selectedYear <= minYearMonth.year && selectedMonth < minYearMonth.monthValue) ||
-                (selectedYear >= maxYearMonth.year && selectedMonth > maxYearMonth.monthValue)
+            if ((selectedYear <= minYearMonth.year && selectedMonth < minYearMonth.monthValue) || (selectedYear < minYearMonth.year)  ||
+                (selectedYear >= maxYearMonth.year && selectedMonth > maxYearMonth.monthValue) || (selectedYear > maxYearMonth.year)
             ) {
                 Toast.makeText(
                     this,

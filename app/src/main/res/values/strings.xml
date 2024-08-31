@@ -76,4 +76,5 @@
     <string name="cateManage">소비 분석 관리</string>
     <string name="autoManage">고정 지출</string>
     <string name="autoTotal">지금까지의 총액</string>
+    <string name="myNote">나의 노트</string>
 </resources>

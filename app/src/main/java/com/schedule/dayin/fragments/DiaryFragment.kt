@@ -171,7 +171,7 @@ class DiaryFragment : Fragment() {
 
 
             // 범위 초과 또는 미달 시 토스트 메시지 표시
-            if ((selectedYear <= minYearMonth.year && selectedMonth < minYearMonth.monthValue)  || (selectedYear >= maxYearMonth.year && selectedMonth > maxYearMonth.monthValue)) {
+            if ((selectedYear <= minYearMonth.year && selectedMonth < minYearMonth.monthValue) || (selectedYear < minYearMonth.year)  || (selectedYear >= maxYearMonth.year && selectedMonth > maxYearMonth.monthValue) || (selectedYear > maxYearMonth.year)) {
                 Toast.makeText(
                     requireContext(),
                     "선택할 수 있는 날짜 범위는 ${minYearMonth.year}년 ${minYearMonth.monthValue}월 ~ ${maxYearMonth.year}년 ${maxYearMonth.monthValue}월입니다.",

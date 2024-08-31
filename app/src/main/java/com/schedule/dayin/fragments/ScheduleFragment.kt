@@ -81,6 +81,8 @@ class ScheduleFragment : Fragment(), CoroutineScope {
 
     private var dataList = mutableListOf<ScheduleDb>()
 
+    private lateinit var calendarView: com.kizitonwose.calendar.view.CalendarView
+
 
 
 
@@ -177,7 +179,7 @@ class ScheduleFragment : Fragment(), CoroutineScope {
 
 
         //시작 월, 종료 월, 첫 주의 요일
-        val calendarView = binding.calendarView
+        calendarView = binding.calendarView
         calendarView.setup(firstMonth, lastMonth, firstDayOfWeek)
         calendarView.scrollToMonth(currentMonth)
         calendarView.daySize = DaySize.Rectangle
@@ -308,7 +310,7 @@ class ScheduleFragment : Fragment(), CoroutineScope {
 
 
             // 범위 초과 또는 미달 시 토스트 메시지 표시
-            if ((selectedYear <= minYearMonth.year && selectedMonth < minYearMonth.monthValue)  || (selectedYear >= maxYearMonth.year && selectedMonth > maxYearMonth.monthValue)) {
+            if ((selectedYear <= minYearMonth.year && selectedMonth < minYearMonth.monthValue) || (selectedYear < minYearMonth.year)  || (selectedYear >= maxYearMonth.year && selectedMonth > maxYearMonth.monthValue) || (selectedYear > maxYearMonth.year)) {
                 Toast.makeText(
                     requireContext(),
                     "선택할 수 있는 날짜 범위는 ${minYearMonth.year}년 ${minYearMonth.monthValue}월 ~ ${maxYearMonth.year}년 ${maxYearMonth.monthValue}월입니다.",
@@ -327,17 +329,17 @@ class ScheduleFragment : Fragment(), CoroutineScope {
     private fun getWeeksInMonth(date: LocalDate): Int {
         val yearMonth = YearMonth.from(date)
 
-        // 해당 월의 첫번째와 마지막 날을 구합니다.
+        // 해당 월의 첫번째와 마지막 날
         val firstDayOfMonth = yearMonth.atDay(1)
         val lastDayOfMonth = yearMonth.atEndOfMonth()
 
-        // 첫날이 속한 주의 시작(일요일)을 구합니다.
+        // 첫날이 속한 주의 시작(일요일)
         val firstSunday = firstDayOfMonth.with(TemporalAdjusters.previousOrSame(DayOfWeek.SUNDAY))
 
-        // 마지막 날이 속한 주의 마지막을 구합니다.
+        // 마지막 날이 속한 주의 마지막
         val lastSaturday = lastDayOfMonth.with(TemporalAdjusters.nextOrSame(DayOfWeek.SATURDAY))
 
-        // 첫째 일요일부터 마지막 토요일까지 주를 세기
+        // 첫째 일요일부터 마지막 토요일까지 주 세기
         val weeks = ChronoUnit.WEEKS.between(firstSunday, lastSaturday) + 1
 
         return weeks.toInt()
@@ -657,6 +659,12 @@ class ScheduleFragment : Fragment(), CoroutineScope {
                     else -> auto // 기본값 유지
                 }
                 Log.d("customTag", "auto value updated: $auto")
+
+                when (checkedId) {
+                    R.id.autoWeek -> Toast.makeText(requireContext(), "등록일로부터 + 52주 추가 등록됩니다.", Toast.LENGTH_SHORT).show()
+                    R.id.autoMon -> Toast.makeText(requireContext(), "등록일로부터 + 12개월 추가 등록됩니다.", Toast.LENGTH_SHORT).show()
+                    R.id.autoYear -> Toast.makeText(requireContext(), "등록일로부터 + 5년 추가 등록됩니다.", Toast.LENGTH_SHORT).show()
+                }
             }
         }
 
@@ -717,11 +725,81 @@ class ScheduleFragment : Fragment(), CoroutineScope {
                             color = color
                         )
                     )
+
+                    // 자동 등록 일정 추가
+                    when (auto) {
+                        1 -> { // 매주
+                            for (i in 1..52) {
+                                val newDate = Calendar.getInstance().apply {
+                                    time = scheduleDate
+                                    add(Calendar.WEEK_OF_YEAR, i)
+                                }.time
+                                scheduleRepository.insertSche(
+                                    ScheduleDb(
+                                        date = newDate,
+                                        title = titleText,
+                                        auto = auto,
+                                        notify = noti,
+                                        memo = memoText,
+                                        check = 0,
+                                        time = time,
+                                        color = color
+                                    )
+                                )
+                            }
+                        }
+
+                        2 -> { // 매월
+                            for (i in 1..12) {
+                                val newDate = Calendar.getInstance().apply {
+                                    time = scheduleDate
+                                    add(Calendar.MONTH, i)
+                                }.time
+                                scheduleRepository.insertSche(
+                                    ScheduleDb(
+                                        date = newDate,
+                                        title = titleText,
+                                        auto = auto,
+                                        notify = noti,
+                                        memo = memoText,
+                                        check = 0,
+                                        time = time,
+                                        color = color
+                                    )
+                                )
+                            }
+                        }
+
+                        3 -> { // 매년
+                            for (i in 1..5) {
+                                val newDate = Calendar.getInstance().apply {
+                                    time = scheduleDate
+                                    add(Calendar.YEAR, i)
+                                }.time
+                                scheduleRepository.insertSche(
+                                    ScheduleDb(
+                                        date = newDate,
+                                        title = titleText,
+                                        auto = auto,
+                                        notify = noti,
+                                        memo = memoText,
+                                        check = 0,
+                                        time = time,
+                                        color = color
+                                    )
+                                )
+                            }
+                        }
+                    }
                 }
                 withContext(Dispatchers.Main) {
                     val container = loadContainer
                     clickCheck = false
                     dataLoad(container!!, day)
+
+                    if (auto != 0) {
+                        updateCalendarView()
+                    }
                 }
 
                 Log.d("customTag", "ScheduleFragment onViewCreated called; data saved")
@@ -855,6 +933,11 @@ class ScheduleFragment : Fragment(), CoroutineScope {
 
         // 다이얼로그 표시
         dialog.show()
+    }
+
+    // 전체 캘린더 새로고침
+    private fun updateCalendarView() {
+        calendarView.notifyCalendarChanged()
     }
 
 

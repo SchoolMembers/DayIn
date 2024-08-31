@@ -38,6 +38,7 @@ import com.schedule.dayin.data.mainD.CateDb
 import com.schedule.dayin.data.mainD.MainDatabase
 import com.schedule.dayin.data.mainD.MoneyAndCate
 import com.schedule.dayin.data.mainD.MoneyDb
+import com.schedule.dayin.data.mainD.ScheduleDb
 import com.schedule.dayin.data.mainD.repository.CateRepository
 import com.schedule.dayin.data.mainD.repository.MoneyRepository
 import com.schedule.dayin.views.CateAdapter
@@ -398,7 +399,7 @@ class MoneyFragment : Fragment() {
 
 
             // 범위 초과 또는 미달 시 토스트 메시지 표시
-            if ((selectedYear <= minYearMonth.year && selectedMonth < minYearMonth.monthValue)  || (selectedYear >= maxYearMonth.year && selectedMonth > maxYearMonth.monthValue)) {
+            if ((selectedYear <= minYearMonth.year && selectedMonth < minYearMonth.monthValue) || (selectedYear < minYearMonth.year)  || (selectedYear >= maxYearMonth.year && selectedMonth > maxYearMonth.monthValue) || (selectedYear > maxYearMonth.year)) {
                 Toast.makeText(
                     requireContext(),
                     "선택할 수 있는 날짜 범위는 ${minYearMonth.year}년 ${minYearMonth.monthValue}월 ~ ${maxYearMonth.year}년 ${maxYearMonth.monthValue}월입니다.",
@@ -572,6 +573,11 @@ class MoneyFragment : Fragment() {
                     R.id.autoYear -> 3
                     else -> auto
                 }
+                when (checkedId) {
+                    R.id.autoWeek -> Toast.makeText(requireContext(), "등록일로부터 + 52주 추가 등록됩니다.", Toast.LENGTH_SHORT).show()
+                    R.id.autoMon -> Toast.makeText(requireContext(), "등록일로부터 + 12개월 추가 등록됩니다.", Toast.LENGTH_SHORT).show()
+                    R.id.autoYear -> Toast.makeText(requireContext(), "등록일로부터 + 5년 추가 등록됩니다.", Toast.LENGTH_SHORT).show()
+                }
                 Log.d("customTag", "auto value updated: $auto")
                 if (auto != 0) {
                     autoTitleLayout.visibility = View.VISIBLE
@@ -685,12 +691,68 @@ class MoneyFragment : Fragment() {
                         title = autoText,
                         cateId = cateId
                     ))
+                    // 자동 등록 일정 추가
+                    when (auto) {
+                        1 -> { // 매주
+                            for (i in 1..52) {
+                                val newDate = Calendar.getInstance().apply {
+                                    time = moneyDate
+                                    add(Calendar.WEEK_OF_YEAR, i)
+                                }.time
+                                moneyRepository.insertMoney(MoneyDb(
+                                    date = newDate,
+                                    money = moneyText.toLong(),
+                                    auto = auto,
+                                    memo = memoText,
+                                    title = autoText,
+                                    cateId = cateId
+                                ))
+                            }
+                        }
+
+                        2 -> { // 매월
+                            for (i in 1..12) {
+                                val newDate = Calendar.getInstance().apply {
+                                    time = moneyDate
+                                    add(Calendar.MONTH, i)
+                                }.time
+                                moneyRepository.insertMoney(MoneyDb(
+                                    date = newDate,
+                                    money = moneyText.toLong(),
+                                    auto = auto,
+                                    memo = memoText,
+                                    title = autoText,
+                                    cateId = cateId
+                                ))
+                            }
+                        }
+
+                        3 -> { // 매년
+                            for (i in 1..5) {
+                                val newDate = Calendar.getInstance().apply {
+                                    time = moneyDate
+                                    add(Calendar.YEAR, i)
+                                }.time
+                                moneyRepository.insertMoney(MoneyDb(
+                                    date = newDate,
+                                    money = moneyText.toLong(),
+                                    auto = auto,
+                                    memo = memoText,
+                                    title = autoText,
+                                    cateId = cateId
+                                ))
+                            }
+                        }
+                    }
                     cateId = -1
                 }
 
                 withContext(Dispatchers.Main) {
                     loadMoneyData(currentDayViewContainer, day)
                     setMoneyTotals()
+                    if (auto != 0) {
+                        updateCalendarView()
+                    }
                 }
             }
         }

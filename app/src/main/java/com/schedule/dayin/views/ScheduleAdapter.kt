@@ -336,10 +336,8 @@ class ScheduleAdapter(private val context: Context, private var dataList: Mutabl
             Log.d("customTag", "ScheduleAdapter onViewCreated called; dialog closed")
         }
 
-        //자동 등록 항목일 시 경고 문구
-        if (data.auto != 0) {
-            dialogView.findViewById<TextView>(R.id.autoEdit).visibility = View.VISIBLE
-        }
+        //경고 문구
+        dialogView.findViewById<TextView>(R.id.autoEdit).visibility = View.VISIBLE
 
         //제목
         val titleEditText = dialogView.findViewById<EditText>(R.id.titleText)
@@ -362,7 +360,7 @@ class ScheduleAdapter(private val context: Context, private var dataList: Mutabl
         })
 
         // autoToggle 리스너
-        var auto = when (data.auto) {
+        val auto = when (data.auto) {
             1 -> 1
             2 -> 2
             3 -> 3
@@ -377,22 +375,8 @@ class ScheduleAdapter(private val context: Context, private var dataList: Mutabl
             else -> autoToggle.check(R.id.autoDefault)
         }
 
-        if (data.auto != 0) {
-            autoToggle.isEnabled = false
-        }
-
-        autoToggle.addOnButtonCheckedListener { group, checkedId, isChecked ->
-            if (isChecked) {
-                auto = when (checkedId) {
-                    R.id.autoDefault -> 0
-                    R.id.autoWeek -> 1
-                    R.id.autoMon -> 2
-                    R.id.autoYear -> 3
-                    else -> auto // 기본값 유지
-                }
-                Log.d("customTag", "auto value updated: $auto")
-            }
-        }
+        //토글 비활성화
+        autoToggle.isEnabled = false
 
         // autoToggle info 리스너
         val infoButton1 = dialogView.findViewById<Button>(R.id.infoButton1)

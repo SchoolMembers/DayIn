@@ -167,7 +167,6 @@ class MemoActivity : AppCompatActivity() {
     //체크 리스트 함수
     private fun delItems() {
         delList = adapter.getSelected()
-        binding.btnCheck.isChecked = false
     }
 
 }

@@ -69,4 +69,17 @@ class MemoCustomAdapter(private val context: Context,  private val memoList: Mut
         notifyDataSetChanged()
     }
 
+    fun deleteMemo() {
+        // 0. memoList 리스트가 Triple 데이터가 아닌 Object 형태로 관리되어야한다.
+        // 0-1. ex) memoList = MutableList<MemoDb>
+
+        // 1. memoList를 전체 돌면서 체크된게 있는지 확인한다.
+
+        // 2. 선택된 애들을 삭제하는 코드를 작성한다.
+        // 2-1. ex) memoList.remove(삭제 index)
+
+        // 3. db 삭제 코드 작성
+
+        // 4. notifyItemRemoved() 로 리사이클러 뷰 데이터 세팅
+    }
 }

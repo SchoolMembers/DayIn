@@ -110,6 +110,11 @@ class MemoActivity : AppCompatActivity() {
         binding.btnCheck.setOnClickListener {
             adapter.checkBox(binding.btnCheck.isChecked)
         }
+
+        // 휴지통 버튼을 눌렀을때
+        binding.btnDelete.setOnClickListener {
+            adapter.deleteMemo()
+        }
     }
 
 

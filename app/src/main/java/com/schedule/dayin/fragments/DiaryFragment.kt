@@ -11,6 +11,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.EditText
+import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
@@ -27,13 +28,33 @@ import com.kizitonwose.calendar.core.DayPosition
 import com.kizitonwose.calendar.view.DaySize
 import com.kizitonwose.calendar.view.MonthDayBinder
 import com.kizitonwose.calendar.view.MonthScrollListener
+import com.schedule.dayin.AppController
 import com.schedule.dayin.MainActivity
+import com.schedule.dayin.data.mainD.DiaryDb
+import com.schedule.dayin.data.mainD.MainDatabase
+import com.schedule.dayin.data.mainD.ScheduleDb
+import com.schedule.dayin.data.mainD.repository.DiaryRepository
+import com.schedule.dayin.fragments.ScheduleFragment.DayViewContainer
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import java.time.LocalTime
+import java.time.ZoneId
 
 class DiaryFragment : Fragment() {
 
     private var _binding: FragmentDBinding? = null
     private val binding get() = _binding!!
 
+    private lateinit var appController: AppController
+    private val uiScope = CoroutineScope(Dispatchers.Main)
+    private lateinit var mainDb: MainDatabase
+    private lateinit var diaryRepository: DiaryRepository
+
+    private var data: DiaryDb? = null
+
+    private lateinit var calendarView: com.kizitonwose.calendar.view.CalendarView
 
     //프래그먼트 뷰를 생성하고 초기화. 프래그먼트의 레이아웃 인플레이트 -> 뷰 반환
     override fun onCreateView(
@@ -49,6 +70,10 @@ class DiaryFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        //database setting
+        appController = requireActivity().application as AppController
+        mainDb = appController.mainDb
+        diaryRepository = DiaryRepository(mainDb.diaryDbDao())
 
         //애니메이션 비활성화
         with(binding.calendarView) {
@@ -59,7 +84,7 @@ class DiaryFragment : Fragment() {
         val barDateYear = (activity as? MainActivity)?.findViewById<TextView>(R.id.barDateYear)
 
         //kizitonwose calendar
-        val calendarView = binding.calendarView
+        calendarView = binding.calendarView
         val currentMonth = YearMonth.now()
         val firstMonth = currentMonth.minusMonths(100)
         val lastMonth = currentMonth.plusMonths(100)
@@ -85,6 +110,16 @@ class DiaryFragment : Fragment() {
                     container.textView.setTextColor(Color.GRAY)
                 }
 
+                // 비동기로 데이터 로드
+                dataLoad(container, day)
+
+                container.view.setOnClickListener {
+                    dataLoadAndShowDialog(day)
+                }
+
+                container.click.setOnClickListener {
+                    dataLoadAndShowDialog(day)
+                }
             }
         }
 
@@ -101,6 +136,212 @@ class DiaryFragment : Fragment() {
             showYearMonthPicker(calendarView, currentMonth)
         }
 
+    }
+
+    fun dataLoadAndShowDialog(day: CalendarDay) {
+        val date = day.date
+
+        val startDate = date.atTime(LocalTime.MIN)
+        val endDate = date.atTime(LocalTime.MAX)
+
+        val startZoneTime = startDate.atZone(ZoneId.systemDefault())
+        val endZoneTime = endDate.atZone(ZoneId.systemDefault())
+
+        uiScope.launch {
+            data = withContext(Dispatchers.IO) {
+                diaryRepository.getTime(
+                    startZoneTime.toInstant().toEpochMilli(),
+                    endZoneTime.toInstant().toEpochMilli()
+                )
+            }
+            withContext(Dispatchers.Main) {
+                showDateDialog(day)
+            }
+        }
+    }
+
+    fun dataLoad(container: DayViewContainer, day: CalendarDay) {
+        val date = day.date
+
+        val startDate = date.atTime(LocalTime.MIN)
+        val endDate = date.atTime(LocalTime.MAX)
+
+        val startZoneTime = startDate.atZone(ZoneId.systemDefault())
+        val endZoneTime = endDate.atZone(ZoneId.systemDefault())
+
+        uiScope.launch {
+            data = withContext(Dispatchers.IO) {diaryRepository.getTime(
+                startZoneTime.toInstant().toEpochMilli(),
+                endZoneTime.toInstant().toEpochMilli()
+            )}
+            withContext(Dispatchers.Main) {
+                if (data != null) {
+                    container.titleTextView.text = data!!.title
+                    if (data!!.feel != null) {
+                        when (data!!.feel) {
+                            0 -> container.emoji.text = appController.getEmojiFromIndex(0)
+                            1 -> container.emoji.text = appController.getEmojiFromIndex(1)
+                            2 -> container.emoji.text = appController.getEmojiFromIndex(2)
+                            3 -> container.emoji.text = appController.getEmojiFromIndex(3)
+                            4 -> container.emoji.text = appController.getEmojiFromIndex(4)
+                            5 -> container.emoji.text = appController.getEmojiFromIndex(5)
+                            else -> container.emoji.text = ""
+                        }
+                    } else {
+                        container.emoji.text = ""
+                    }
+                } else {
+                    container.emoji.text = ""
+                    container.titleTextView.text = ""
+                }
+            }
+        }
+    }
+
+    private fun showDateDialog(day: CalendarDay) {
+        val dialogView = LayoutInflater.from(context).inflate(R.layout.dialog_d, null)
+        val dialogBuilder = AlertDialog.Builder(requireContext())
+            .setView(dialogView)
+        val dialog = dialogBuilder.create()
+
+        //날짜 설정
+        setupDialog(dialogView, day)
+
+        //date 설정
+        val calendar = Calendar.getInstance()
+        calendar.set(day.date.year, day.date.monthValue - 1, day.date.dayOfMonth)
+
+        //제목
+        val titleTextView = dialogView.findViewById<EditText>(R.id.titleText)
+        var titleText: String
+        if (data != null) {
+            titleTextView.setText(data!!.title)
+            titleText = data!!.title
+        } else {
+            titleTextView.setText("")
+            titleText = ""
+        }
+
+
+        titleTextView.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                titleText = s?.toString() ?: ""
+            }
+            override fun afterTextChanged(s: Editable?) {}
+        })
+
+        // 닫기 버튼 클릭 시 다이얼로그 닫기
+        val closeButton = dialogView.findViewById<Button>(R.id.closeButton)
+        closeButton.setOnClickListener {
+            dialog.dismiss()
+        }
+
+        //기분
+        var feel: Int? = null
+        if (data != null) {
+            feel = data!!.feel
+        }
+        val feel0 = dialogView.findViewById<TextView>(R.id.feel0)
+        val feel1 = dialogView.findViewById<TextView>(R.id.feel1)
+        val feel2 = dialogView.findViewById<TextView>(R.id.feel2)
+        val feel3 = dialogView.findViewById<TextView>(R.id.feel3)
+        val feel4 = dialogView.findViewById<TextView>(R.id.feel4)
+        val feel5 = dialogView.findViewById<TextView>(R.id.feel5)
+
+        feel0.setOnClickListener {
+            feel = 0
+            Toast.makeText(requireContext(), "기분이 \uD83D\uDE0A 로 설정되었습니다.", Toast.LENGTH_SHORT).show()
+        }
+
+        feel1.setOnClickListener {
+            feel = 1
+            Toast.makeText(requireContext(), "기분이 \uD83D\uDE04 로 설정되었습니다.", Toast.LENGTH_SHORT).show()
+        }
+
+        feel2.setOnClickListener {
+            feel = 2
+            Toast.makeText(requireContext(), "기분이 \uD83D\uDE0D 로 설정되었습니다.", Toast.LENGTH_SHORT).show()
+        }
+
+        feel3.setOnClickListener {
+            feel = 3
+            Toast.makeText(requireContext(), "기분이 \uD83D\uDE41 로 설정되었습니다.", Toast.LENGTH_SHORT).show()
+        }
+
+        feel4.setOnClickListener {
+            feel = 4
+            Toast.makeText(requireContext(), "기분이 \uD83D\uDE22 로 설정되었습니다.", Toast.LENGTH_SHORT).show()
+        }
+
+        feel5.setOnClickListener {
+            feel = 5
+            Toast.makeText(requireContext(), "기분이 \uD83D\uDE21 로 설정되었습니다.", Toast.LENGTH_SHORT).show()
+        }
+
+        //내용
+        val desTextView = dialogView.findViewById<EditText>(R.id.description)
+        var desText = ""
+
+        if (data != null && data!!.des != null) {
+            desTextView.setText(data!!.des)
+            desText = data!!.des!!
+        } else {
+            desTextView.setText("")
+        }
+
+        desTextView.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                desText = s?.toString() ?: ""
+            }
+            override fun afterTextChanged(s: Editable?) {}
+        })
+
+        //저장
+        val checkButton = dialogView.findViewById<Button>(R.id.checkButton)
+
+        checkButton.setOnClickListener {
+            val date = calendar.time
+
+            uiScope.launch {
+                withContext(Dispatchers.IO) {
+                    if (data != null) {
+                        if (desText == "") {
+                            data!!.des = null
+                        } else {
+                            data!!.des = desText
+                        }
+                        data!!.title = titleText
+                        data!!.feel = feel
+                        data!!.des = desText
+                        diaryRepository.updateDiary(data!!)
+                    } else {
+                        val newDiary = DiaryDb(date = date, title = titleText, des = desText, feel = feel)
+                        diaryRepository.insertDiary(newDiary)
+                    }
+                }
+                withContext(Dispatchers.Main) {
+                    updateCalendarView()
+                }
+                dialog.dismiss()
+            }
+        }
+        dialog.show()
+    }
+
+    // 전체 캘린더 새로고침
+    private fun updateCalendarView() {
+        calendarView.notifyCalendarChanged()
+    }
+
+    //날짜 설정
+    private fun setupDialog(dialogView: View, day: CalendarDay) {
+        val monYearTextView = dialogView.findViewById<TextView>(R.id.monYear)
+        monYearTextView.text = day.date.format(DateTimeFormatter.ofPattern("MM월 dd일 (E)").withLocale(Locale.KOREAN))
+        Log.d("customTag", "ScheduleAdapter onViewCreated called; monYearTextView updated")
     }
 
     // 연도 및 월 선택 다이얼로그 보여주기
@@ -205,5 +446,8 @@ class DiaryFragment : Fragment() {
 
     class DayViewContainer(view: View) : ViewContainer(view) {
         val textView: TextView = view.findViewById(R.id.dayText)
+        val click: LinearLayout = view.findViewById(R.id.clickLayout)
+        val emoji: TextView = view.findViewById(R.id.emoji)
+        val titleTextView: TextView = view.findViewById(R.id.text)
     }
 }

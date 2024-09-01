@@ -25,4 +25,8 @@ class DiaryRepository(private val diaryDbDao: DiaryDbDao) {
     fun getDiaryById(id: Long): Flow<DiaryDb> {
         return diaryDbDao.getDiaryById(id)
     }
+
+    fun getTime(startDate: Long, endDate: Long): DiaryDb {
+        return diaryDbDao.getTime(startDate, endDate)
+    }
 }

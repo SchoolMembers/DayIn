@@ -280,24 +280,38 @@
                 android:fontFamily="@font/okticon_regular"
                 android:gravity="center"
                 android:layout_marginTop="30dp"/>
-            <!--<TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="일정"
-                android:textSize="14sp"
-                android:textColor="@color/darkGray"
-                android:fontFamily="@font/okticon_regular"
-                android:gravity="center"
-                android:layout_marginTop="40dp"/>
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="일정"
-                android:textSize="13sp"
-                android:textColor="@color/gray"
+                android:text="다이어리"
+                android:textSize="14sp"
+                android:textColor="@color/black"
                 android:fontFamily="@font/okticon_regular"
                 android:gravity="center"
-                android:layout_marginTop="10dp"/>-->
+                android:layout_marginTop="30dp"/>
+            <View
+                android:layout_width="50dp"
+                android:layout_height="2dp"
+                android:layout_gravity="center"
+                android:background="@color/gray"/>
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="6가지 오늘의 기분을 등록할 수 있어요."
+                android:textSize="13sp"
+                android:textColor="@color/darkGray"
+                android:fontFamily="@font/okticon_regular"
+                android:gravity="center"
+                android:layout_marginTop="20dp"/>
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="제목으로 하루를 간단하게 표현하고 내용에 일기를 써보세요!"
+                android:textSize="13sp"
+                android:textColor="@color/darkGray"
+                android:fontFamily="@font/okticon_regular"
+                android:gravity="center"
+                android:layout_marginTop="10dp"/>
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="50dp"

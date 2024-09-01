@@ -25,4 +25,7 @@ interface DiaryDbDao {
 
     @Query("SELECT * FROM diarydb ORDER BY date ASC")
     fun getAllDiary(): Flow<List<DiaryDb>>
+
+    @Query("SELECT * from DiaryDb WHERE :startDate <= date and date <= :endDate")
+    fun getTime(startDate: Long, endDate: Long): DiaryDb
 }

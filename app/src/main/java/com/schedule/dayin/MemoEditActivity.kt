@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.text.Html
 import android.text.Spanned
 import android.view.View
+import android.widget.CheckBox
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat

@@ -8,12 +8,14 @@ import android.content.Intent
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import android.widget.CheckBox
 import androidx.recyclerview.widget.RecyclerView
 import com.schedule.dayin.MemoEditActivity
 import com.schedule.dayin.MemoItemEditActivity
+import com.schedule.dayin.R
 import com.schedule.dayin.databinding.MemoItemBinding
 
-class MemoCustomAdapter(private val context: Context,  private val memoList: MutableList<Triple<Long, String, String>>, private val checkList: MutableList<Long>) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class MemoCustomAdapter(private val context: Context,  private val memoList: MutableList<Triple<Long, String, String>>, private val checkList: Boolean) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     //memoList: 메모 데이터들
     //checkList: 첫번째 값이 0이면 전체 선택 x, 1이면 전체 선택 o. 그 다음 값들 부터는 체크된 메모 id
 
@@ -49,8 +51,7 @@ class MemoCustomAdapter(private val context: Context,  private val memoList: Mut
             binding.textTitle.text = "제목 없음"
         }
 
-        /*//체크박스 임시
-        binding.memoCheckBox.isChecked = checkList.contains(memoList[position].first)
+        //체크박스
 
         binding.memoCheckBox.setOnClickListener {
             if (binding.memoCheckBox.isChecked) {
@@ -58,6 +59,6 @@ class MemoCustomAdapter(private val context: Context,  private val memoList: Mut
             } else {
                 checkList.remove(memoList[position].first)
             }
-        }*/
+        }
     }
 }

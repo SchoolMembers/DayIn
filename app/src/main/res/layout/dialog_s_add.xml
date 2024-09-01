@@ -272,65 +272,6 @@
                         android:maxLines="1"
                         android:maxLength="2"/>
                 </LinearLayout>
-                <LinearLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:gravity="center_vertical">
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:fontFamily="@font/okticon_regular"
-                        android:text="@string/notify"
-                        android:textSize="18sp"
-                        android:layout_marginBottom="8dp"
-                        android:layout_marginTop="10dp"
-                        android:layout_marginEnd="5dp"/>
-                    <android.widget.Button
-                        android:id="@+id/infoButton2"
-                        android:layout_width="20dp"
-                        android:layout_height="20dp"
-                        android:background="@drawable/info_icon" />
-                </LinearLayout>
-                <com.google.android.material.button.MaterialButtonToggleGroup
-                    android:id="@+id/notify"
-                    android:layout_width="250dp"
-                    android:layout_height="40dp"
-                    app:checkedButton="@id/notiDefault"
-                    app:singleSelection="true"
-                    app:selectionRequired="true">
-                    <Button
-                        android:id="@+id/notiDefault"
-                        android:layout_width="0dp"
-                        android:layout_weight="1"
-                        android:layout_height="wrap_content"
-                        android:text="@string/autoDefault"
-                        android:textSize="12sp"
-                        style="@style/Widget.App.Button.OutlinedButton.IconOnly" />
-                    <Button
-                        android:id="@+id/notiDay"
-                        android:layout_width="0dp"
-                        android:layout_weight="1"
-                        android:layout_height="wrap_content"
-                        android:text="@string/notiDay"
-                        android:textSize="12sp"
-                        style="@style/Widget.App.Button.OutlinedButton.IconOnly" />
-                    <Button
-                        android:id="@+id/notiHour"
-                        android:layout_width="0dp"
-                        android:layout_weight="1"
-                        android:layout_height="wrap_content"
-                        android:text="@string/notiHour"
-                        android:textSize="12sp"
-                        style="@style/Widget.App.Button.OutlinedButton.IconOnly" />
-                    <Button
-                        android:id="@+id/notiMin"
-                        android:layout_width="0dp"
-                        android:layout_weight="1"
-                        android:layout_height="wrap_content"
-                        android:text="@string/notiMin"
-                        android:textSize="12sp"
-                        style="@style/Widget.App.Button.OutlinedButton.IconOnly" />
-                </com.google.android.material.button.MaterialButtonToggleGroup>
             </LinearLayout>
 
             <!-- 메모 -->

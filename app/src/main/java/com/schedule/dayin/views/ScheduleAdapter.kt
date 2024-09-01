@@ -28,6 +28,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import okhttp3.internal.notify
 import java.text.SimpleDateFormat
 import java.time.format.DateTimeFormatter
 import java.util.Calendar
@@ -260,13 +261,6 @@ class ScheduleAdapter(private val context: Context, private var dataList: Mutabl
             else -> "없음"
         }
 
-        dialogView.findViewById<TextView>(R.id.notify).text = when (data.notify) {
-            1 -> "하루 전"
-            2 -> "1시간 전"
-            3 -> "30분 전"
-            else -> "없음"
-        }
-
         dialogView.findViewById<TextView>(R.id.auto).text = when (data.auto) {
             1 -> "매주"
             2 -> "매달"
@@ -405,13 +399,6 @@ class ScheduleAdapter(private val context: Context, private var dataList: Mutabl
 
         val errorMessage = context.getString(R.string.value_error)
 
-        var noti = when (data.notify) {
-            1 -> 1
-            2 -> 2
-            3 -> 3
-            else -> 0
-        }
-
         var time = when (data.time) {
             1 -> 1
             else -> 0
@@ -450,7 +437,6 @@ class ScheduleAdapter(private val context: Context, private var dataList: Mutabl
 
 
 
-        val notifyToggle = dialogView.findViewById<com.google.android.material.button.MaterialButtonToggleGroup>(R.id.notify)
 
 
         fun updateTextField(editText: EditText, value: Int, max: Int, errorMessage: String) {
@@ -530,7 +516,6 @@ class ScheduleAdapter(private val context: Context, private var dataList: Mutabl
                 }
 
                 isInitializing = true
-                noti = 0
                 time = 0
                 Log.d("customTag", "ScheduleFragment onViewCreated called; timeSwitch unchecked")
             }
@@ -545,34 +530,6 @@ class ScheduleAdapter(private val context: Context, private var dataList: Mutabl
         timeHourEditText.addTextChangedListener(createTextWatcher(isHourEditText = true))
         timeMinEditText.addTextChangedListener(createTextWatcher(isHourEditText = false))
 
-        //알림 설정------------------------------------------------------------------------------------------
-        when (noti) {
-            1 -> notifyToggle.check(R.id.notiDay)
-            2 -> notifyToggle.check(R.id.notiHour)
-            3 -> notifyToggle.check(R.id.notiMin)
-            else -> notifyToggle.check(R.id.notiDefault)
-        }
-
-        //알림 설정 리스너
-        notifyToggle.addOnButtonCheckedListener { group, checkedId, isChecked ->
-            if (isChecked) {
-                noti = when (checkedId) {
-                    R.id.notiDefault -> 0
-                    R.id.notiDay -> 1
-                    R.id.notiHour -> 2
-                    R.id.notiMin -> 3
-                    else -> noti // 기본값 유지
-                }
-                Log.d("customTag", "notify value updated: $noti")
-            }
-        }
-
-        // 알림 설정 info 리스너
-        val infoButton2 = dialogView.findViewById<Button>(R.id.infoButton2)
-        infoButton2.setOnClickListener {
-            Toast.makeText(context, R.string.auto_info2, Toast.LENGTH_SHORT).show()
-            Log.d("customTag", "ScheduleFragment onViewCreated called; infoButton2 clicked")
-        }
 
         //색상 설정 리스너
         //colorDefault(lightGray) : 0 | colorGray : 1 | colorYellow : 2 | colorPurple : 3 | colorBlue : 4 | colorGreen 5
@@ -664,7 +621,6 @@ class ScheduleAdapter(private val context: Context, private var dataList: Mutabl
                             date = scheduleDate,
                             title = titleText,
                             auto = auto,
-                            notify = noti,
                             memo = memoText,
                             check = loadCheck(data.id),
                             time = time,
@@ -682,7 +638,6 @@ class ScheduleAdapter(private val context: Context, private var dataList: Mutabl
                             date = scheduleDate,
                             title = titleText,
                             auto = auto,
-                            notify = noti,
                             memo = memoText,
                             check = loadCheck(data.id),
                             time = time,

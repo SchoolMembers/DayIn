@@ -126,9 +126,6 @@ class ScheduleFragment : Fragment(), CoroutineScope {
     //시간 등록
     private var time = 0
 
-    //알림 설정 여부
-    private var noti: Int = 0
-
     private var fragmentHeight : Int = 0
 
     private var maxVisibleItems: Int = 0
@@ -556,7 +553,6 @@ class ScheduleFragment : Fragment(), CoroutineScope {
             .setView(dialogView)
 
         val dialog = dialogBuilder.create()
-        noti = 0
         time = 0
 
         //날짜 설정
@@ -573,7 +569,6 @@ class ScheduleFragment : Fragment(), CoroutineScope {
         val closeButton = dialogView.findViewById<Button>(R.id.closeButton)
         closeButton.setOnClickListener {
             dialog.dismiss()
-            noti = 0
             time = 0
             Log.d("customTag", "ScheduleFragment onViewCreated called; dialog closed")
         }
@@ -718,7 +713,6 @@ class ScheduleFragment : Fragment(), CoroutineScope {
                             date = scheduleDate,
                             title = titleText,
                             auto = auto,
-                            notify = noti,
                             memo = memoText,
                             check = 0,
                             time = time,
@@ -739,7 +733,6 @@ class ScheduleFragment : Fragment(), CoroutineScope {
                                         date = newDate,
                                         title = titleText,
                                         auto = auto,
-                                        notify = noti,
                                         memo = memoText,
                                         check = 0,
                                         time = time,
@@ -760,7 +753,6 @@ class ScheduleFragment : Fragment(), CoroutineScope {
                                         date = newDate,
                                         title = titleText,
                                         auto = auto,
-                                        notify = noti,
                                         memo = memoText,
                                         check = 0,
                                         time = time,
@@ -781,7 +773,6 @@ class ScheduleFragment : Fragment(), CoroutineScope {
                                         date = newDate,
                                         title = titleText,
                                         auto = auto,
-                                        notify = noti,
                                         memo = memoText,
                                         check = 0,
                                         time = time,
@@ -818,8 +809,6 @@ class ScheduleFragment : Fragment(), CoroutineScope {
         var timeMinText = 0
 
         val errorMessage = requireContext().getString(R.string.value_error)
-
-        val notifyToggle = dialogView.findViewById<com.google.android.material.button.MaterialButtonToggleGroup>(R.id.notify)
 
 
         fun updateTextField(editText: EditText, value: Int, max: Int, errorMessage: String) {
@@ -880,33 +869,11 @@ class ScheduleFragment : Fragment(), CoroutineScope {
                 timeHourEditText.addTextChangedListener(createTextWatcher(isHourEditText = true))
                 timeMinEditText.addTextChangedListener(createTextWatcher(isHourEditText = false))
 
-
-                //알림 설정------------------------------------------------------------------------------------------
-                notifyToggle.addOnButtonCheckedListener { group, checkedId, isChecked ->
-                    if (isChecked) {
-                        noti = when (checkedId) {
-                            R.id.notiDefault -> 0
-                            R.id.notiDay -> 1
-                            R.id.notiHour -> 2
-                            R.id.notiMin -> 3
-                            else -> noti // 기본값 유지
-                        }
-                        Log.d("customTag", "notify value updated: $noti")
-                    }
-                }
-
-                // 알림 설정 info 리스너
-                val infoButton2 = dialogView.findViewById<Button>(R.id.infoButton2)
-                infoButton2.setOnClickListener {
-                    Toast.makeText(context, R.string.auto_info2, Toast.LENGTH_SHORT).show()
-                    Log.d("customTag", "ScheduleFragment onViewCreated called; infoButton2 clicked")
-                }
             }
             else {
                 timeLayout.visibility = View.GONE
                 timeHourText = 0
                 timeMinText = 0
-                noti = 0
                 auto = 0
                 time = 0
                 Log.d("customTag", "ScheduleFragment onViewCreated called; timeSwitch unchecked")

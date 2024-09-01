@@ -12,6 +12,5 @@ data class DiaryDb(
     var date: Date, //등록 날짜
     var title: String = "@string/nTitle", //제목
     var des: String? = null, //내용
-    var pic: Bitmap? = null, //사진
     var feel: Int? = null, //기분
 )

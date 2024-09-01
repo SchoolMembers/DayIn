@@ -135,21 +135,6 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/okticon_regular"
-                    android:text="@string/notify"
-                    android:textSize="15sp"
-                    android:layout_marginBottom="3dp"/>
-                <TextView
-                    android:id="@+id/notify"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="@font/okticon_regular"
-                    android:text="@string/autoDefault"
-                    android:textSize="13sp"
-                    android:layout_marginBottom="15dp"/>
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="@font/okticon_regular"
                     android:text="@string/auto"
                     android:textSize="15sp"
                     android:layout_marginBottom="3dp"/>

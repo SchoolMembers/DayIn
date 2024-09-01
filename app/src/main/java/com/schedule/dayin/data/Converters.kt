@@ -17,7 +17,7 @@ class Converters {
         return date?.time
     }
 
-    @TypeConverter
+    /*@TypeConverter
     fun fromBitmap(bitmap: Bitmap?): ByteArray? {
         if (bitmap == null) return null
         val outputStream = ByteArrayOutputStream()
@@ -28,5 +28,5 @@ class Converters {
     @TypeConverter
     fun toBitmap(byteArray: ByteArray?): Bitmap? {
         return if (byteArray == null) null else BitmapFactory.decodeByteArray(byteArray, 0, byteArray.size)
-    }
+    }*/
 }

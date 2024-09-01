@@ -16,7 +16,6 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import kotlinx.coroutines.flow.Flow
 
 class MemoItemEditActivity : AppCompatActivity() {
 
@@ -41,7 +40,7 @@ class MemoItemEditActivity : AppCompatActivity() {
         }
 
         // 하단 바 인셋 처리
-        ViewCompat.setOnApplyWindowInsetsListener(binding.bottomBar) { view, insets ->
+        ViewCompat.setOnApplyWindowInsetsListener(binding.view) { view, insets ->
             val systemBarsInsets = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             view.setPadding(0, 0, 0, systemBarsInsets.bottom)
             insets
@@ -65,6 +64,9 @@ class MemoItemEditActivity : AppCompatActivity() {
             return
         }
 
+        var titleText: String = ""
+        var desText: String = ""
+
         // 데이터 불러오기
         uiScope.launch {
             withContext(Dispatchers.IO) {
@@ -74,6 +76,8 @@ class MemoItemEditActivity : AppCompatActivity() {
                 memoList?.let {
                     binding.title.setText(it.title)
                     binding.des.setText(it.des)
+                    titleText= it.title
+                    desText = it.des
                 } ?: run {
                     Log.e("MemoItemEditActivity", "Memo not found for ID: $id")
                 }
@@ -81,7 +85,6 @@ class MemoItemEditActivity : AppCompatActivity() {
         }
 
         // 제목 리스너
-        var titleText: String = "제목 없음"
         binding.title.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
 
@@ -94,12 +97,11 @@ class MemoItemEditActivity : AppCompatActivity() {
         })
 
         //내용 리스너
-        var desText: String = "메모"
         binding.des.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                desText = s?.toString() ?: "메모"
+                desText = s?.toString() ?: ""
                 Log.d("MemoItemEditActivity", "des text changed: $desText")
             }
 

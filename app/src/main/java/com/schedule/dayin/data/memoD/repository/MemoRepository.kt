@@ -18,6 +18,10 @@ class MemoRepository(private val memoDao: MemoDbDao) {
         memoDao.delete(memo)
     }
 
+    suspend fun deleteMemoById(memoId: Long) {
+        memoDao.deleteById(memoId)
+    }
+
     fun getAllMemos(): Flow<List<MemoDb>> {
         return memoDao.getAllMemo()
     }

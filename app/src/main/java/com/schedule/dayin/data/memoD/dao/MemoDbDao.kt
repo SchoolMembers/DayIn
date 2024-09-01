@@ -20,6 +20,9 @@ interface MemoDbDao {
     @Delete
     suspend fun delete(memoDb: MemoDb)
 
+    @Query("DELETE FROM memoDb WHERE id = :id")
+    suspend fun deleteById(id: Long)
+
     @Query("SELECT * from memoDb ORDER BY id ASC")
     fun getAllMemo(): Flow<List<MemoDb>>
 

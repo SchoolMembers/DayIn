@@ -4,6 +4,7 @@ import android.app.ActivityOptions
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
@@ -14,6 +15,7 @@ import com.schedule.dayin.databinding.MemoActivityBinding
 import com.schedule.dayin.views.MemoCustomAdapter
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
@@ -25,10 +27,11 @@ class MemoActivity : AppCompatActivity() {
     //리사이클러
     private lateinit var adapter: MemoCustomAdapter
     private var dataList = mutableListOf<Triple<Long, String, String>>()
-    private var checkList = mutableListOf<Long>()
     private val uiScope = CoroutineScope(Dispatchers.Main)
 
     private lateinit var memoRepository: MemoRepository
+
+    private var delList: List<Long>? = null
 
 
 
@@ -66,7 +69,7 @@ class MemoActivity : AppCompatActivity() {
             loadData()
         }
 
-        adapter = MemoCustomAdapter(this, dataList, checkList)
+        adapter = MemoCustomAdapter(this, dataList, onDel = { delItems() })
         binding.recyclerViewMemo.adapter = adapter
         binding.recyclerViewMemo.layoutManager = LinearLayoutManager(this)
 
@@ -108,9 +111,36 @@ class MemoActivity : AppCompatActivity() {
 
         //메모 추가
         binding.btnPlus.setOnClickListener {
+            finish()
             val intent = Intent(this, MemoEditActivity::class.java)
             startActivity(intent, options.toBundle())
             Log.d("customTag", "MemoActivity onCreate called; click plus button")
+        }
+
+        //삭제 버튼
+        binding.btnDelete.setOnClickListener {
+            if (delList != null) {
+                uiScope.launch {
+                    withContext(Dispatchers.IO) {
+                        delList!!.forEach { id ->
+                            memoRepository.deleteMemoById(id)
+                        }
+                        // 삭제 후 데이터 로드
+                        val updatedMemoList = memoRepository.getMemoTitles().first()
+                        dataList.clear()
+                        updatedMemoList.forEach { memo ->
+                            dataList.add(Triple(memo.id, memo.title, memo.des))
+                        }
+                        delList = null
+                    }
+                    withContext(Dispatchers.Main) {
+                        adapter.notifyDataSetChanged()
+                    }
+                }
+            } else {
+                Toast.makeText(this, "삭제할 메모를 선택해주세요.", Toast.LENGTH_SHORT).show()
+            }
+
         }
 
     }
@@ -132,6 +162,12 @@ class MemoActivity : AppCompatActivity() {
                 }
             }
         }
+    }
+
+    //체크 리스트 함수
+    private fun delItems() {
+        delList = adapter.getSelected()
+        binding.btnCheck.isChecked = false
     }
 
 }

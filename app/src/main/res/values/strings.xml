@@ -78,10 +78,10 @@
     <string name="autoTotal">지금까지의 총액</string>
 
 
-    <string name="app_action_bar_text">My Note</string>
+    <string name="app_action_bar_text">나의 메모장</string>
     <string name="back">back</string>
     <string name="save">save</string>
-    <string name="note">Note</string>
+    <string name="note">메모</string>
     <string name="some_text">Lorem Ipsum is simply dummy text of
         the printing and typesetting industry. Lorem Ipsum has been
         the industry\'s standard dummy text ever since the 1500s,
@@ -92,11 +92,11 @@
     </string>
     <string name="this_is_a_title">What is Lorem Ipsum?</string>
     <string name="dd_mm_yyyy">dd/mm/yyyy</string>
-    <string name="edited_on">Edited on: %1$s</string>
-    <string name="search_here">Search Here…</string>
+    <string name="edited_on">등록 날짜: %1$s</string>
+    <string name="search_here">검색</string>
     <string name="clear">clear</string>
     <string name="choose_color">Select Color</string>
-    <string name="add_note">Add Note</string>
+    <string name="add_note">메모 추가</string>
     <string name="no_data_image">no data image</string>
     <string name="noteContentImage">NoteContentImage</string>
     <string name="add_image">Take Picture</string>

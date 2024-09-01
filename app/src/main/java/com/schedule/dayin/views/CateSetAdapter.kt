@@ -9,13 +9,13 @@ import androidx.recyclerview.widget.RecyclerView
 import com.schedule.dayin.R
 import com.schedule.dayin.data.mainD.CateDb
 import com.schedule.dayin.data.mainD.MoneyAndCate
-import com.schedule.dayin.databinding.UserCateItemsBinding
+import com.schedule.dayin.databinding.CateSetItemsBinding
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 
-class UserCateAdapter(private val context: Context, private var userCateList: Flow<List<CateDb>>, private var userMoneyList: Flow<List<MoneyAndCate>>, private val onDataChanged: (() -> Unit)? = null): RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class CateSetAdapter(private val context: Context, private var userCateList: Flow<List<CateDb>>, private var userMoneyList: Flow<List<MoneyAndCate>>, private val onDataChanged: (() -> Unit)? = null, private val onCateDel: ((Int) -> Unit)? = null): RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     private val uiScope = CoroutineScope(Dispatchers.Main)
 
@@ -26,6 +26,8 @@ class UserCateAdapter(private val context: Context, private var userCateList: Fl
     private var lastCateId: Long = -1L
 
     private var count = 0
+
+    private var indexDel = 0
 
 
     init {
@@ -41,7 +43,6 @@ class UserCateAdapter(private val context: Context, private var userCateList: Fl
         uiScope.launch {
             userMoneyList.collect { newList ->
                 currentList = newList
-                Log.d("customTag", "UserCateAdapter init: currentList updated with size: ${currentList.size}")
                 notifyDataSetChanged()
             }
         }
@@ -53,59 +54,42 @@ class UserCateAdapter(private val context: Context, private var userCateList: Fl
     override fun getItemCount(): Int = currentCateList.size
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
-        return UserCateViewHolder(UserCateItemsBinding.inflate(LayoutInflater.from(parent.context), parent, false))
+        return CateSetViewHolder(CateSetItemsBinding.inflate(LayoutInflater.from(parent.context), parent, false))
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        val binding = (holder as UserCateViewHolder).binding
-
-        Log.d("customTag", "UserCateAdapter onBindViewHolder called; position: $position")
-
-        // 뷰 재사용 방지
-        binding.cate.text = ""
-        binding.autoMoneyCount.text = ""
-        binding.moneyCount.text = ""
+        val binding = (holder as CateSetViewHolder).binding
 
         val currentCateId = currentCateList[position].cateId
+        Log.d("customTag", "CateSetAdapter onBindViewHolder called; position: $position; id: $currentCateId")
+        Log.d("customTag", "CateSetAdapter onBindViewHolder called; currentList: $currentList")
 
         //참이면 다른 카테고리 등장한 경우
         if (currentCateId != lastCateId) {
             lastCateId = currentCateId
             binding.cate.text = currentCateList[position].name
-            binding.catePM.text = if (currentCateList[position].inEx == 0) "지출" else "수익"
 
             var money = 0
             var autoMoney = 0
 
             if (currentList.isNotEmpty()) {
-                Log.d("customTag", "UserCateAdapter onBindViewHolder called; currentList not empty")
+                Log.d("customTag", "CateSetAdapter onBindViewHolder called; currentList not empty")
                 for (i in count until currentList.size) {
                     if (currentList[i].moneyDb.cateId != currentCateId) break
                     money++
                     count++
-                    Log.d(
-                        "customTag",
-                        "UserCateAdapter onBindViewHolder called; i: $i, tagcount: $count"
-                    )
                     if (currentList[i].moneyDb.auto != 0) {
                         autoMoney++
                     }
                 }
             }
-
+            Log.d("customTag", "CateSetAdapter onBindViewHolder called; cateId: $currentCateId; money: $money; autoMoney: $autoMoney")
             binding.autoMoneyCount.text = "$autoMoney 개"
             binding.moneyCount.text = "$money 개"
-
-            Log.d(
-                "customTag",
-                "UserCateAdapter onBindViewHolder called; cateId: $currentCateId, money: $money, autoMoney: $autoMoney"
-            )
-
         }
 
         //아이템 클릭 리스너
         binding.root.setOnClickListener {
-            Log.d("customTag", "UserCateAdapter onBindViewHolder called; cateId: $currentCateId")
             if (selectedPositions.contains(position)) {
                 selectedPositions.remove(position)
                 binding.layout.background = AppCompatResources.getDrawable(context, R.drawable.time_back)
@@ -113,7 +97,13 @@ class UserCateAdapter(private val context: Context, private var userCateList: Fl
                 selectedPositions.add(position)
                 binding.layout.background = AppCompatResources.getDrawable(context, R.drawable.time_back_red)
             }
+            if (selectedPositions.isNotEmpty()) {
+                indexDel = 1
+            } else {
+                indexDel = 0
+            }
             onDataChanged?.invoke()
+            onCateDel?.invoke(indexDel)
         }
     }
 

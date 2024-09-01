@@ -43,6 +43,10 @@ class MoneyRepository(private val moneyDbDao: MoneyDbDao) {
         return moneyDbDao.getUserCate()
     }
 
+    fun getMoneyId(id: Int): Flow<List<MoneyAndCate>> {
+        return moneyDbDao.getUserCateId(id)
+    }
+
     fun getDayMoney(startDate: Long, endDate: Long): List<MoneyAndCate> {
         return moneyDbDao.getMoneyDay(startDate, endDate)
     }

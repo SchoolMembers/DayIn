@@ -55,6 +55,10 @@ interface MoneyDbDao {
     @Query("SELECT * FROM catedb JOIN moneyDb ON moneyDb.cateId = cateDb.cateId WHERE cateDb.cateId >= 25 ORDER BY moneyDb.cateId ASC")
     fun getUserCate(): Flow<List<MoneyAndCate>>
 
+    @Transaction
+    @Query("SELECT * FROM catedb JOIN moneyDb ON moneyDb.cateId = cateDb.cateId WHERE cateDb.cateId >= 25 AND cateDb.inEx = :id ORDER BY moneyDb.cateId ASC")
+    fun getUserCateId(id: Int): Flow<List<MoneyAndCate>>
+
     //자동 등록된 데이터들 (자동 모아보기에서 사용)
     @Transaction
     @Query("SELECT * FROM moneyDb JOIN cateDb ON moneyDb.cateId = cateDb.cateId WHERE auto <> 0 ORDER BY inEx, title, money ASC")

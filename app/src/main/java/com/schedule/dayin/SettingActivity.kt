@@ -82,5 +82,11 @@ class SettingActivity: AppCompatActivity() {
             val intent = Intent(this, ImportantColorActivity::class.java)
             startActivity(intent)
         }
+
+        //사용자 지정 카테고리 관리
+        binding.category.setOnClickListener {
+            val intent = Intent(this, CategoryActivity::class.java)
+            startActivity(intent)
+        }
     }
 }

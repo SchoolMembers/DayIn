@@ -37,4 +37,7 @@ interface CateDbDao {
 
     @Query("SELECT * FROM cateDb WHERE cateId >= 25 AND inEx = :inEx ORDER BY cateId ASC")
     fun getUserCateInex(inEx: Int): List<CateDb>
+
+    @Query("SELECT * FROM cateDb WHERE cateId >= 25 AND inEx = :inEx ORDER BY cateId ASC")
+    fun getUserCateInex2(inEx: Int): Flow<List<CateDb>>
 }

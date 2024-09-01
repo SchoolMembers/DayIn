@@ -42,4 +42,8 @@ class CateRepository(private val cateDbDao: CateDbDao) {
     fun getUserCateInex(inEx: Int): List<CateDb> {
         return cateDbDao.getUserCateInex(inEx)
     }
+
+    fun getUserCateInex2(inEx: Int): Flow<List<CateDb>> {
+        return cateDbDao.getUserCateInex2(inEx)
+    }
 }

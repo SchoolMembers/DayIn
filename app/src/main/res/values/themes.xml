@@ -2,8 +2,61 @@
     <!-- Base application theme. -->
     <style name="Base.Theme.Dayin" parent="Theme.Material3.DayNight.NoActionBar">
         <!-- Customize your light theme here. -->
-        <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
+        <item name="colorPrimary">@color/white</item>
+        <item name="android:windowBackground">@drawable/loading</item>
     </style>
 
     <style name="Theme.Dayin" parent="Base.Theme.Dayin" />
+    <!-- 하단 바 테마 -->
+    <style name="Widget.App.BottomNavigationView" parent="Widget.MaterialComponents.BottomNavigationView.Colored">
+        <item name="materialThemeOverlay">@style/ThemeOverlay.App.BottomNavigationView</item>
+    </style>
+
+    <style name="ThemeOverlay.App.BottomNavigationView" parent="">
+        <item name="colorPrimary">@color/white</item>
+        <item name="colorOnPrimary">@color/white</item>
+        <item name="fontFamily">@font/okticon_bold</item>
+    </style>
+
+    <!-- smd 테마 -->
+    <style name="Widget.App.TabLayout" parent="Widget.MaterialComponents.TabLayout">
+        <item name="materialThemeOverlay">@style/ThemeOverlay.App.TabLayout</item>
+        <item name="tabTextAppearance">@style/TextAppearance.App.Button</item>
+    </style>
+
+    <style name="ThemeOverlay.App.TabLayout" parent="">
+        <item name="colorPrimary">@color/darkGray</item>
+        <item name="colorSurface">@color/white</item>
+        <item name="colorOnSurface">@color/gray</item>
+    </style>
+
+    <style name="TextAppearance.App.Button" parent="TextAppearance.MaterialComponents.Button">
+        <item name="fontFamily">@font/okticon_bold</item>
+        <item name="android:fontFamily">@font/okticon_bold</item>
+        <item name="android:textSize">10sp</item>"
+    </style>
+
+    <!-- 토글 버튼 테마 -->
+    <style name="Widget.App.Button.OutlinedButton.IconOnly" parent="Widget.MaterialComponents.Button.OutlinedButton">
+        <item name="iconPadding">0dp</item>
+        <item name="android:insetTop">0dp</item>
+        <item name="android:insetBottom">0dp</item>
+        <item name="android:paddingLeft">5dp</item>
+        <item name="android:paddingRight">5dp</item>
+        <item name="android:minWidth">40dp</item>
+        <item name="android:minHeight">40dp</item>
+        <item name="android:fontFamily">@font/okticon_bold</item>
+        <item name="strokeColor">@color/darkGray</item>
+        <item name="backgroundTint">@drawable/button_back</item>
+        <item name="android:textColor">@drawable/button_text</item>"
+    </style>
+
+    <!-- 체크 박스 테마 -->
+    <style name="Widget.App.CheckBox" parent="Widget.MaterialComponents.CompoundButton.CheckBox">
+        <item name="buttonTint">@drawable/check_tint</item>
+    </style>
+    <style name="Widget.App.CheckBox2" parent="Widget.MaterialComponents.CompoundButton.CheckBox">
+        <item name="buttonTint">@drawable/check_tint2</item>
+    </style>
+
 </resources>

@@ -54,7 +54,7 @@
                 <TextView
                     android:layout_height="0dp"
                     android:layout_width="match_parent"
-                    android:layout_weight="4"
+                    android:layout_weight="5"
                     android:text="식비"
                     android:textColor="@color/pink"
                     android:gravity="center"
@@ -95,7 +95,7 @@
                 <TextView
                     android:layout_height="0dp"
                     android:layout_width="match_parent"
-                    android:layout_weight="4"
+                    android:layout_weight="5"
                     android:text="패션/미용"
                     android:textColor="@color/mint"
                     android:gravity="center"
@@ -135,7 +135,7 @@
                 <TextView
                     android:layout_height="0dp"
                     android:layout_width="match_parent"
-                    android:layout_weight="4"
+                    android:layout_weight="5"
                     android:text="음료/주류"
                     android:textColor="@color/yellow2"
                     android:gravity="center"
@@ -182,7 +182,7 @@
                 <TextView
                     android:layout_height="0dp"
                     android:layout_width="match_parent"
-                    android:layout_weight="4"
+                    android:layout_weight="5"
                     android:text="교통"
                     android:textColor="@color/orange"
                     android:gravity="center"
@@ -222,7 +222,7 @@
                 <TextView
                     android:layout_height="0dp"
                     android:layout_width="match_parent"
-                    android:layout_weight="4"
+                    android:layout_weight="5"
                     android:text="의료/건강"
                     android:textColor="@color/green2"
                     android:gravity="center"
@@ -262,7 +262,7 @@
                 <TextView
                     android:layout_height="0dp"
                     android:layout_width="match_parent"
-                    android:layout_weight="4"
+                    android:layout_weight="5"
                     android:text="주거"
                     android:textColor="@color/blue1"
                     android:gravity="center"
@@ -309,7 +309,7 @@
                 <TextView
                     android:layout_height="0dp"
                     android:layout_width="match_parent"
-                    android:layout_weight="4"
+                    android:layout_weight="5"
                     android:text="교육"
                     android:textColor="@color/purple1"
                     android:gravity="center"
@@ -349,7 +349,7 @@
                 <TextView
                     android:layout_height="0dp"
                     android:layout_width="match_parent"
-                    android:layout_weight="4"
+                    android:layout_weight="5"
                     android:text="여가"
                     android:textColor="@color/yellow"
                     android:gravity="center"
@@ -389,7 +389,7 @@
                 <TextView
                     android:layout_height="0dp"
                     android:layout_width="match_parent"
-                    android:layout_weight="4"
+                    android:layout_weight="5"
                     android:text="생활"
                     android:textColor="@color/green3"
                     android:gravity="center"
@@ -436,7 +436,7 @@
                 <TextView
                     android:layout_height="0dp"
                     android:layout_width="match_parent"
-                    android:layout_weight="4"
+                    android:layout_weight="5"
                     android:text="기타"
                     android:textColor="@color/gray"
                     android:gravity="center"

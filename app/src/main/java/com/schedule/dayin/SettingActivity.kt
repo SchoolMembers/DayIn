@@ -88,5 +88,11 @@ class SettingActivity: AppCompatActivity() {
             val intent = Intent(this, CategoryActivity::class.java)
             startActivity(intent)
         }
+
+        //Day in 설명서
+        binding.description.setOnClickListener {
+            val intent = Intent(this, DescriptionActivity::class.java)
+            startActivity(intent)
+        }
     }
 }

@@ -18,7 +18,7 @@ import com.schedule.dayin.databinding.MemoItemBinding
 class MemoCustomAdapter(private val context: Context,  private val memoList: MutableList<Triple<Long, String, String>>, private val checkList: Boolean) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     //memoList: 메모 데이터들
     //checkList: 첫번째 값이 0이면 전체 선택 x, 1이면 전체 선택 o. 그 다음 값들 부터는 체크된 메모 id
-
+    private var isSelectedAll: Boolean = false
 
     override fun getItemCount(): Int = memoList.size
 
@@ -53,12 +53,20 @@ class MemoCustomAdapter(private val context: Context,  private val memoList: Mut
 
         //체크박스
 
+        binding.memoCheckBox.isChecked = isSelectedAll
+
         binding.memoCheckBox.setOnClickListener {
             if (binding.memoCheckBox.isChecked) {
-                checkList.add(memoList[position].first)
+//                checkList.add(memoList[position].first)
             } else {
-                checkList.remove(memoList[position].first)
+//                checkList.remove(memoList[position].first)
             }
         }
     }
+
+    fun checkBox(isChecked: Boolean) {
+        isSelectedAll = isChecked
+        notifyDataSetChanged()
+    }
+
 }

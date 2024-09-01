@@ -66,7 +66,7 @@ class MemoActivity : AppCompatActivity() {
             loadData()
         }
 
-        adapter = MemoCustomAdapter(this, dataList, checkList)
+        adapter = MemoCustomAdapter(this, dataList, false)
         binding.recyclerViewMemo.adapter = adapter
         binding.recyclerViewMemo.layoutManager = LinearLayoutManager(this)
 
@@ -107,6 +107,9 @@ class MemoActivity : AppCompatActivity() {
             Log.d("customTag", "MemoActivity onCreate called; click plus button")
         }
 
+        binding.btnCheck.setOnClickListener {
+            adapter.checkBox(binding.btnCheck.isChecked)
+        }
     }
 
 

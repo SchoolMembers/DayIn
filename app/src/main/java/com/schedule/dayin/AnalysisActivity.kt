@@ -137,6 +137,7 @@ class AnalysisActivity: AppCompatActivity() {
         val memoIntent = Intent(this, MemoActivity::class.java)
         val homeIntent = Intent(this, MainActivity::class.java)
         val analysisIntent = Intent(this, AnalysisActivity::class.java)
+        val menuIntent = Intent(this, SettingActivity::class.java)
 
         binding.bottomNavigation.setOnItemSelectedListener {
             when(it.itemId){
@@ -153,6 +154,11 @@ class AnalysisActivity: AppCompatActivity() {
                 R.id.barMoney -> {
                     startActivity(analysisIntent, options.toBundle())
                     Log.d("customTag", "AnalysisActivity onCreate called; click analysis button")
+                    true
+                }
+                R.id.barMenu -> {
+                    startActivity(menuIntent, options.toBundle())
+                    Log.d("customTag", "AnalysisActivity onCreate called; click menu button")
                     true
                 }
                 else -> false

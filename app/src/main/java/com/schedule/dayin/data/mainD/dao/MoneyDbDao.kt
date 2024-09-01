@@ -23,6 +23,9 @@ interface MoneyDbDao {
     @Delete
     suspend fun delete(moneyDb: MoneyDb)
 
+    @Query("DELETE FROM moneydb WHERE title = :title")
+    suspend fun deleteAuto(title: String)
+
     //카테고리가 일치하는 데이터들 삭제
     @Query("DELETE FROM moneyDb WHERE cateId = :cateId")
     suspend fun deleteMoneyByCateId(cateId: Long)
@@ -56,6 +59,14 @@ interface MoneyDbDao {
     @Transaction
     @Query("SELECT * FROM moneyDb JOIN cateDb ON moneyDb.cateId = cateDb.cateId WHERE auto <> 0 ORDER BY inEx, title, money ASC")
     fun getAutoMoney(): List<MoneyAndCate>
+
+    @Transaction
+    @Query("SELECT * FROM moneyDb JOIN cateDb ON moneyDb.cateId = cateDb.cateId WHERE auto = :id ORDER BY inEx, title, money ASC")
+    fun getAutoIdMoney(id: Int): List<MoneyAndCate>
+
+    @Transaction
+    @Query("SELECT * FROM moneyDb JOIN cateDb ON moneyDb.cateId = cateDb.cateId WHERE title = :title ORDER BY date ASC")
+    fun getAutoTitleMoney(title: String): List<MoneyAndCate>
 
     //특정 월의 데이터 (소비패턴에서 사용)
     @Transaction

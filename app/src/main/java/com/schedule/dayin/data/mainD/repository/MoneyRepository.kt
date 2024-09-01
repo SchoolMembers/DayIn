@@ -19,6 +19,10 @@ class MoneyRepository(private val moneyDbDao: MoneyDbDao) {
         moneyDbDao.delete(money)
     }
 
+    suspend fun deleteAuto(title: String) {
+        moneyDbDao.deleteAuto(title)
+    }
+
     suspend fun deleteMoneyByCateId(cateId: Long) {
         moneyDbDao.deleteMoneyByCateId(cateId)
     }
@@ -43,8 +47,16 @@ class MoneyRepository(private val moneyDbDao: MoneyDbDao) {
         return moneyDbDao.getMoneyDay(startDate, endDate)
     }
 
+    fun getAutoIdMoney(id: Int): List<MoneyAndCate> {
+        return moneyDbDao.getAutoIdMoney(id)
+    }
+
     fun getAutoMoney(): List<MoneyAndCate> {
         return moneyDbDao.getAutoMoney()
+    }
+
+    fun getAutoTitle(title: String): List<MoneyAndCate> {
+        return moneyDbDao.getAutoTitleMoney(title)
     }
 
     fun getMoneyMonthData(startDate: Long, endDate: Long): List<MoneyAndCate> {

@@ -18,6 +18,10 @@ class ScheduleRepository(private val scheduleDbDao: ScheduleDbDao) {
         scheduleDbDao.delete(schedule)
     }
 
+    suspend fun deleteAuto(title: String, auto: Int) {
+        scheduleDbDao.deleteAuto(title, auto)
+    }
+
     fun allSchedules(): Flow<List<ScheduleDb>> {
         return scheduleDbDao.getAllSche()
     }
@@ -36,5 +40,13 @@ class ScheduleRepository(private val scheduleDbDao: ScheduleDbDao) {
 
     fun getLast(): List<ScheduleDb> {
         return scheduleDbDao.getLast()
+    }
+
+    fun getAutoId(id: Int): List<ScheduleDb> {
+        return scheduleDbDao.getAutoIdSche(id)
+    }
+
+    fun getAutoTitle(title: String, id: Int): List<ScheduleDb> {
+        return scheduleDbDao.getAutoTitleSche(title, id)
     }
 }

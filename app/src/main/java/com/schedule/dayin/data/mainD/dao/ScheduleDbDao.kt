@@ -20,6 +20,9 @@ interface ScheduleDbDao {
     @Delete
     suspend fun delete(scheduleDb: ScheduleDb)
 
+    @Query("DELETE FROM ScheduleDb WHERE auto = :auto AND title = :title")
+    suspend fun deleteAuto(title: String, auto: Int)
+
     @Query("SELECT * from scheduleDb WHERE id = :id")
     fun getSche(id: Long): Flow<ScheduleDb>
 
@@ -35,4 +38,9 @@ interface ScheduleDbDao {
     @Query("SELECT * FROM scheduleDb ORDER BY id DESC LIMIT 1")
     fun getLast(): List<ScheduleDb>
 
+    @Query("SELECT * from scheduleDb WHERE auto = :id ORDER BY title ASC")
+    fun getAutoIdSche(id: Int): List<ScheduleDb>
+
+    @Query("SELECT * from scheduleDb WHERE auto = :id AND title = :title ORDER BY date ASC")
+    fun getAutoTitleSche(title: String, id: Int): List<ScheduleDb>
 }

@@ -37,6 +37,9 @@
             android:name=".AutoSettingActivity"
             android:exported="false" />
         <activity
+            android:name=".ImportantColorActivity"
+            android:exported="false" />
+        <activity
             android:name=".MainActivity"
             android:exported="true"
             android:screenOrientation="portrait">

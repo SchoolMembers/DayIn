@@ -115,6 +115,13 @@ class ScheduleFragment : Fragment(), CoroutineScope {
     }
 
 
+    //중요 날짜 색상
+    private fun checkImportantColor(): Int {
+        val defaultColorList = ContextCompat.getColorStateList(requireContext(), R.color.pink)
+        val defaultColor = defaultColorList!!.defaultColor
+        val pref: SharedPreferences =  requireContext().getSharedPreferences("pref", Activity.MODE_PRIVATE)
+        return pref.getInt("color", defaultColor)
+    }
 
 
     //database
@@ -529,7 +536,7 @@ class ScheduleFragment : Fragment(), CoroutineScope {
     }
 
     private fun daySet(container: DayViewContainer, day: CalendarDay) {
-        val color = ContextCompat.getColor(requireContext(), R.color.pink)
+        val color = checkImportantColor()
         if (day.position == DayPosition.MonthDate) { //현재 날짜가 현재 월 내에 있을 때
             if (checkImportantDates(day.date)) {
                 container.textView.setTextColor(color)

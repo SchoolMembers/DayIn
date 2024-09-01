@@ -71,8 +71,15 @@ class SettingActivity: AppCompatActivity() {
             }
         }
 
+        //자동 등록 관리
         binding.autoSet.setOnClickListener {
             val intent = Intent(this, AutoSettingActivity::class.java)
+            startActivity(intent)
+        }
+
+        //중요 날짜 색상 변경
+        binding.importantColor.setOnClickListener {
+            val intent = Intent(this, ImportantColorActivity::class.java)
             startActivity(intent)
         }
     }

@@ -70,7 +70,5 @@ class MemoEditActivity : AppCompatActivity() {
         binding.closeButton.setOnClickListener {
             finish()
         }
-
-        binding.des.setStylesBar(binding.stylebar)
     }
 }

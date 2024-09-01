@@ -66,6 +66,4 @@ dependencies {
     implementation("com.kakao.sdk:v2-all:2.20.3")
 
     implementation("com.github.PhilJay:MPAndroidChart:v3.1.0")
-
-    implementation ("io.github.yahiaangelo.markdownedittext:markdownedittext:1.1.3")
 }

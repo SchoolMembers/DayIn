@@ -1,4 +1,4 @@
-package com.schedule.dayin.fragments
+package com.schedule.dayin
 
 import android.Manifest
 import android.annotation.SuppressLint
@@ -36,8 +36,6 @@ import com.gamdestroyerr.roomnote.model.Note
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.transition.MaterialContainerTransform
-import com.schedule.dayin.NoteActivity
-import com.schedule.dayin.R
 import com.schedule.dayin.databinding.BottomSheetDialogBinding
 import com.schedule.dayin.databinding.FragmentNoteContentBinding
 import com.schedule.dayin.utils.asyncImageLoader
@@ -65,7 +63,7 @@ class NoteContentFragment : Fragment(R.layout.fragment_note_content) {
     private val REQUEST_IMAGE_CAPTURE = 100
     private val SELECT_IMAGE_FROM_STORAGE = 101
     private val job = CoroutineScope(Dispatchers.Main)
-    private val args: NoteContentFragmentArgs by navArgs()
+    private val args: com.schedule.dayin.fragments.NoteContentFragmentArgs by navArgs()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -238,8 +236,7 @@ class NoteContentFragment : Fragment(R.layout.fragment_note_content) {
             result = "Empty Note Discarded"
             setFragmentResult("key", bundleOf("bundleKey" to result))
             navController.navigate(
-                NoteContentFragmentDirections
-                    .actionNoteContentFragmentToNoteFragment()
+                com.schedule.dayin.fragments.NoteContentFragmentDirections.actionNoteContentFragmentToNoteFragment()
             )
 
         } else {
@@ -262,8 +259,7 @@ class NoteContentFragment : Fragment(R.layout.fragment_note_content) {
                         bundleOf("bundleKey" to result)
                     )
                     navController.navigate(
-                        NoteContentFragmentDirections
-                            .actionNoteContentFragmentToNoteFragment()
+                        com.schedule.dayin.fragments.NoteContentFragmentDirections.actionNoteContentFragmentToNoteFragment()
                     )
 
                 }

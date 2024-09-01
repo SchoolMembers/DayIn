@@ -1,4 +1,4 @@
-package com.schedule.dayin.fragments
+package com.schedule.dayin
 
 import android.annotation.SuppressLint
 import android.content.res.Configuration.ORIENTATION_LANDSCAPE
@@ -22,8 +22,6 @@ import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.google.android.material.snackbar.BaseTransientBottomBar
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.transition.MaterialElevationScale
-import com.schedule.dayin.NoteActivity
-import com.schedule.dayin.R
 import com.schedule.dayin.databinding.FragmentNoteBinding
 import com.schedule.dayin.utils.SwipeToDelete
 import com.schedule.dayin.utils.hideKeyboard

@@ -10,11 +10,13 @@ import androidx.core.view.isVisible
 import androidx.navigation.Navigation
 import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.gamdestroyerr.roomnote.model.Note
 import com.google.android.material.card.MaterialCardView
 import com.google.android.material.textview.MaterialTextView
 import com.schedule.dayin.R
 import com.schedule.dayin.databinding.NoteItemLayoutBinding
+import com.schedule.dayin.fragments.NoteFragmentDirections
 import com.schedule.dayin.utils.hideKeyboard
 import com.schedule.dayin.utils.loadHiRezThumbnail
 import io.noties.markwon.AbstractMarkwonPlugin

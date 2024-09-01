@@ -17,16 +17,29 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Dayin"
         tools:targetApi="31">
-        <activity
-            android:name=".MemoEditActivity"
+        <provider
+            android:authorities="com.schedule.dayin.fileProvider"
+            android:name="androidx.core.content.FileProvider"
             android:exported="false"
-            android:theme="@style/Theme.Dayin" />
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/fileprovider" />
+        </provider>
+
+        <activity android:name=".NoteActivity" />
         <activity
-            android:name=".MemoActivity"
-            android:exported="false" />
-        <activity
-            android:name=".MemoItemEditActivity"
-            android:exported="false" />
+            android:name=".SplashActivity"
+            android:theme="@style/splash">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+            <meta-data
+                android:name="android.app.shortcuts"
+                android:resource="@xml/shortcuts" />
+        </activity>
         <activity
             android:name=".AnalysisActivity"
             android:exported="false"/>

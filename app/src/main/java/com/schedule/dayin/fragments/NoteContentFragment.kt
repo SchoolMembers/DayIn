@@ -32,18 +32,21 @@ import androidx.navigation.Navigation
 import androidx.navigation.fragment.navArgs
 import androidx.transition.Transition
 import androidx.transition.TransitionListenerAdapter
-import com.gamdestroyerr.roomnote.R
-import com.gamdestroyerr.roomnote.databinding.BottomSheetDialogBinding
-import com.gamdestroyerr.roomnote.databinding.FragmentNoteContentBinding
 import com.gamdestroyerr.roomnote.model.Note
-import com.gamdestroyerr.roomnote.utils.*
-import com.gamdestroyerr.roomnote.viewmodel.NoteActivityViewModel
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.transition.MaterialContainerTransform
 import com.schedule.dayin.NoteActivity
 import com.schedule.dayin.R
+import com.schedule.dayin.databinding.BottomSheetDialogBinding
 import com.schedule.dayin.databinding.FragmentNoteContentBinding
+import com.schedule.dayin.utils.asyncImageLoader
+import com.schedule.dayin.utils.getImageUrlWithAuthority
+import com.schedule.dayin.utils.getPhotoFile
+import com.schedule.dayin.utils.hideKeyboard
+import com.schedule.dayin.utils.shortToast
+import com.schedule.dayin.utils.themeColor
+import com.schedule.dayin.views.NoteActivityViewModel
 import kotlinx.coroutines.*
 import java.io.File
 import java.text.SimpleDateFormat
@@ -71,7 +74,7 @@ class NoteContentFragment : Fragment(R.layout.fragment_note_content) {
             drawingViewId = R.id.fragment
             scrimColor = Color.TRANSPARENT
             duration = 300L
-            setAllContainerColors(requireContext().themeColor(R.attr.colorSurface))
+            setAllContainerColors(requireContext().themeColor(com.yahiaangelo.markdownedittext.R.attr.colorSurface))
         }
         sharedElementEnterTransition = animation
         sharedElementReturnTransition = animation

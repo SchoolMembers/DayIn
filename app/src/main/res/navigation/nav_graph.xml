@@ -6,7 +6,7 @@
 
     <fragment
         android:id="@+id/noteFragment"
-        android:name="com.gamdestroyerr.roomnote.ui.fragments.NoteFragment"
+        android:name="com.schedule.dayin.fragments.NoteFragment"
         android:label="fragment_note"
         tools:layout="@layout/fragment_note">
         <action
@@ -15,7 +15,7 @@
     </fragment>
     <fragment
         android:id="@+id/noteContentFragment"
-        android:name="com.gamdestroyerr.roomnote.ui.fragments.NoteContentFragment"
+        android:name="com.schedule.dayin.fragments.NoteContentFragment"
         android:label="fragment_note_content"
         tools:layout="@layout/fragment_note_content">
         <deepLink app:uri="notesapp://com.gamedestroyer.roomnote/addnewnote" />

@@ -10,13 +10,7 @@ import androidx.core.view.isVisible
 import androidx.navigation.Navigation
 import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide
-import com.gamdestroyerr.roomnote.R
-import com.gamdestroyerr.roomnote.databinding.NoteItemLayoutBinding
 import com.gamdestroyerr.roomnote.model.Note
-import com.gamdestroyerr.roomnote.ui.fragments.NoteFragmentDirections
-import com.gamdestroyerr.roomnote.utils.hideKeyboard
-import com.gamdestroyerr.roomnote.utils.loadHiRezThumbnail
 import com.google.android.material.card.MaterialCardView
 import com.google.android.material.textview.MaterialTextView
 import com.schedule.dayin.R

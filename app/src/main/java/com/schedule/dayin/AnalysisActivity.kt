@@ -1,9 +1,7 @@
 package com.schedule.dayin
 
 import android.app.ActivityOptions
-import android.content.Context
 import android.content.Intent
-import android.os.Build.VERSION_CODES.P
 import android.os.Bundle
 import android.util.Log
 import android.util.TypedValue
@@ -22,7 +20,6 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
 import com.schedule.dayin.data.mainD.MainDatabase
 import com.schedule.dayin.data.mainD.MoneyAndCate
-import com.schedule.dayin.data.mainD.MoneyDb
 import com.schedule.dayin.data.mainD.repository.MoneyRepository
 import com.schedule.dayin.databinding.AnalysisActivityBinding
 import com.schedule.dayin.views.AnalPagerAdapter
@@ -33,7 +30,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.time.LocalDate
-import java.time.YearMonth
 import java.time.format.DateTimeFormatter
 
 class AnalysisActivity: AppCompatActivity() {

@@ -15,7 +15,6 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
-import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.kizitonwose.calendar.core.CalendarDay

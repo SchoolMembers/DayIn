@@ -4,7 +4,6 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
-import com.schedule.dayin.AppController
 import com.schedule.dayin.data.mainD.CateDb
 import com.schedule.dayin.databinding.CateRecyItemsBinding
 import kotlinx.coroutines.CoroutineScope

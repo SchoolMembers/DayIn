@@ -1,11 +1,10 @@
-package com.gamdestroyerr.roomnote.viewmodel
+package com.schedule.dayin.views
 
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.gamdestroyerr.roomnote.model.Note
-import com.gamdestroyerr.roomnote.repository.NoteRepository
 import com.schedule.dayin.data.memoD.repository.NoteRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch

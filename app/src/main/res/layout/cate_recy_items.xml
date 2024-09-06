@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/layout"
+    android:layout_width="100dp"
+    android:layout_height="40dp"
+    android:background="@drawable/time_back"
+    android:layout_marginBottom="5dp"
+    android:gravity="center_vertical">
+    <TextView
+        android:id="@+id/text"
+        android:layout_width="100dp"
+        android:layout_height="50dp"
+        android:textSize="12sp"
+        android:fontFamily="@font/okticon_regular"
+        android:text="@string/catePlus"
+        android:padding="5dp"
+        android:gravity="center" />
+
+</LinearLayout>

@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="300dp"
+    android:layout_height="300dp"
+    android:background="@color/white"
+    android:gravity="center"
+    android:orientation="vertical"
+    android:padding="20dp">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center">
+        <EditText
+            android:id="@+id/editText"
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"
+            android:hint="@string/addCate"
+            android:fontFamily="@font/okticon_regular"
+            android:textSize="15sp"
+            android:layout_marginEnd="5dp"
+            android:maxLines="1"
+            android:maxLength="10"/>
+        <android.widget.Button
+            android:id="@+id/checkButton"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_gravity="center"
+            android:background="@drawable/false_check_icon"
+            android:layout_marginEnd="5dp"/>
+        <android.widget.Button
+            android:id="@+id/closeButton"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_gravity="center"
+            android:background="@drawable/close_icon" />
+    </LinearLayout>
+    <com.google.android.material.button.MaterialButtonToggleGroup
+        android:id="@+id/cateToggle"
+        android:layout_width="150dp"
+        android:layout_height="40dp"
+        app:checkedButton="@id/minus"
+        app:singleSelection="true"
+        app:selectionRequired="true"
+        android:layout_marginTop="15dp">
+        <Button
+            android:id="@+id/minus"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:text="@string/minus"
+            android:textSize="13sp"
+            style="@style/Widget.App.Button.OutlinedButton.IconOnly" />
+        <Button
+            android:id="@+id/plus"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:text="@string/plus"
+            android:textSize="13sp"
+            style="@style/Widget.App.Button.OutlinedButton.IconOnly" />
+    </com.google.android.material.button.MaterialButtonToggleGroup>
+</LinearLayout>

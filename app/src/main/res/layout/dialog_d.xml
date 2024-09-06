@@ -1,0 +1,184 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/white">
+
+    <LinearLayout
+        android:id="@+id/topBar"
+        android:layout_width="match_parent"
+        android:layout_height="40dp">
+        <TextView
+            android:id="@+id/monYear"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="5.5"
+            android:layout_marginStart="15dp"
+            android:layout_gravity="center"
+            android:fontFamily="@font/okticon_regular"
+            android:text="@string/monYear"
+            android:textSize="20sp" />
+
+        <android.widget.Button
+            android:id="@+id/checkButton"
+            android:layout_width="0dp"
+            android:layout_height="30dp"
+            android:layout_weight="0.5"
+            android:layout_gravity="center"
+            android:background="@drawable/save_icon"
+            android:layout_marginEnd="15dp"/>
+
+        <android.widget.Button
+            android:id="@+id/closeButton"
+            android:layout_width="0dp"
+            android:layout_height="30dp"
+            android:layout_weight="0.5"
+            android:layout_gravity="center"
+            android:background="@drawable/close_icon"
+            android:layout_marginEnd="15dp"/>
+    </LinearLayout>
+
+    <View
+        android:id="@id/line"
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:background="@color/darkGray" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="500dp"
+        android:minHeight="500dp">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/okticon_regular"
+                android:text="@string/title"
+                android:textSize="18sp"
+                android:layout_marginStart="15dp"
+                android:layout_marginTop="15dp" />
+            <EditText
+                android:id="@+id/titleText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/okticon_regular"
+                android:maxLines="1"
+                android:textSize="14sp"
+                android:layout_marginStart="15dp"
+                android:layout_marginTop="4dp"
+                android:layout_marginEnd="15dp"
+                android:inputType="text"
+                android:hint="@string/titleHint"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/okticon_regular"
+                android:text="기분 선택"
+                android:textSize="18sp"
+                android:layout_marginStart="15dp"
+                android:layout_marginTop="30dp" />
+            <HorizontalScrollView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="15dp"
+                android:layout_marginEnd="15dp"
+                android:layout_marginTop="10dp">
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical">
+                    <TextView
+                        android:id="@+id/feel0"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="😊"
+                        android:textSize="40sp"
+                        android:layout_gravity="center"
+                        android:gravity="center"
+                        android:padding="7dp"/>
+                    <TextView
+                        android:id="@+id/feel1"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="😄"
+                        android:textSize="40sp"
+                        android:layout_gravity="center"
+                        android:gravity="center"
+                        android:padding="7dp"/>
+                    <TextView
+                        android:id="@+id/feel2"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="😍"
+                        android:textSize="40sp"
+                        android:layout_gravity="center"
+                        android:gravity="center"
+                        android:padding="7dp"/>
+                    <TextView
+                        android:id="@+id/feel3"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="🙁"
+                        android:textSize="40sp"
+                        android:layout_gravity="center"
+                        android:gravity="center"
+                        android:padding="7dp"/>
+                    <TextView
+                        android:id="@+id/feel4"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="😢"
+                        android:textSize="40sp"
+                        android:layout_gravity="center"
+                        android:gravity="center"
+                        android:padding="7dp"/>
+                    <TextView
+                        android:id="@+id/feel5"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="😡"
+                        android:textSize="40sp"
+                        android:layout_gravity="center"
+                        android:gravity="center"
+                        android:padding="7dp"/>
+
+                </LinearLayout>
+            </HorizontalScrollView>
+
+
+            <!-- 내용 -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/okticon_regular"
+                android:text="내용"
+                android:textSize="18sp"
+                android:layout_marginStart="15dp"
+                android:layout_marginTop="30dp" />
+            <EditText
+                android:id="@+id/description"
+                android:layout_width="match_parent"
+                android:layout_height="200dp"
+                android:layout_marginStart="15dp"
+                android:layout_marginEnd="15dp"
+                android:layout_marginBottom="20dp"
+                android:textSize="15sp"
+                android:hint="내용 입력"
+                android:layout_marginTop="4dp"
+                android:background="@drawable/time_back"
+                android:fontFamily="@font/okticon_regular"
+                android:padding="8dp"
+                android:textAlignment="viewStart"
+                android:scrollbars="vertical"
+                android:gravity="top|start"/>
+
+        </LinearLayout>
+    </ScrollView>
+
+
+</LinearLayout>

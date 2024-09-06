@@ -1,0 +1,249 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/white">
+
+    <LinearLayout
+        android:id="@+id/topBar"
+        android:layout_width="match_parent"
+        android:layout_height="40dp">
+        <TextView
+            android:id="@+id/monYear"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="5.5"
+            android:layout_marginStart="15dp"
+            android:layout_gravity="center"
+            android:fontFamily="@font/okticon_regular"
+            android:text="@string/monYear"
+            android:textSize="20sp" />
+
+        <android.widget.Button
+            android:id="@+id/checkButton"
+            android:layout_width="0dp"
+            android:layout_height="30dp"
+            android:layout_weight="0.5"
+            android:layout_gravity="center"
+            android:background="@drawable/false_check_icon"
+            android:layout_marginEnd="15dp"/>
+
+        <android.widget.Button
+            android:id="@+id/closeButton"
+            android:layout_width="0dp"
+            android:layout_height="30dp"
+            android:layout_weight="0.5"
+            android:layout_gravity="center"
+            android:background="@drawable/close_icon"
+            android:layout_marginEnd="15dp"/>
+    </LinearLayout>
+
+    <View
+        android:id="@id/line"
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:background="@color/darkGray" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="500dp"
+        android:minHeight="500dp">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/okticon_regular"
+                android:text="@string/money"
+                android:textSize="18sp"
+                android:layout_marginStart="15dp"
+                android:layout_marginTop="15dp" />
+
+            <EditText
+                android:id="@+id/moneyText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="15dp"
+                android:layout_marginTop="4dp"
+                android:layout_marginEnd="15dp"
+                android:fontFamily="@font/okticon_regular"
+                android:hint="@string/moneyHint"
+                android:inputType="text"
+                android:maxLines="1"
+                android:maxLength="18"
+                android:textSize="14sp" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <com.google.android.material.button.MaterialButtonToggleGroup
+                    android:id="@+id/cateToggle"
+                    android:layout_width="150dp"
+                    android:layout_height="40dp"
+                    app:checkedButton="@id/minus"
+                    app:singleSelection="true"
+                    android:layout_marginStart="15dp"
+                    android:layout_marginTop="5dp"
+                    app:selectionRequired="true">
+                    <Button
+                        android:id="@+id/minus"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="wrap_content"
+                        android:text="@string/minus"
+                        style="@style/Widget.App.Button.OutlinedButton.IconOnly" />
+                    <Button
+                        android:id="@+id/plus"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="wrap_content"
+                        android:text="@string/plus"
+                        style="@style/Widget.App.Button.OutlinedButton.IconOnly" />
+                </com.google.android.material.button.MaterialButtonToggleGroup>
+                <android.widget.Button
+                    android:id="@+id/catePlus"
+                    android:layout_width="0dp"
+                    android:layout_height="30dp"
+                    android:layout_weight="1"
+                    android:layout_marginStart="5dp"
+                    android:layout_gravity="bottom"
+                    android:text="@string/catePlus"
+                    android:textSize="9sp"
+                    android:fontFamily="@font/okticon_regular"
+                    style="?android:borderlessButtonStyle"/>
+                <android.widget.Button
+                    android:id="@+id/cateMinus"
+                    android:layout_width="0dp"
+                    android:layout_height="30dp"
+                    android:layout_weight="1"
+                    android:layout_marginStart="5dp"
+                    android:layout_gravity="bottom"
+                    android:text="@string/cateMinus"
+                    android:textSize="9sp"
+                    android:fontFamily="@font/okticon_regular"
+                    style="?android:borderlessButtonStyle"/>
+            </LinearLayout>
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/cateRecyclerView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="15dp"
+                android:layout_marginEnd="15dp"
+                android:layout_marginTop="10dp"/>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:layout_marginStart="15dp"
+                android:layout_marginTop="30dp"
+                android:layout_marginEnd="15dp"
+                android:gravity="center_vertical">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/okticon_regular"
+                    android:text="@string/auto"
+                    android:textSize="18sp"
+                    android:layout_marginEnd="5dp"/>
+                <android.widget.Button
+                    android:id="@+id/infoButton1"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:background="@drawable/info_icon"
+                    android:layout_marginEnd="50dp"/>
+            </LinearLayout>
+            <com.google.android.material.button.MaterialButtonToggleGroup
+                android:id="@+id/autoToggle"
+                android:layout_width="200dp"
+                android:layout_height="40dp"
+                app:checkedButton="@id/autoDefault"
+                app:singleSelection="true"
+                android:layout_marginStart="15dp"
+                android:layout_marginTop="5dp"
+                app:selectionRequired="true">
+                <Button
+                    android:id="@+id/autoDefault"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:text="@string/autoDefault"
+                    style="@style/Widget.App.Button.OutlinedButton.IconOnly" />
+                <Button
+                    android:id="@+id/autoWeek"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:text="@string/autoWeek"
+                    style="@style/Widget.App.Button.OutlinedButton.IconOnly" />
+                <Button
+                    android:id="@+id/autoMon"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:text="@string/autoMonth"
+                    style="@style/Widget.App.Button.OutlinedButton.IconOnly" />
+                <Button
+                    android:id="@+id/autoYear"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:text="@string/autoYear"
+                    style="@style/Widget.App.Button.OutlinedButton.IconOnly" />
+            </com.google.android.material.button.MaterialButtonToggleGroup>
+        <LinearLayout
+            android:id="@+id/autoTitleLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:visibility="gone">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/okticon_regular"
+                android:text="@string/autoTitle"
+                android:textSize="18sp"
+                android:layout_marginStart="15dp"
+                android:layout_marginTop="15dp" />
+            <EditText
+                android:id="@+id/autoTitle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/okticon_regular"
+                android:maxLines="1"
+                android:textSize="14sp"
+                android:maxLength="15"
+                android:layout_marginStart="15dp"
+                android:layout_marginTop="4dp"
+                android:layout_marginEnd="15dp"
+                android:inputType="text"
+                android:hint="@string/autoHint"/>
+        </LinearLayout>
+
+
+
+            <!-- 메모 -->
+            <EditText
+                android:id="@+id/memoText"
+                android:layout_width="match_parent"
+                android:layout_height="150dp"
+                android:layout_marginStart="15dp"
+                android:layout_marginTop="30dp"
+                android:layout_marginEnd="15dp"
+                android:layout_marginBottom="20dp"
+                android:textSize="15sp"
+                android:hint="@string/memoHint"
+                android:background="@drawable/time_back"
+                android:fontFamily="@font/okticon_regular"
+                android:padding="8dp"
+                android:textAlignment="viewStart"
+                android:scrollbars="vertical"
+                android:gravity="top|start"/>
+
+        </LinearLayout>
+    </ScrollView>
+
+
+</LinearLayout>
